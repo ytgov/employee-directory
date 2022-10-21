@@ -88,3 +88,60 @@ a {
 .v-banner.problem .v-icon {
     color: #9b1b27 !important;
 }
+
+#footer-bg{
+    content: '';
+    top: 0;
+    background: url(/Aurora-main.svg);
+    background-repeat: no-repeat;
+    background-position: 200% 50%;
+}
+
+#container-main{
+    content: '';
+    top: 0;
+    background: url(/Aurora-main.svg);
+    background-repeat: no-repeat;
+    background-position: 400% -10%;
+}
+
+.v-footer .v-card a{
+    color: white;
+}
+
+.v-footer .v-card div.footer-details span{
+    margin-left: 50%;
+}
+
+.v-footer .v-card{
+    background-color: #0d3e4f;
+}
+.v-footer .v-card div.footer-details{
+    background-color: #0b3442;
+}
+
+@media (max-width: 600px){
+    #footer-bg{
+        content: '';
+        top: 0;
+        background: url(/Aurora-small-mobile.svg);
+        background-repeat: no-repeat;
+        background-position: 200% 0%;
+    }
+
+    #container-main{
+        content: '';
+        top: 0;
+        background: url(/Aurora-small-mobile.svg);
+        background-repeat: no-repeat;
+        background-position: 200% 0%;
+    }
+
+    #container-row{
+        margin-top: 10%;
+    }
+
+    .v-footer .v-card div.footer-details span{
+        margin-left: 0%;
+    }
+}

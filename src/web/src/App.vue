@@ -94,14 +94,40 @@
 
     <v-main v-bind:style="{ 'padding-left: 33px !important': !hasSidebar }">
       <!-- Provides the application the proper gutter -->
-      <v-container fluid>
-        <v-row>
+      <v-container fluid id="container-main">
+        <v-row id="container-row">
           <v-col>
             <router-view></router-view>
           </v-col>
         </v-row>
       </v-container>
     </v-main>
+
+    <div class="container text-center">
+      <img src="/Aurora-mini.svg" style="margin: 5% 0px 3% 0px" height="44" />
+    </div>
+
+      <v-footer
+        flat
+        style="z-index: 10"
+        padless
+        height="70"
+      >
+        <v-card
+          class="flex"
+          flat
+          tile
+        >
+          <v-card-title  id="footer-bg">
+            <img src="/logo-white.svg" style="margin: -8px 155px 0 0" height="44"/>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-card-text class="white--text text-center footer-details">
+            <span>© Copyright {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
+          </v-card-text>
+        </v-card>
+      </v-footer>
+
   </v-app>
 </template>
 

@@ -6,7 +6,8 @@
     "start:dev": "vue-cli-service serve",
     "build:web": "vue-cli-service build",
     "build:docker": "vue-cli-service build --dest ../app/dist/web",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint"
   },
   "dependencies": {
     "axios": "^0.24.0",
@@ -18,7 +19,6 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.15",
-    "@vue/cli-plugin-eslint": "~4.5.15",
     "@vue/cli-plugin-router": "~4.5.15",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.15",
@@ -43,8 +43,17 @@
     },
     "rules": {
       "vue/multi-word-component-names": [
-        "error", {"ignores": ["Form","Profile","Login","Home","Grid"]
-        }]
+        "error",
+        {
+          "ignores": [
+            "Form",
+            "Profile",
+            "Login",
+            "Home",
+            "Grid"
+          ]
+        }
+      ]
     }
   },
   "browserslist": [
