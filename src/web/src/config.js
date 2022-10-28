@@ -19,6 +19,11 @@ export const sections = [
         name: "Data grid",
         url: "/grid",
         icon: "mdi-table-large"
+    },
+    {
+        name: "Employees",
+        url: "/employees",
+        icon: "mdi-account-group"
     }
 ];
 export const environment = process.env.NODE_ENV;

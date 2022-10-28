@@ -9,6 +9,7 @@ import Login from "../components/Login";
 import LoginComplete from "../components/LoginComplete";
 import Profile from "../components/Profile";
 import store from "../store";
+import Employees from "../components/Employees";
 
 Vue.use(VueRouter);
 
@@ -61,7 +62,15 @@ const routes = [
     path: "*",
     name: "Not Found",
     component: NotFound
-  }
+  },
+  {
+    path: "/employees",
+    name: "Employees",
+    component: Employees,
+    meta: {
+      requiresAuth: true
+    }
+  },
 ];
 
 const router = new VueRouter({
