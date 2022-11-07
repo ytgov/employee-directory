@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       v-bind:app="hasSidebar"
       permanent
       :expand-on-hover="hasSidebarClosable"
@@ -25,19 +25,21 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-app-bar
+      elevation="2"
       app
       color="#fff"
       flat
       height="70"
-      style="left: 0; border-bottom: 3px #f3b228 solid"
     >
+    <div class="header-container">
+      <v-row align-content="space-between">
       <!-- <v-icon color="#f3b228" class="mr-5">{{ applicationIcon }}</v-icon> -->
       <img src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
       <v-toolbar-title>
-        <span style="font-weight: 700">{{ applicationName }}</span>
+        <!-- <span style="font-weight: 700">{{ applicationName }}</span> -->
 
         <v-progress-circular
           :class="loadingClass"
@@ -49,6 +51,7 @@
         ></v-progress-circular>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+      
       <!-- <v-label dark>License Year:</v-label>
       <v-select
         v-model="licenseYear"
@@ -63,11 +66,13 @@
         <span>{{ username }}</span>
         <v-menu bottom left class="ml-0">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon color="primary" v-bind="attrs" v-on="on">
-              <v-icon>mdi-dots-vertical</v-icon>
+            <v-btn retain-focus-on-click color="black"  plain  v-bind="attrs" v-on="on">
+              <!-- <v-icon color="black" large>mdi-menu</v-icon> -->
+              <img class="mr-4" style="width:30px;" src='../public/m.svg'/>
+              <a style="color:black; text-transform: none;">Menu</a>
             </v-btn>
           </template>
-
+          
           <v-list dense style="min-width: 200px">
             <v-list-item to="/profile">
               <v-list-item-icon>
@@ -88,7 +93,8 @@
       <div v-else>
         <router-link to="/sign-in">Sign in</router-link>
       </div>
-
+    </v-row>
+    </div>
       <!-- <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight"></v-app-bar-nav-icon> -->
     </v-app-bar>
 
@@ -195,3 +201,96 @@ export default {
   }
 };
 </script>
+
+<style>
+  .v-toolbar--flat {
+  box-shadow: 1px 0px 7px 4px rgba(0,0,0,0.24) !important;
+  -webkit-box-shadow: 1px 0px 7px 4px rgba(0,0,0,0.24) !important;
+  -moz-box-shadow: 1px 0px 7px 4px rgba(0,0,0,0.24) !important;
+  }
+
+  .header-container{
+    width: 100%;
+    margin: 0 auto;
+    padding: 12px 24px;
+  }
+
+  @media (min-width:1180px){
+    .header-container {
+      width:1180px;
+    }
+  }
+
+  .flex-end{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  align-content: center;
+}
+ .v-text-field >>> fieldset {
+  border: 1.5px solid #F3A901;
+}
+.index-text{
+  text-decoration: underline;
+  color: #000000 !important;
+}
+
+.divisions-text {
+  color: #0097A9 !important;
+  font-size: 16px !important;
+  font-weight: 100 !important;
+  text-decoration: underline;
+}
+.v-banner span {
+  font-weight: 700;
+}
+
+.full-width{
+  width: 110%;
+  margin-left: -5%;
+
+}
+
+.yellow-border{
+  border-bottom:3px #f3b228 solid;
+}
+.white-bg {
+  background-color: white;
+}
+.gray-bg {
+  background-color: #EDEDED;
+}
+@media (min-width: 1180px){
+  .full-width{
+  width: 500%;
+  margin-left: -200%;
+  
+}
+
+  .contentt {
+    width: 1180px !important;
+  }
+}
+
+.contentt {
+  width:92%;
+  padding: 12px 24px;
+}
+
+
+
+@media (max-width: 755px){
+  .search-responsive {
+  padding: 12px 24px !important;
+  
+  margin: 0 auto !important; 
+  width: 90%;
+}
+  
+}
+
+.width-100 {
+  width: 100%;
+}
+
+</style>

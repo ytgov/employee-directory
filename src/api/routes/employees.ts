@@ -9,7 +9,7 @@ employeesRouter.post("/", EnsureAuthenticated, async (req: Request, res: Respons
 
     var employeesByDept = Object();
 
-    axios.get('http://directory-api-dev.ynet.gov.yk.ca/employees')
+    axios.get('http://localhost:8080/employees.json')
     .then((response: any) => {
 
         var resultEmployees = response.data.employees;

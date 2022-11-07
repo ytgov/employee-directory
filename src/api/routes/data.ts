@@ -1,14 +1,15 @@
 import express, { Request, Response } from "express";
 import { EnsureAuthenticated } from "./auth"
 import { AppUser, Team } from "../models/user";
+import axios from "axios";
 
 export const dataRouter = express.Router();
 
 dataRouter.post("/", EnsureAuthenticated, async (req: Request, res: Response) => {
 
-    // I have added a delay to this to show how the interface can wait for the response
-    setTimeout(() => {
-        var results = [];
+    axios.get('http://localhost:8080/employees.json')
+    .then((response: any) => {
+        var results: any = [...response.data.employees]
 
         const page = req.body.page || 1;
         const itemsPerPage = req.body.itemsPerPage || 10;
@@ -19,35 +20,64 @@ dataRouter.post("/", EnsureAuthenticated, async (req: Request, res: Response) =>
         var searchTerm = "";
 
 
-        for (var i = 0; i < 10000; i++) {
-            results.push({ id: i, name: "testing" + i })
-        }
+        /*for (var i = 0; i < 10000; i++) {
+            results.push({ id: i, name: "Education" + i })
+        }*/
+
+        let responseResult
 
         if (search) {
-            searchTerm = search.toString().trim();
+            var find = '-';
+            var reg = new RegExp(find, 'g');
 
-            results = results.filter(item => { return item.name.indexOf(searchTerm) >= 0; })
+            searchTerm = search.toString().trim();
+            const params = searchTerm.split('-%252F-');
+            const [department, division] = params;
+
+            const formattedDepartment = department.replace(reg, ' ')
+            const formattedDivision = division ? division.replace(reg, ' ') : null;
+
+            responseResult = results.filter((item:any) => {
+                if (formattedDivision) {
+                    return item.department == formattedDepartment && item.division == formattedDivision;
+                }
+                return item.department == formattedDepartment
+            })
         }
 
-
-        if (sortBy.length > 0) {
+        /* if (sortBy.length > 0) {
             const sorter = sortBy[0];
 
             if (sorter == "id") {
                 if (sortDesc[0])
-                    results = results.sort((a, b) => { return a.id - b.id; })
+                    results = results.sort((a:any, b:any) => { return a.id - b.id; })
                 else
-                    results = results.sort((a, b) => { return b.id - a.id; })
+                    results = results.sort((a:any, b:any) => { return b.id - a.id; })
             }
             else if (sorter == "name") {
                 if (sortDesc[0])
-                    results = results.sort((a, b) => { return a.name.localeCompare(b.name); })
+                    results = results.sort((a:any, b:any) => { return a.name.localeCompare(b.name); })
                 else
-                    results = results.sort((a, b) => { return b.name.localeCompare(a.name); })
+                    results = results.sort((a:any, b:any) => { return b.name.localeCompare(a.name); })
             }
         }
 
-        res.send({ data: results.slice(start, start + itemsPerPage), meta: { count: results.length } });
+        res.send({ data: results.slice(start, start + itemsPerPage), meta: { count: results.length } }); */
+        const responseResultFiltred = responseResult.map((item: any, index: number) => {
+            return ({
+                id: index,
+                name: `${item.first_name} ${item.last_name}`,
+                position: item.title,
+                department: item.department,
+                division: item.division,
+                branch: item.branch,
+            })
+        }).slice(start, start + itemsPerPage);
 
-    }, 1000);
+        res.send({ data: responseResultFiltred,  meta: { count: responseResult.length } });
+
+    })
+    .catch((error: any) => {
+        console.log(error);
+    });
 });

@@ -11,6 +11,7 @@ p {
 }
 
 h1 {
+    font-size: 36px;
     margin-bottom: 20px;
 }
 
@@ -63,13 +64,16 @@ a {
 }
 
 .v-banner {
-    background-color: #fff2d5 !important;
+    /* background-color: #fff2d5 !important;
     border-bottom: 1px #f3b228 solid !important;
-    border-left: 5px #f3b228 solid !important;
+    border-left: 5px #f3b228 solid !important; */
     box-shadow: none !important;
-    color: #323232 !important;
+    /* color: #323232 !important; */
 }
 
+.v-banner__wrapper {
+    border-bottom: none !important;
+}
 .v-banner .v-icon {
     color: #323232 !important;
 }
@@ -98,11 +102,12 @@ a {
 }
 
 #container-main{
+    max-width: 1180px;
     content: '';
     top: 0;
     background: url(/Aurora-main.svg);
     background-repeat: no-repeat;
-    background-position: 400% -10%;
+    background-position: 400% 26%;
 }
 
 .v-footer .v-card a{
