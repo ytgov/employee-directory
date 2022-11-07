@@ -109,28 +109,42 @@
       </v-container>
     </v-main>
 
-    <div class="container text-center">
+    <!-- <div class="container text-center">
       <img src="/Aurora-mini.svg" style="margin: 5% 0px 3% 0px" height="44" />
-    </div>
+    </div> -->
 
       <v-footer
+        class="mt-16"
         flat
         style="z-index: 10"
         padless
         height="70"
       >
         <v-card
-          class="flex"
+          class="flex "
           flat
           tile
         >
-          <v-card-title  id="footer-bg">
+          <v-card-title class="py-16 header-container"  id="footer-bg">
             <img src="/logo-white.svg" style="margin: -8px 155px 0 0" height="44"/>
           </v-card-title>
           <v-divider></v-divider>
-          <v-card-text class="white--text text-center footer-details">
-            <span>© Copyright {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
-          </v-card-text>
+          <v-card class="footer-details">
+
+            <div class="header-container d-flex justify-space-between">
+
+              <div class="d-flex flex-column pa-2 width-100">
+                <a href="https://yukon.ca/">Government of Yukon</a>
+                <a href="https://yukon.ca/en/copyright">Copyright</a>
+                <a href="https://yukon.ca/en/disclaimer">Disclaimer</a>
+                <a href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
+              </div>
+              <v-card-text class="white--text text-right with-100">
+                <span>© {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
+              </v-card-text>
+            </div>
+          </v-card>
+          
         </v-card>
       </v-footer>
 
