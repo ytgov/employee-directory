@@ -82,13 +82,6 @@
                         class="icon-avatar"
                         :style="{'background-color': hover ? '#DC4001' : '#512A44'}"
                     >
-                        
-                        <!-- <v-icon
-                        large
-                        color="white"
-                        >
-                        mdi-domain
-                        </v-icon> -->
                         <v-avatar
                         tile
                         >

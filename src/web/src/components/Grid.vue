@@ -4,7 +4,7 @@
     <v-container 
     class="contentt"
     >
-      <h1 class="ml-n3" >Find a goverment Employee</h1>
+      <h1 class="ml-n3">Find a goverment Employee</h1>
 
       <v-banner class="mb-6  mx-n9">
         <span>
@@ -52,8 +52,7 @@
   <v-container class="d-flex contentt">
     <div style="width: 60px" class="mr-4">
       <img
-        style=" width:100%;
-          filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
+        style=" width:100%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
         :src="require('../assets/svg/' + this.imgTitle)"
         class="mt"
         />
@@ -78,24 +77,28 @@
         label
         outlined
         color="#00616D"
+        @click="toggleGroup('allitems')"
         >All Employees</v-chip>
         <v-chip
         class="mr-2"
         label
         outlined
         color="#00616D"
+        @click="toggleGroup('department')"
         >Department</v-chip>
         <v-chip
         class="mr-2"
         label
         outlined
         color="#00616D"
+        @click="toggleGroup('location')"
         >Location</v-chip>
         <v-chip
         class="mr-2"
         label
         outlined
         color="#00616D"
+        @click="toggleGroup('position')"
         >Position</v-chip>
       </div>
     </div>
@@ -117,18 +120,14 @@
       :headers="headers"
       :options.sync="options"
       :loading="loading"
-           
       :search="search"
+      hide-default-header
     >
-    <template v-slot:headers="{ headers }">
-      <thead class="table-header">
-      {{ header.text }}
-      </thead>
-      <v-pagination
-        v-model="page"
-        :server-items-length="totalLength"
-      ></v-pagination>
-    </template>
+    <template v-slot:header="{ props }">
+        <th class="data-header py-3"
+          v-for="head in props.headers">{{ head.text }}
+        </th>
+      </template>
 
   </v-data-table>
 </div>
@@ -144,6 +143,7 @@ export default {
     
     title: '',
     imgTitle: '',
+    itemGroup: '',
     loading: false,
     items: [],
     search: "",
@@ -179,7 +179,10 @@ export default {
     this.generateImg();
   },
   methods: {
-
+    toggleGroup(group){
+      this.itemGroup = group;
+      console.log(this.itemGroup);
+    },
     generateImg(){
       let department = this.title;
       const noSpaces = department.replace(/\s/g, '');
@@ -203,9 +206,8 @@ export default {
         )
         .then((resp) => {
           this.items = resp.data.data;
-
+          console.log(resp.data.data)
           this.totalLength = resp.data.meta.count;
-
           this.loading = false;
         })
         .catch((err) => console.error(err))
@@ -218,6 +220,11 @@ export default {
 </script>
 
 <style scoped>
+
+.data-header {
+  background-color: #EDEDED;
+  border-top: 5px solid #779800;
+}
 
 .table-header {
  height: 300px !important;
