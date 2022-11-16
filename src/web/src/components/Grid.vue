@@ -4,7 +4,7 @@
     <v-container 
     class="contentt"
     >
-      <h1 class="ml-n3">Find a goverment Employee</h1>
+      <h1 class="ml-n3" >Find a goverment Employee</h1>
 
       <v-banner class="mb-6  mx-n9">
         <span>
@@ -77,28 +77,24 @@
         label
         outlined
         color="#00616D"
-        @click="toggleGroup('allitems')"
         >All Employees</v-chip>
         <v-chip
         class="mr-2"
         label
         outlined
         color="#00616D"
-        @click="toggleGroup('department')"
         >Department</v-chip>
         <v-chip
         class="mr-2"
         label
         outlined
         color="#00616D"
-        @click="toggleGroup('location')"
         >Location</v-chip>
         <v-chip
         class="mr-2"
         label
         outlined
         color="#00616D"
-        @click="toggleGroup('position')"
         >Position</v-chip>
       </div>
     </div>
@@ -120,11 +116,12 @@
       :headers="headers"
       :options.sync="options"
       :loading="loading"
+      :items-per-page="itemsPerPage"
       :search="search"
       hide-default-header
     >
     <template v-slot:header="{ props }">
-        <th class="data-header py-3"
+        <th class="data-header py-3 pl-3"
           v-for="head in props.headers">{{ head.text }}
         </th>
       </template>
@@ -143,22 +140,23 @@ export default {
     
     title: '',
     imgTitle: '',
-    itemGroup: '',
+    div: '',
     loading: false,
     items: [],
     search: "",
     options: {},
     totalLength: 0,
     headers: [
-      { text: "Name", value: "name" },
-      { text: "Position", value: "position" },
+      { text: "Name", value: "full_name" },
+      { text: "Position", value: "title" },
       { text: "Department", value: "department" },
-      { text: "Branch", value: "branch" },
+      // { text: "Branch", value: "branch" },
       { text: "Division", value: "division" },
+      { text: "Manager", value: "manager" },
     ],
     page: 1,
     pageCount: 0,
-    iteamsPerPage: 10,
+    itemsPerPage: 100,
   }),
   watch: {
     options: {
@@ -179,10 +177,7 @@ export default {
     this.generateImg();
   },
   methods: {
-    toggleGroup(group){
-      this.itemGroup = group;
-      console.log(this.itemGroup);
-    },
+
     generateImg(){
       let department = this.title;
       const noSpaces = department.replace(/\s/g, '');
@@ -194,20 +189,27 @@ export default {
       var reg = new RegExp(find, 'g');
       const { department, division } = this.$route.params;
       this.loading = true;
-      const formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}`)}`
+      let formattedQueryParam = ''
+      if(division == null){
+        formattedQueryParam = `${encodeURIComponent(`${department}`)}`
+      } else {
+        formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}`)}`
+      }
       this.title = department.replace(reg, ' ')
+      this.div = division
       
-      
-      const search = this.search.length ?`${encodeURIComponent(`${this.search}`)}` : formattedQueryParam;
+      console.log(formattedQueryParam)
+      const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
         .post(
-          "http://localhost:3000/api/data?search=" + search,
+          `http://localhost:3000/api/employees/organization-detail/${department}?search=` + search,
           this.options
         )
         .then((resp) => {
           this.items = resp.data.data;
           console.log(resp.data.data)
           this.totalLength = resp.data.meta.count;
+
           this.loading = false;
         })
         .catch((err) => console.error(err))
@@ -220,11 +222,6 @@ export default {
 </script>
 
 <style scoped>
-
-.data-header {
-  background-color: #EDEDED;
-  border-top: 5px solid #779800;
-}
 
 .table-header {
  height: 300px !important;
@@ -254,4 +251,10 @@ export default {
   z-index: 1;
   overflow: hidden;
 }
+.data-header {
+  background-color: #EDEDED;
+  border-top: 5px solid #779800;
+  text-align: left;
+}
+
 </style>
