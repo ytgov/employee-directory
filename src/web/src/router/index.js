@@ -33,8 +33,16 @@ const routes = [
     }
   },
   {
-    path: "/find-employee/:department/:division",
+    path: "/organization-detail/:department/:division",
     name: "Data grid",
+    component: Grid,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/organization-detail/:department",
+    name: "Data grid2",
     component: Grid,
     meta: {
       requiresAuth: true
@@ -64,7 +72,7 @@ const routes = [
     component: NotFound
   },
   {
-    path: "/find-employee",
+    path: "/organization-detail/",
     name: "Find a government employee",
     component: Employees,
     meta: {
