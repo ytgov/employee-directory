@@ -94,7 +94,7 @@
 
                     <v-list-item-content>
                         <v-list-item-title class="text-h6 mb-1">
-                            <a class="index-text" v-bind:src="generateUrl(index, 'dep')">{{index}}</a>
+                            <a class="index-text" :href="indexUrl(index,'dep')" v-bind:src="generateUrl(index,'dep')">{{index}}</a>
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -158,18 +158,24 @@ export default {
     this.getEmployeesData();
   },
   methods: {
+    replaceSpaces(find,replace,obj){
+      find = find
+      replace = replace
+      var reg = new RegExp(find, 'g');
+      return obj.replace(reg, replace)
+    },
     generateUrl(field, type){
         if(type == "div")
-            return "/organization-detail/"+field.departmentUrl+"/"+field.divisionUrl;
+            return "/organization-detail/"+field.departmentUrl+"/"+field.divisionUrl; 
         else if(type == "dep")
-            return "/organization-detail/"+field;
+            return "/organization-detail/"+field.departmentUrl;
     },
     ejecuteSearch(){
       this.search = searchUrl();
     },
     searchUrl(field, type){
         if(type == "dep")
-          return `/find-employee/${field.departmentUrl}/${field.divisionUrl}`;  
+          return `/organization-detail/${field.departmentUrl}/${field.divisionUrl}`;  
     },
 
     generateUrlImg(field, type){
@@ -180,6 +186,11 @@ export default {
         } else {
           return
         }
+    },
+
+    indexUrl(field,type){
+      if(type == "dep")
+            return "/organization-detail/"+field
     },
     getEmployeesData() {
       this.loading = true;
