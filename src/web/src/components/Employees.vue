@@ -2,17 +2,17 @@
   <div class="books">
     <div class="full-width yellow-border white-bg pt-16 mt-n5" >
     <v-container 
-    class="contentt"
+    class="container-content "
     >
-      <h1 class="ml-n3" >Find a goverment Employee</h1>
+      <h1 class="ml-5" >Find a goverment Employee</h1>
 
-      <v-banner class="mb-6 mt-13 mx-n9">
+      <v-banner class="mb-6 mt-13">
         <span>
         You can use this service to find the contact information of a person who works for a Government of Yukon organization.
         </span> <br/><br/>
         Enter the person's first or last name, position title, email address or telephone number in the search box to get started. You can also enter the name of a department, division or branch to view all employees in that specific organization.
         </v-banner>
-      <v-row class="flex-end mb-10">
+      <v-row class="flex-end mb-10 px-10">
         <v-text-field
           label="Search by Name"
           v-model="search"
@@ -31,7 +31,8 @@
           v-model="search"
           class="pl-5 pr-5"
           dense=""
-          
+          :items="item"
+          items-value="'item.index'"
           background-color="#F1F1F1"
           outlined="outlined"
           flat=""
@@ -39,6 +40,7 @@
           color=""
           solo
         >
+
       </v-select>
         <v-btn
         class="search-responsive mt-n3 pa-4 py-5"
@@ -157,6 +159,7 @@ export default {
   },
   mounted() {
     this.getEmployeesData();
+    console.log()
   },
   methods: {
     replaceSpaces(find,replace,obj){
@@ -203,6 +206,7 @@ export default {
         )
         .then((resp) => {
           this.item = resp.data.data;
+          console.log(this.item)
           this.loading = false;
         })
         .catch((err) => console.error(err))

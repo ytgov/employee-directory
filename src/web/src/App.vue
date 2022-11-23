@@ -202,20 +202,19 @@ export default {
 .gray-bg {
   background-color: #EDEDED;
 }
-@media (min-width: 1180px){
+@media (min-width: 1200px){
   .full-width{
   width: 500%;
   margin-left: -200%;
-  
 }
 
-  .contentt {
-    width: 1180px !important;
+  .container-content {
+    width: 1200px !important;
   }
 }
 
-.contentt {
-  width:92%;
+.container-content {
+  width:90%;
   padding: 12px 24px;
 }
 
