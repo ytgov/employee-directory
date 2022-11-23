@@ -1,7 +1,8 @@
 <template>
   <div class="books">
     <div class="full-width yellow-border white-bg pt-16 mt-n5" >
-    <v-container 
+
+   <v-container 
     class="container-content "
     >
       <h1 class="ml-5" >Find a goverment Employee</h1>
@@ -12,7 +13,7 @@
         </span> <br/><br/>
         Enter the person's first or last name, position title, email address or telephone number in the search box to get started. You can also enter the name of a department, division or branch to view all employees in that specific organization.
         </v-banner>
-      <v-row class="flex-end mb-10 px-10">
+      <v-row class="flex-end mb-10 px-10 mt-8">
         <v-text-field
           label="Search by Name"
           v-model="search"
@@ -125,8 +126,10 @@
 
 <script>
 const axios = require("axios");
-
 export default {
+  components: {
+    
+  },
   name: "Grid",
   data: () => ({
     show: false,

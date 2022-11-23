@@ -49,7 +49,7 @@
   </v-container>
 </div>
 <div class="full-width py-8 gray-bg bg-img" >
-  <v-container class="d-flex contentt">
+  <v-container class="d-flex container-content">
     <div style="width: 60px" class="mr-4">
       <img
         style=" width:100%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
@@ -68,10 +68,11 @@
       <p>{{title}}</p>
       
     </div>
-    <h3>Your search found {{totalLength}} results.</h3>
+    <v-row class="d-flex">
+      <h3>Your search found {{totalLength}} results.</h3>
     <div class="d-flex">
       <h4 class="mr-3 mt-1">Grouped by their:</h4>
-      <div class="d-flex chips">
+      <div class="d-md-flex chips">
         <v-chip
         class="mr-2"
         label
@@ -98,6 +99,8 @@
         >Position</v-chip>
       </div>
     </div>
+    </v-row>
+    
   
     <div class="text-center loading" v-show="loading">
         <v-progress-circular
@@ -119,8 +122,9 @@
       :items-per-page="itemsPerPage"
       :search="search"
       hide-default-header
+      mobile-breakpoint="600"
     >
-    <template v-slot:header="{ props }">
+    <template  v-slot:header="{ props }">
         <th class="data-header py-3 pl-3"
           v-for="head in props.headers">{{ head.text }}
         </th>

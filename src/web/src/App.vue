@@ -196,20 +196,22 @@ export default {
 .yellow-border{
   border-bottom:3px #f3b228 solid;
 }
+
 .white-bg {
   background-color: white;
 }
 .gray-bg {
   background-color: #EDEDED;
 }
-@media (min-width: 1200px){
+@media (min-width: 1180px){
   .full-width{
   width: 500%;
   margin-left: -200%;
+  
 }
 
   .container-content {
-    width: 1200px !important;
+    width: 1180px !important;
   }
 }
 

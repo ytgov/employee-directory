@@ -10,6 +10,8 @@ import LoginComplete from "../components/LoginComplete";
 import Profile from "../components/Profile";
 import store from "../store";
 import Employees from "../components/Employees";
+import Department from "../components/Department";
+
 
 Vue.use(VueRouter);
 
@@ -34,10 +36,12 @@ const routes = [
     name: "Data grid",
     component: Grid,
   },
+
+
   {
     path: "/organization-detail/:department",
-    name: "Data grid2",
-    component: Grid,
+    name: "Department",
+    component: Department,
   },
   {
     path: "/sign-in",
@@ -63,6 +67,9 @@ const routes = [
     path: "/organization-detail/",
     name: "Find a government employee",
     component: Employees,
+    child: [
+
+    ]
   },
 ];
 
