@@ -28,25 +28,16 @@ const routes = [
     path: "/form",
     name: "Basic Form",
     component: Form,
-    meta: {
-      requiresAuth: true
-    }
   },
   {
     path: "/organization-detail/:department/:division",
     name: "Data grid",
     component: Grid,
-    meta: {
-      requiresAuth: true
-    }
   },
   {
     path: "/organization-detail/:department",
     name: "Data grid2",
     component: Grid,
-    meta: {
-      requiresAuth: true
-    }
   },
   {
     path: "/sign-in",
@@ -62,9 +53,6 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
-    meta: {
-      requiresAuth: true
-    }
   },
   {
     path: "*",
@@ -75,9 +63,6 @@ const routes = [
     path: "/organization-detail/",
     name: "Find a government employee",
     component: Employees,
-    meta: {
-      requiresAuth: true
-    }
   },
 ];
 
