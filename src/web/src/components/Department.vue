@@ -34,8 +34,12 @@
             min-height="542"
             outlined
           >
-              <v-card class="px-16" flat="true" raise="false" height="400" width="100%">
+              <v-card class="px-16 d-flex flex-column justify-center align-center" outlined="false" flat="true" raise="false" height="400" width="100%">
+                <h2>img</h2>
+                <h2>{{title}}</h2>
+                <v-card class="" width="281px" height="11px" color="#244C5A" rounded="false">
 
+                </v-card>
               </v-card>
               <v-card class="pa-16" flat="true" raise="false" min-height="400" width="100%">
                 <li  class="py-1" v-for="(n) in 15">
@@ -61,6 +65,7 @@ export default {
     loading: false,
     item: [],
     search: "",
+    title:'test',
     options: {},
     totalLength: 0,
     headers: [
