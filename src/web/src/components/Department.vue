@@ -29,16 +29,17 @@
       <v-col>
           <v-card
             elevation="2"
-            class="mx-auto d-flex justify-center align-center"
+            class="mx-auto d-flex justify-center align-center department-card"
             max-width="1180"
-            height="542"
+            min-height="542"
             outlined
           >
-            
-              <v-card class="py-10" flat="true" raise="false" height="400" width="100%"></v-card>
-              <v-card class="py-10" flat="true" raise="false" height="400" width="100%">
-                <li>
-                  <a>Test</a>
+              <v-card class="px-16" flat="true" raise="false" height="400" width="100%">
+
+              </v-card>
+              <v-card class="pa-16" flat="true" raise="false" min-height="400" width="100%">
+                <li  class="py-1" v-for="(n) in 15">
+                  <a>{{ n }}</a>
                 </li>
               </v-card>
           </v-card>
@@ -147,5 +148,14 @@ export default {
 </script>
 
 <style scoped>
+  .department-card li{
+    list-style: none;
+  }
+  .department-card a{
+    font-size: 19px;
+    text-decoration: underline;
+    font-weight: 700;
+    color: #0097A9;
+  }
 
 </style>
