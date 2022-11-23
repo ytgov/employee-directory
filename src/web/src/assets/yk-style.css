@@ -105,9 +105,12 @@ a {
     max-width: 1180px;
     content: '';
     top: 0;
+}
+
+.v-main {
     background: url(/Aurora-main.svg);
     background-repeat: no-repeat;
-    background-position: 400% 26%;
+    background-position: 190% 30%;
 }
 
 .v-footer .v-card a{

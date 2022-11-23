@@ -60,6 +60,7 @@
         indeterminate
         ></v-progress-circular>
     </div>
+    <v-row class="py-10 mt-16"></v-row>
     <v-row class="mb-6 mt-16">
         <v-col
         md="4"

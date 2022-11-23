@@ -30,11 +30,8 @@
               <a style="color:black; text-transform: none;">Menu</a>
             </v-btn>
           </template>
-          
-          
         </v-menu>
       </div>
-      
     </v-row>
     </div>
     </v-app-bar>
@@ -49,11 +46,9 @@
         </v-row>
       </v-container>
     </v-main>
-
     <!-- <div class="container text-center">
       <img src="/Aurora-mini.svg" style="margin: 5% 0px 3% 0px" height="44" />
     </div> -->
-
       <v-footer
         class="mt-16"
         flat
