@@ -110,7 +110,7 @@
                   <v-expand-transition>
                     <ul v-if="hover">
                         <li v-for='detail in items'>
-                            <a class="divisions-text" :href="searchUrl(detail, 'dep')" v-bind:src="generateUrl(detail, 'div')">{{detail.division}}</a>
+                            <a class="divisions-text" :href="searchUrl(detail, 'dep')" :src="generateUrl(detail, 'div')">{{detail.division}}</a>
                         </li>
                     </ul>
                   </v-expand-transition>
@@ -209,7 +209,6 @@ export default {
         )
         .then((resp) => {
           this.item = resp.data.data;
-          console.log(this.item)
           this.loading = false;
         })
         .catch((err) => console.error(err))

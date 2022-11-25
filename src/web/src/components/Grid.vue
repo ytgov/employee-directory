@@ -131,6 +131,7 @@
       </template>
 
   </v-data-table>
+  
 </div>
   </div>
 </template>
@@ -206,7 +207,7 @@ export default {
       const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
         .post(
-          `http://localhost:3000/api/employees/organization-detail/${department}?search=` + search,
+          `http://localhost:3000/api/employees/organization-detail/${department}/${division}?search=` + search,
           this.options
         )
         .then((resp) => {
