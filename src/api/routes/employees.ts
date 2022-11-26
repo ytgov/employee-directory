@@ -132,8 +132,12 @@ employeesRouter.post("/organization-detail/:department/", [param("department").n
     axios.get('http://localhost:8080/json/employees.json')
         .then((response: any) => {
 
+            var find = '-';
+            var reg = new RegExp(find, 'g');
+
             var resultEmployees = response.data.employees;
-            var urlDepartment = req.params.department;
+            var urlDepartment = req.params.department.replace(reg, " ");
+            console.log(urlDepartment)
             var departments = Array();
             var divisions = Array();
             
