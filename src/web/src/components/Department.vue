@@ -108,32 +108,21 @@ export default {
     this.generateImg();
   },
   methods: {
-
-    generateImg() {
-      let department = this.title;
-      const noSpaces = department.replace(/\s/g, '');
-      this.imgTitle = noSpaces + '.svg';
-    },
-
     toggleBranches(param) {
       if (this.show === param) {
         this.show = null
       } else
         this.show = param;
-
     },
-
     divisionMethod() {
       let department = req.params.department
       this.title = department
     },
-
     generateImg() {
       let department = this.title;
       const noSpaces = department.replace(/\s/g, '');
       this.imgTitle = noSpaces + '.svg';
     },
-
     getDataFromApi() {
       var find = '-';
       var reg = new RegExp(find, 'g');
@@ -149,7 +138,6 @@ export default {
         )
         .then((resp) => {
           this.items = resp.data.data;
-          console.log(this.items)
           this.totalLength = resp.data.meta.count;
           this.loading = false;
         })

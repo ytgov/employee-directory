@@ -19,7 +19,7 @@
             outlined="outlined" flat="" color="" solo>
 
           </v-text-field>
-          <v-select v-model="search" class="pl-5 pr-5" dense="" :items="item" items-value="'item.index'"
+          <v-select v-model="search" class="pl-5 pr-5" dense="" items-value="'item.index'"
             background-color="#F1F1F1" outlined="outlined" flat="" label="Department" color="" solo>
 
           </v-select>
@@ -46,7 +46,7 @@
                 <v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
                   :style="{ 'background-color': hover ? '#DC4001' : '#512A44' }">
                   <v-avatar tile>
-                    <img style="filter:invert()" :src="require('../assets/svg/' + generateUrlImg(index, 'dep'))">
+                    <img style="filter:invert()" :src="require('../assets/svg/' + generateUrlImg(index))">
                   </v-avatar>
                 </v-list-item-avatar>
 
@@ -63,7 +63,7 @@
               <v-expand-transition>
                 <ul v-if="hover">
                   <li v-for='detail in items'>
-                    <a class="divisions-text" :href="generateUrl(detail, 'department')"
+                    <a class="divisions-text" :href="generateUrl(detail, 'division')"
                       >{{ detail.division }}</a>
                   </li>
                 </ul>
@@ -115,7 +115,6 @@ export default {
   },
   mounted() {
     this.getEmployeesData();
-    console.log()
   },
   methods: {
     replaceSpaces(find, replace, obj) {
@@ -130,22 +129,11 @@ export default {
       else if (type == 'department')
         return "/organization-detail/" + field.departmentUrl;
     },
-    ejecuteSearch() {
-      this.search = searchUrl();
-    },
-    searchUrl(field, type) {
-      if (type == 'department')
-        return `/organization-detail/${field.departmentUrl}/${field.divisionUrl}`;
-    },
 
-    generateUrlImg(field, type) {
-      if (type == "dep") {
-        let department = field + '.svg';
-        const noSpaces = department.replaceAll(/\s/g, '');
-        return String(noSpaces);
-      } else {
-        return
-      }
+    generateUrlImg(field) {
+      let department = field + '.svg';
+      const noSpaces = department.replaceAll(/\s/g, '');
+      return String(noSpaces);
     },
 
     indexUrl(field, type) {
