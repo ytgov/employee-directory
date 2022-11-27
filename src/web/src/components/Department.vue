@@ -42,17 +42,17 @@
           max-width="1180" min-height="542" outlined>
           <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450" width="50%">
             <div class="py-4" style="width: 100px">
-              <img 
+              <img
                 style=" width:100%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
                 :src="require('../assets/svg/' + this.imgTitle)" class="mt" />
             </div>
-            <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;" >{{ title }}</h2>
+            <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
           </v-card-actions>
           <v-card-actions class="pa-16 flex-column align-start" min-height="400" width="50%">
             <li v-for='(item, index, id) in items' class="py-1">
               <a @click="toggleBranches(id)" class="division">{{ index }}</a>
               <v-expand-transition>
-                <v-card-actions v-if="show == id" class="flex-column align-start">
+                <v-card-actions :class="{active: id === show}" v-if="show == id" class="flex-column align-start">
                   <a class="branch my-2 ml-8" v-for="detail in item">{{ detail.branch }}</a>
                 </v-card-actions>
               </v-expand-transition>
@@ -74,7 +74,7 @@ export default {
   name: "Department",
   data: () => ({
     imgTitle: '',
-    show: '',
+    show: 90,
     loading: false,
     items: [],
     search: "",
@@ -165,6 +165,10 @@ export default {
   font-weight: 700;
 }
 
+.active {
+  
+  padding: 0 2rem !important;
+}
 .branch {
   font-size: 16px;
 }

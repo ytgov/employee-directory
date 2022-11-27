@@ -19,8 +19,8 @@
             outlined="outlined" flat="" color="" solo>
 
           </v-text-field>
-          <v-select v-model="search" class="pl-5 pr-5" dense="" items-value="'item.index'"
-            background-color="#F1F1F1" outlined="outlined" flat="" label="Department" color="" solo>
+          <v-select v-model="search" class="pl-5 pr-5" dense="" items-value="'item.index'" background-color="#F1F1F1"
+            outlined="outlined" flat="" label="Department" color="" solo>
 
           </v-select>
           <v-btn class="search-responsive mt-n3 pa-4 py-5" style="display: flex;" color="#00616D">Search</v-btn>
@@ -53,8 +53,7 @@
 
                 <v-list-item-content>
                   <v-list-item-title class="text-h6 mb-1">
-                    <a class="index-text" :href="indexUrl(index, 'department')"
-                      >{{ index }}</a>
+                    <a class="index-text" :href="indexUrl(index, 'department')">{{ index }}</a>
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -63,8 +62,7 @@
               <v-expand-transition>
                 <ul v-if="hover">
                   <li v-for='detail in items'>
-                    <a class="divisions-text" :href="generateUrl(detail, 'division')"
-                      >{{ detail.division }}</a>
+                    <a class="divisions-text" :href="generateUrl(detail, 'division')">{{ detail.division }}</a>
                   </li>
                 </ul>
               </v-expand-transition>

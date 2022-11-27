@@ -145,7 +145,11 @@ employeesRouter.post("/organization-detail/:department/", [param("department").n
             resultEmployees.forEach(function (element: any) {
                 if (element.department === urlDepartment){
                     departments.push(element.department);  
-                    divisions.push(element.division);      
+                    if (element.division == null ) {
+                        element.division = 'N/A'
+                    }
+                    divisions.push(element.division);
+                    divisions.push(divisions.splice(divisions.indexOf('N/A'), 1)[0]);     
                 }
             });
 
@@ -163,8 +167,11 @@ employeesRouter.post("/organization-detail/:department/", [param("department").n
                         if(!arrayDivElementssUq.includes(elementDiv.branch)) {
                             arrayDivElements.push(elementDiv);
                             arrayDivElementssUq.push(elementDiv.branch)
-                            
                         }
+                    } else if(elementDiv.branch == null) {
+                        
+                        elementDiv.branch = 'N/A'
+                        
                     }
                     
                 })
