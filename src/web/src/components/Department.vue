@@ -41,7 +41,7 @@
         <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
           max-width="1180" min-height="542" outlined>
           <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450" width="50%">
-            <div class="py-4" style="width: 100px">
+            <div class="py-4" style="width: 200px">
               <img
                 style=" width:100%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
                 :src="require('../assets/svg/' + this.imgTitle)" class="mt" />
@@ -50,9 +50,9 @@
           </v-card-actions>
           <v-card-actions class="pa-16 flex-column align-start" min-height="400" width="50%">
             <li v-for='(item, index, id) in items' class="py-1">
-              <a @click="toggleBranches(id)" class="division">{{ index }}</a>
+              <a :class="{colorOnClick: id === show}" @click="toggleBranches(id)" class="division">{{ index }}</a>
               <v-expand-transition>
-                <v-card-actions :class="{active: id === show}" v-if="show == id" class="flex-column align-start">
+                <v-card-actions :class="{noPad: id === show}" v-if="show == id" class="flex-column align-start">
                   <a class="branch my-2 ml-8" v-for="detail in item">{{ detail.branch }}</a>
                 </v-card-actions>
               </v-expand-transition>
@@ -165,9 +165,12 @@ export default {
   font-weight: 700;
 }
 
-.active {
-  
+.noPad { 
   padding: 0 2rem !important;
+}
+
+.colorOnClick {
+  color: #643f5d !important;
 }
 .branch {
   font-size: 16px;
