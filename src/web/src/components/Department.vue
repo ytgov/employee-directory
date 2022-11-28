@@ -16,9 +16,9 @@
         </v-row>
       </v-container>
     </div>
-    <div class="full-width py-8 gray-bg bg-img">
+    <div class="full-width py-6 gray-bg bg-img">
       <v-container class="d-flex container-content">
-        <div style="width: 60px" class="mr-4">
+        <div style="width: 40px" class="mr-4">
           <img
             style=" width:100%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
             :src="require('../assets/svg/' + this.imgTitle)" class="mt" />
@@ -27,11 +27,16 @@
       </v-container>
       <div class="title-bg"></div>
     </div>
-    <div class="d-flex mb-6 mt-12">
-      <a class="mr-2" href="/">Home</a>
-      <p class="mr-2">/</p>
-      <p>Find a goverment Employee</p>
+    <div class="d-flex align-center justify-start directions-board  mb-6 mt-6">
+      <a class="mr-1" href="/">Home</a>
+      <div class="d-flex" v-for='(link, index, id) in url' >
+        <p class="mb-0 mx-2">/</p>
+        <a :href="ejecuteLink(link)">{{link}}</a>
+      </div>
+      <p class="mr-1 mb-0 mx-2">/</p>
+      <p class="mr-1 mb-0 mx-2">{{title}}</p>
     </div>
+    
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
@@ -74,6 +79,7 @@ export default {
   name: "Department",
   data: () => ({
     imgTitle: '',
+    url: [],
     show: 90,
     loading: false,
     items: [],
@@ -106,8 +112,36 @@ export default {
   mounted() {
     this.getDataFromApi();
     this.generateImg();
+    this.getNavigationUrl();
   },
   methods: {
+    ejecuteLink(param){
+      let find = ' ';
+      let reg = new RegExp(find, 'g');
+      const url = window.location.href;
+      
+      param = param.replace(reg, '-')
+      const urlSplitted = url.split(param)
+
+      const index = urlSplitted[0];
+    
+      return index + param
+
+    },
+    getNavigationUrl() {
+      let find = '-';
+      let reg = new RegExp(find, 'g');
+      let pageUrl = window.location.pathname;
+      let pageUrlFormatted = pageUrl.replace(reg, ' ')
+      let pageUrlSplited = pageUrlFormatted.split('/')
+      pageUrlSplited = pageUrlSplited.filter(element => {
+        return element !== ''
+      })
+      pageUrlSplited = pageUrlSplited.filter(element => {
+        return element !== this.title
+      })
+      this.url = pageUrlSplited
+    },
     toggleBranches(param) {
       if (this.show === param) {
         this.show = null
@@ -173,6 +207,11 @@ export default {
   color: #643f5d !important;
 }
 .branch {
-  font-size: 16px;
+  
+  font-size: 18px;
+}
+
+.directions-board {
+  margin-bottom: 0 !important;
 }
 </style>

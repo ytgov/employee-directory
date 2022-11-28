@@ -168,11 +168,10 @@ employeesRouter.post("/organization-detail/:department/", [param("department").n
                             arrayDivElements.push(elementDiv);
                             arrayDivElementssUq.push(elementDiv.branch)
                         }
-                    } else if(elementDiv.branch == null) {
-                        
+                    } else if(elementDiv.branch == null) {      
                         elementDiv.branch = 'N/A'
-                        
                     }
+ 
                     
                 })
                 employeesByDept[elementDiv] = arrayDivElements;

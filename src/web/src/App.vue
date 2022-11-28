@@ -180,7 +180,7 @@ export default {
 .divisions-text {
   color: #0097A9 !important;
   font-size: 16px !important;
-  font-weight: 100 !important;
+  
   text-decoration: underline;
 }
 .v-banner span {

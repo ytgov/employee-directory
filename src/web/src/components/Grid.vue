@@ -50,7 +50,7 @@
 </div>
 <div class="full-width py-8 gray-bg bg-img" >
   <v-container class="d-flex container-content">
-    <div style="width: 60px" class="mr-4">
+    <div style="width: 40px" class="mr-4">
       <img
         style=" width:100%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
         :src="require('../assets/svg/' + this.imgTitle)"
