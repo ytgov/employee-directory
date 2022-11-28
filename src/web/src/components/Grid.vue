@@ -48,19 +48,7 @@
       </v-row>
   </v-container>
 </div>
-<div class="full-width py-8 gray-bg bg-img" >
-  <v-container class="d-flex container-content">
-    <div style="width: 40px" class="mr-4">
-      <img
-        style=" width:100%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
-        :src="require('../assets/svg/' + this.imgTitle)"
-        class="mt"
-        />
-    </div>
-    <h2 class="mb-n1" style="color:#522A44 !important; font-size: 32px !important;">{{title}}</h2>
-  </v-container>
-  <div class="title-bg"></div> 
-</div>
+<DepartmentHeader :title="title" :img="this.imgTitle"/>
     <div class="d-flex mb-6 mt-6">
       <a class="mr-2" href="/">Home</a>
       <a class="mr-2" href="/find-employee">/ Find a goverment Employee</a>
@@ -138,9 +126,13 @@
 
 <script>
 const axios = require("axios");
+import DepartmentHeader from "./UI/DepartmentHeader.vue";
 
 export default {
   name: "Grid",
+  components: {
+    DepartmentHeader,
+  },
   data: () => ({
     
     title: '',
