@@ -65,16 +65,6 @@
                 </v-list-item-content>
               </v-list-item>
             </v-card>
-            <v-card-actions class="pb-0 pt-0">
-              <v-expand-transition>
-                <ul v-if="hover">
-                  <li v-for='detail in items'>
-                    <a class="divisions-text" :href="generateUrl(detail, 'division')"
-                      >{{ detail.division }}</a>
-                  </li>
-                </ul>
-              </v-expand-transition>
-            </v-card-actions>
           </v-card>
         </v-hover>
       </v-col>
