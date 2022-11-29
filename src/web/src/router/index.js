@@ -13,6 +13,7 @@ import Employees from "../components/Employees";
 import Department from "../components/Department";
 
 
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -32,16 +33,32 @@ const routes = [
     component: Form,
   },
   {
-    path: "/organization-detail/:department/:division",
+    path: "/Find-Employee/:department/:division",
     name: "Data grid",
     component: Grid,
+    meta: {
+      breadcrumb: [
+        {name: 'Home', link: '/'},
+        {name: 'Find a government employee', link: '/Find-Employee'},
+        {name: 'Department', link: '/Find-Employee/:Department',dynamic: true},
+        {name: 'Division', dynamic: true}
+      ]
+    }
   },
 
 
   {
-    path: "/organization-detail/:department",
+    path: "/Find-Employee/:department",
     name: "Department",
     component: Department,
+    
+    meta: {
+      breadcrumb: [
+        {name: 'Home', link: '/'},
+        {name: 'Find a government employee', link: '/Find-Employee'},
+        {name: 'Department', dynamic: true}
+      ]
+    }
   },
   {
     path: "/sign-in",
@@ -64,12 +81,18 @@ const routes = [
     component: NotFound
   },
   {
-    path: "/organization-detail/",
+    path: "/Find-Employee/",
     name: "Find a government employee",
     component: Employees,
     child: [
 
-    ]
+    ],
+    meta: {
+      breadcrumb: [
+        {name: 'Home', link: '/'},
+        {name: 'Find a government employee'},
+      ]
+    }
   },
 ];
 

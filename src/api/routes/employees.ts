@@ -58,7 +58,7 @@ employeesRouter.post("/", EnsureAuthenticated, async (req: Request, res: Respons
         });
 });
 
-employeesRouter.post("/organization-detail/:department/:division", [param("department", "division").notEmpty()], EnsureAuthenticated, async (req: Request, res: Response) => {
+employeesRouter.post("/Find-Employee/:department/:division", [param("department", "division").notEmpty()], EnsureAuthenticated, async (req: Request, res: Response) => {
     const page = req.body.page || 1;
     const itemsPerPage = req.body.itemsPerPage || 100;
     const start = (page - 1) * itemsPerPage;
@@ -104,7 +104,7 @@ employeesRouter.post("/organization-detail/:department/:division", [param("depar
             employeesByDept = employeesByDept.filter(item => { return item.department.indexOf(req.params.department) >= 0 })
 
             if (search?.length) {
-                console.log(search)
+                
                 searchTerm = search.toString().trim();
                 employeesByDept = employeesByDept.filter(item => { return item.full_name.indexOf(searchTerm) >= 0 || item.title.indexOf(searchTerm) >= 0 || item.division.indexOf(searchTerm) >= 0 || item.branch.indexOf(searchTerm) >= 0 })
             }
@@ -125,7 +125,7 @@ employeesRouter.post("/organization-detail/:department/:division", [param("depar
 
 
 
-employeesRouter.post("/organization-detail/:department/", [param("department").notEmpty()], EnsureAuthenticated, async (req: Request, res: Response) => {
+employeesRouter.post("/Find-Employee/:department/", [param("department").notEmpty()], EnsureAuthenticated, async (req: Request, res: Response) => {
 
     var employeesByDept = Object();
 
@@ -134,10 +134,8 @@ employeesRouter.post("/organization-detail/:department/", [param("department").n
 
             var find = '-';
             var reg = new RegExp(find, 'g');
-
             var resultEmployees = response.data.employees;
             var urlDepartment = req.params.department.replace(reg, " ");
-            console.log(urlDepartment)
             var departments = Array();
             var divisions = Array();
             

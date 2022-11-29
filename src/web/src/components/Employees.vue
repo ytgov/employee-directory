@@ -27,11 +27,17 @@
         </v-row>
       </v-container>
     </div>
-    <div class="d-flex mb-6 mt-6">
-      <a class="mr-2" href="/">Home</a>
-      <p class="mr-2">/</p>
-      <p>Find a goverment Employee</p>
-    </div>
+    <v-breadcrumbs
+    :items="breadcrumbsList"
+    >
+    <template v-slot:item="{ item }">
+      <v-breadcrumbs-item
+        :href="item.link"
+      >
+        {{ item.name }}
+      </v-breadcrumbs-item>
+    </template>
+    </v-breadcrumbs>
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
@@ -104,6 +110,9 @@ export default {
       handler() {
         this.getEmployeesData();
       },
+      '$route' (){
+      this.breadcrumbsList = this.$route.meta.breadcrumb
+    },
       deep: true,
     },
     search: {
@@ -115,8 +124,12 @@ export default {
   },
   mounted() {
     this.getEmployeesData();
+    this.updateBreadCrumbs();
   },
   methods: {
+    updateBreadCrumbs(){
+      this.breadcrumbsList = this.$route.meta.breadcrumb
+    },
     replaceSpaces(find, replace, obj) {
       find = find
       replace = replace
@@ -125,9 +138,9 @@ export default {
     },
     generateUrl(field, type) {
       if (type == "division")
-        return "/organization-detail/" + field.departmentUrl + "/" + field.divisionUrl;
+        return "/Find-Employee/" + field.departmentUrl + "/" + field.divisionUrl;
       else if (type == 'department')
-        return "/organization-detail/" + field.departmentUrl;
+        return "/Find-Employee/" + field.departmentUrl;
     },
 
     generateUrlImg(field, type) {
@@ -138,7 +151,7 @@ export default {
 
     indexUrl(field, type) {
       if (type == "department") {
-        let department = "/organization-detail/" + field
+        let department = "/Find-Employee/" + field
         let noSpaces = department.replaceAll(/\s/g, '-');
         return String(noSpaces)
       }

@@ -1,5 +1,6 @@
 <template>
   <div class="books">
+
     <div class="full-width yellow-border white-bg pt-16 mt-n5">
       <v-container class="container-content ">
         <h1 class="ml-5">Find a goverment Employee</h1>
@@ -20,16 +21,18 @@
     <DepartmentHeader :title="title" :img="this.imgTitle"/>
 
     
-    <div class="d-flex align-center justify-start directions-board  mb-6 mt-6">
-      <a class="mr-1" href="/">Home</a>
-      <div class="d-flex" v-for='(link, index, id) in url' >
-        <p class="mb-0 mx-2">/</p>
-        <a :href="ejecuteLink(link)">{{link}}</a>
-      </div>
-      <p class="mr-1 mb-0 mx-2">/</p>
-      <p class="mr-1 mb-0 mx-2">{{title}}</p>
-    </div>
-    
+    <v-breadcrumbs class="mt-6"
+    :items="breadcrumbsList"
+    >
+    <template v-slot:item="{ item }">
+      <v-breadcrumbs-item
+        :href="item.link"
+      >
+        {{ item.name }}
+      </v-breadcrumbs-item>
+    </template>
+    </v-breadcrumbs>
+
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
@@ -64,19 +67,19 @@
 </template>
 
 <script>
-import NewComponent from "./NewComponent.vue";
+
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 
 const axios = require("axios");
 export default {
   components: {
-    NewComponent,
     DepartmentHeader,
-},
+  },
   name: "Department",
   data: () => ({
+    department: '',
+    breadcrumbsList: [],
     imgTitle: '',
-    url: [],
     show: 90,
     loading: false,
     items: [],
@@ -92,7 +95,13 @@ export default {
     pageCount: 0,
     iteamsPerPage: 10,
   }),
+  created() {
+    
+  },
   watch: {
+    '$route' (){
+      this.breadcrumbsList = this.$route.meta.breadcrumb
+    },
     options: {
       handler() {
         this.getDataFromApi();
@@ -109,35 +118,19 @@ export default {
   mounted() {
     this.getDataFromApi();
     this.generateImg();
-    this.getNavigationUrl();
+    this.updateBreadCrumbs();
   },
   methods: {
-    ejecuteLink(param){
-      let find = ' ';
-      let reg = new RegExp(find, 'g');
-      const url = window.location.href;
-      
-      param = param.replace(reg, '-')
-      const urlSplitted = url.split(param)
+    updateBreadCrumbs(){
+       
+      let arr = this.$route.meta.breadcrumb;
 
-      const index = urlSplitted[0];
-    
-      return index + param
+      const dynamicBreadcrumb = arr.find(({ dynamic }) => !!dynamic); 
 
-    },
-    getNavigationUrl() {
-      let find = '-';
-      let reg = new RegExp(find, 'g');
-      let pageUrl = window.location.pathname;
-      let pageUrlFormatted = pageUrl.replace(reg, ' ')
-      let pageUrlSplited = pageUrlFormatted.split('/')
-      pageUrlSplited = pageUrlSplited.filter(element => {
-        return element !== ''
-      })
-      pageUrlSplited = pageUrlSplited.filter(element => {
-        return element !== this.title
-      })
-      this.url = pageUrlSplited
+      if (dynamicBreadcrumb) {
+        dynamicBreadcrumb.name = this.department;
+      }
+      this.breadcrumbsList = arr
     },
     toggleBranches(param) {
       if (this.show === param) {
@@ -161,10 +154,11 @@ export default {
       this.loading = true;
       let formattedQueryParam = ''
       formattedQueryParam = `${encodeURIComponent(`${department}`)}`
+      this.department = department.replace(reg, ' ')
       this.title = department.replace(reg, ' ')
       axios
         .post(
-          `http://localhost:3000/api/employees/organization-detail/${department}`,
+          `http://localhost:3000/api/employees/Find-Employee/${department}`,
           this.options
         )
         .then((resp) => {

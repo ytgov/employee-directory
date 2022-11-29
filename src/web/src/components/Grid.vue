@@ -49,13 +49,17 @@
   </v-container>
 </div>
 <DepartmentHeader :title="title" :img="this.imgTitle"/>
-    <div class="d-flex mb-6 mt-6">
-      <a class="mr-2" href="/">Home</a>
-      <a class="mr-2" href="/find-employee">/ Find a goverment Employee</a>
-      <p class="mr-2">/</p>
-      <p>{{title}}</p>
-      
-    </div>
+<v-breadcrumbs class="mt-6"
+    :items="breadcrumbsList"
+    >
+    <template v-slot:item="{ item }">
+      <v-breadcrumbs-item
+        :href="item.link"
+      >
+        {{ item.name }}
+      </v-breadcrumbs-item>
+    </template>
+    </v-breadcrumbs>
     <v-row class="d-flex">
       <h3>Your search found {{totalLength}} results.</h3>
     <div class="d-flex">
@@ -134,7 +138,8 @@ export default {
     DepartmentHeader,
   },
   data: () => ({
-    
+    breadcrumbsList: [],
+    department: '',
     title: '',
     imgTitle: '',
     div: '',
@@ -156,6 +161,10 @@ export default {
     itemsPerPage: 100,
   }),
   watch: {
+    '$route' (){
+      this.breadcrumbsList = this.$route.meta.breadcrumb
+    },
+    
     options: {
       handler() {
         this.getDataFromApi();
@@ -172,9 +181,25 @@ export default {
   mounted() {
     this.getDataFromApi();
     this.generateImg();
+    this.updateBreadCrumbs();
   },
   methods: {
-
+    updateBreadCrumbs(){
+       
+       let arr = this.$route.meta.breadcrumb;
+ 
+       const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
+ 
+       dynamicBreadcrumb.forEach((element => {
+          if(element.name == 'Department'){
+            element.name = this.department;
+            element.link = '/Find-employee/'+this.department
+          } else if(element.name == 'Division'){
+            element.name = this.div;
+          }
+        }))
+       this.breadcrumbsList = arr
+     },
     generateImg(){
       let department = this.title;
       const noSpaces = department.replace(/\s/g, '');
@@ -193,13 +218,14 @@ export default {
         formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}`)}`
       }
       this.title = department.replace(reg, ' ')
-      this.div = division
+      this.department = department.replace(reg, ' ')
+      this.div = division.replace(reg, ' ')
       
       console.log(formattedQueryParam)
       const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
         .post(
-          `http://localhost:3000/api/employees/organization-detail/${department}/${division}?search=` + search,
+          `http://localhost:3000/api/employees/Find-Employee/${department}/${division}?search=` + search,
           this.options
         )
         .then((resp) => {
