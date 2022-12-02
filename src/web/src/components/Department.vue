@@ -41,20 +41,22 @@
       <v-col>
         <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
           max-width="1180" min-height="542" outlined>
-          <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450" width="50%">
+          <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450" max-width="590">
             <div class="py-4 d-flex align-center justify-center" style="width: 200px">
               <img
                 style=" width:80%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
                 :src="require('../assets/svg/' + this.imgTitle)" class="mt" />
             </div>
-            <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
+            <div class="d-flex align-center justify-center" style="width:80%">
+              <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
+            </div>
           </v-card-actions>
-          <v-card-actions class="pa-16 flex-column align-start" min-height="400" width="50%">
+          <v-card-actions class="py-16 flex-column align-start" min-height="400" max-width="590">
             <li v-for='(item, index, id) in items' class="py-1">
-              <a :class="{colorOnClick: id === show}" @click="toggleBranches(id)" class="division">{{ index }}</a>
+              <a :href="generateUrl(index)" :class="{colorOnClick: id === show}" @click="toggleBranches(id)" class="division">{{ index }}</a>
               <v-expand-transition>
                 <v-card-actions :class="{noPad: id === show}" v-if="show == id" class="flex-column align-start">
-                  <a class="branch my-2 pl-8" v-for="detail in item">{{ detail.branch }}</a>
+                  <a class="branch my-2 px-0" v-for="detail in item">{{ detail.branch }}</a>
                 </v-card-actions>
               </v-expand-transition>
             </li>
@@ -121,6 +123,19 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
+    generateUrl(param){
+
+      let find = ' ';
+      let reg = new RegExp(find, 'g');
+
+      let paramFormatted = param.replace(reg,'-')
+      
+
+     
+
+      return this.title+'/'+paramFormatted
+  
+    },
     updateBreadCrumbs(){
        
       let arr = this.$route.meta.breadcrumb;
@@ -191,7 +206,10 @@ export default {
 }
 
 .noPad { 
-  padding: 0 2rem !important;
+  
+  width: 70%;
+  margin: 0 0 0 2rem;
+  padding: 0 !important;
 }
 
 .colorOnClick {
@@ -199,10 +217,11 @@ export default {
 }
 .branch {
   
-  font-size: 18px;
+  font-size: 17px;
 }
 
 .directions-board {
   margin-bottom: 0 !important;
 }
+
 </style>

@@ -138,6 +138,7 @@ export default {
     DepartmentHeader,
   },
   data: () => ({
+    branches: "Service-Innovation-and-Support",
     breadcrumbsList: [],
     department: '',
     title: '',
@@ -153,6 +154,7 @@ export default {
       { text: "Position", value: "title" },
       { text: "Department", value: "department" },
       // { text: "Branch", value: "branch" },
+      {text: "managerSort", value: 'managerSort'},
       { text: "Division", value: "division" },
       { text: "Manager", value: "manager" },
     ],
@@ -222,6 +224,7 @@ export default {
       this.div = division.replace(reg, ' ')
       
       console.log(formattedQueryParam)
+      const branches = this.branches
       const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
         .post(

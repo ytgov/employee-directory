@@ -1,10 +1,8 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import { userRouter, employeesRouter } from "./routes";
+import { employeesRouter } from "./routes";
 import * as config from './config';
-import { doHealthCheck } from "./utils/healthCheck";
-import { configureAuthentication } from "./routes/auth"
 
 const app = express();
 
@@ -35,13 +33,6 @@ app.use(cors({
   credentials: true
 }));
 
-configureAuthentication(app);
-
-app.get("/api/healthCheck", (req: Request, res: Response) => {
-  doHealthCheck(res);
-});
-
-app.use("/api/user", userRouter);
 app.use("/api/employees", employeesRouter);
 
 let baseWebPath = "/web";

@@ -11,7 +11,7 @@ import Profile from "../components/Profile";
 import store from "../store";
 import Employees from "../components/Employees";
 import Department from "../components/Department";
-
+import EmployeeDetail from "../components/EmployeeDetail";
 
 
 Vue.use(VueRouter);
@@ -40,7 +40,7 @@ const routes = [
       breadcrumb: [
         {name: 'Home', link: '/'},
         {name: 'Find a government employee', link: '/Find-Employee'},
-        {name: 'Department', link: '/Find-Employee/:Department',dynamic: true},
+        {name: 'Department', link: '/Find-Employee/Department', dynamic: true},
         {name: 'Division', dynamic: true}
       ]
     }
@@ -64,6 +64,11 @@ const routes = [
     path: "/sign-in",
     name: "Login",
     component: Login
+  },
+  {
+    path: "/Employee-Detail",
+    name: "Employee Detail",
+    component: EmployeeDetail
   },
   {
     path: "/login-complete",
@@ -100,25 +105,6 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
-});
-
-router.beforeEach(async (to, from, next) => {
-  var requiresAuth = to.meta.requiresAuth || false;
-
-  if (!requiresAuth) {
-    return next();
-  }
-
-  await store.dispatch("checkAuthentication");
-  var isAuthenticated = store.getters.isAuthenticated;
-
-  if (requiresAuth && !isAuthenticated) {
-    console.log("You aren't authenticatd, redirecting to sign-in")
-    next("/sign-in");
-    return;
-  }
-
-  return next();
 });
 
 export default router;

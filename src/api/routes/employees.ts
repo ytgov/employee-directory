@@ -1,12 +1,14 @@
 import express, { Request, Response } from "express";
-import { EnsureAuthenticated } from "./auth"
-import { AppUser, Team } from "../models/user";
 import axios from "axios";
 import { body, param } from "express-validator";
+import { basename } from "path";
+
+import sortBy from "lodash/sortBy";
+import e from "express";
 
 export const employeesRouter = express.Router();
 
-employeesRouter.post("/", EnsureAuthenticated, async (req: Request, res: Response) => {
+employeesRouter.post("/", async (req: Request, res: Response) => {
 
     var employeesByDept = Object();
 
@@ -58,17 +60,29 @@ employeesRouter.post("/", EnsureAuthenticated, async (req: Request, res: Respons
         });
 });
 
-employeesRouter.post("/Find-Employee/:department/:division", [param("department", "division").notEmpty()], EnsureAuthenticated, async (req: Request, res: Response) => {
+employeesRouter.post("/Find-Employee/:department/:division", [param("department"),param('division'),param('branch').notEmpty()], async (req: Request, res: Response) => {
     const page = req.body.page || 1;
     const itemsPerPage = req.body.itemsPerPage || 100;
     const start = (page - 1) * itemsPerPage;
-    const sortBy = req.body.sortBy || []; // capable of sort by multiple columns
+    // const sortBy = req.body.sortBy || []; // capable of sort by multiple columns
     const sortDesc = req.body.sortDesc || []; // likewise
+    let branches= 'Service Innovation and Support';
+    
     var search = req.query.search;
     var searchTerm = "";
     var employeesByDept: any[] = Array();
-    let paramDepartment = (req.params.department).replace('-', " ");
-    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment } })
+
+    
+
+    let paramDepartment = (req.params.department)
+
+   
+
+    
+    
+    let paramDivision = (req.params.division)
+    let paramBranch = (req.params.branch)
+    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment, division: paramDivision, branch: paramBranch, } })
         .then((response: any) => {
             var resultEmployees = response.data.employees;
 
@@ -79,6 +93,7 @@ employeesRouter.post("/Find-Employee/:department/:division", [param("department"
                 branch: string
                 department: string
                 manager: string
+                managerSort: string
                 division_url: string
                 full_name_url: string
             }
@@ -92,31 +107,56 @@ employeesRouter.post("/Find-Employee/:department/:division", [param("department"
                     'branch': element.branch !== null ? element.branch : '-',
                     'department': element.department,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
+                    'managerSort': '',
                     'division_url': division_url,
                     'full_name_url': element.full_name,
                 };
-
+                
                 employeesByDept.push(employee);
 
-
             });
+            employeesByDept.forEach(function (element:any){
+                if(element.manager == null) {
+                    element.manager = '-'
+                }
+                if(element.manager === '-' ) {
+                    element.managerSort = element.full_name
+                } else {
+                    element.managerSort = element.manager
+                }
+            })
 
             employeesByDept = employeesByDept.filter(item => { return item.department.indexOf(req.params.department) >= 0 })
+            
+
+            let employeesSorted = sortBy(employeesByDept, ['managerSort']);
+
+            employeesSorted = employeesSorted.filter(item => { return item.branch.indexOf(branches) >= 0 })
+            
+            
+            let smn = employeesSorted.filter(item => {
+                return item.full_name == item.managerSort
+            })
+            
+            console.log(smn)
+            
+            
 
             if (search?.length) {
-                
                 searchTerm = search.toString().trim();
-                employeesByDept = employeesByDept.filter(item => { return item.full_name.indexOf(searchTerm) >= 0 || item.title.indexOf(searchTerm) >= 0 || item.division.indexOf(searchTerm) >= 0 || item.branch.indexOf(searchTerm) >= 0 })
+                employeesSorted = employeesSorted.filter(item => { return item.full_name.indexOf(searchTerm) >= 0 || item.title.indexOf(searchTerm) >= 0 || item.division.indexOf(searchTerm) >= 0 || item.branch.indexOf(searchTerm) >= 0 })
             }
-            if (sortBy.length > 0) {
-                const sorter = sortBy[0];
-                if (sortDesc[0]) {
-                    employeesByDept = employeesByDept.sort((a, b) => { return a[sorter].localeCompare(b[sorter]); })
-                } else {
-                    employeesByDept = employeesByDept.sort((a, b) => { return b[sorter].localeCompare(a[sorter]); })
-                }
-            }
-            res.send({ data: employeesByDept.slice(start, start + itemsPerPage), meta: { count: employeesByDept.length } });
+
+            // if (sortBy.length > 0) {
+            //     const sorter = sortBy[0];
+            //     if (sortDesc[0]) {
+            //         employeesByDept = employeesByDept.sort((a, b) => { return a[sorter].localeCompare(b[sorter]); })
+            //     } else {
+            //         employeesByDept = employeesByDept.sort((a, b) => { return b[sorter].localeCompare(a[sorter]); })
+            //     }
+            // }
+
+            res.send({ data: employeesSorted.slice(start, start + itemsPerPage), meta: { count: employeesSorted.length } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -125,7 +165,7 @@ employeesRouter.post("/Find-Employee/:department/:division", [param("department"
 
 
 
-employeesRouter.post("/Find-Employee/:department/", [param("department").notEmpty()], EnsureAuthenticated, async (req: Request, res: Response) => {
+employeesRouter.post("/Find-Employee/:department/", [param("department").notEmpty()], async (req: Request, res: Response) => {
 
     var employeesByDept = Object();
 

@@ -27,15 +27,18 @@
         </v-row>
       </v-container>
     </div>
-    <v-breadcrumbs
+      <v-breadcrumbs large class="mt-6"
     :items="breadcrumbsList"
     >
+
     <template v-slot:item="{ item }">
-      <v-breadcrumbs-item
+      
+        <v-breadcrumbs-item
         :href="item.link"
       >
         {{ item.name }}
       </v-breadcrumbs-item>
+      
     </template>
     </v-breadcrumbs>
     <div class="text-center loading" v-show="loading">
@@ -45,7 +48,7 @@
     <v-row class="mb-6 mt-16">
       <v-col md="4" v-for='(items, index, id) in item'>
         <v-hover v-slot="{ hover }">
-          <v-card class="mx-auto employee-division-card" max-width="344" outlined>
+          <v-card :href="indexUrl(index, 'department')" class="mx-auto employee-division-card" max-width="344" outlined>
             <v-card class="d-flex">
               <v-list-item three-line class="icon-list">
 
@@ -59,7 +62,7 @@
 
                 <v-list-item-content>
                   <v-list-item-title class="text-h6 mb-1">
-                    <a class="index-text" :href="indexUrl(index, 'department')"
+                    <a class="index-text"
                       >{{ index }}</a>
                   </v-list-item-title>
                 </v-list-item-content>
@@ -81,6 +84,7 @@ export default {
   },
   name: "Grid",
   data: () => ({
+    breadcrumbsList:[],
     show: false,
     loading: false,
     item: [],
