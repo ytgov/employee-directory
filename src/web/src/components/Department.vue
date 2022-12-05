@@ -17,31 +17,30 @@
         </v-row>
       </v-container>
     </div>
-    
-    <DepartmentHeader :title="title" :img="this.imgTitle"/>
 
-    
-    <v-breadcrumbs class="mt-6"
-    :items="breadcrumbsList"
-    >
-    <template v-slot:item="{ item }">
-      <v-breadcrumbs-item
-        :href="item.link"
-      >
-        {{ item.name }}
-      </v-breadcrumbs-item>
-    </template>
+    <DepartmentHeader :title="title" :img="this.imgTitle" />
+
+
+    <v-breadcrumbs class="mt-6" :items="breadcrumbsList">
+      <template v-slot:item="{ item }">
+        <v-breadcrumbs-item :href="item.link">
+          {{ item.name }}
+        </v-breadcrumbs-item>
+      </template>
     </v-breadcrumbs>
 
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <v-row class=" mt-16"></v-row>
+    <v-row class="mt-16"></v-row>
     <v-row>
       <v-col>
+
         <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
           max-width="1180" min-height="542" outlined>
-          <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450" max-width="590">
+
+          <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
+            max-width="590">
             <div class="py-4 d-flex align-center justify-center" style="width: 200px">
               <img
                 style=" width:80%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
@@ -51,17 +50,28 @@
               <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
             </div>
           </v-card-actions>
-          <v-card-actions class="py-16 flex-column align-start" min-height="400" max-width="590">
-            <li v-for='(item, index, id) in items' class="py-1">
-              <a :href="generateUrl(index)" :class="{colorOnClick: id === show}" @click="toggleBranches(id)" class="division">{{ index }}</a>
+          
+          <v-card outlined color="transparent" class="flex-column">
+
+          <v-card outlined color="transparent" v-for="(item, index, id) in items">
+            <v-hover v-slot="{ hover }">
+              <v-card outlined color="transparent">
+                <v-list-title>
+                <a :href="generateUrl(index)" :key="id" class="division">{{ index }}</a>
+              </v-list-title>
               <v-expand-transition>
-                <v-card-actions :class="{noPad: id === show}" v-if="show == id" class="flex-column align-start">
-                  <a class="branch my-2 px-0" v-for="detail in item">{{ detail.branch }}</a>
-                </v-card-actions>
-              </v-expand-transition>
-            </li>
-          </v-card-actions>
+                <ul v-if="hover">
+                  <li v-for="detail in item">
+                    <a class="branch my-2 px-0 py-3">{{ detail.branch }}</a>
+                  </li>
+                </ul>
+              </v-expand-transition>                
+              </v-card>
+          </v-hover>
+          </v-card>
         </v-card>
+        </v-card>
+
       </v-col>
     </v-row>
 
@@ -98,10 +108,10 @@ export default {
     iteamsPerPage: 10,
   }),
   created() {
-    
+
   },
   watch: {
-    '$route' (){
+    '$route'() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
     options: {
@@ -123,24 +133,24 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
-    generateUrl(param){
+    generateUrl(param) {
 
       let find = ' ';
       let reg = new RegExp(find, 'g');
 
-      let paramFormatted = param.replace(reg,'-')
-      
+      let paramFormatted = param.replace(reg, '-')
 
-     
 
-      return this.title+'/'+paramFormatted
-  
+
+
+      return this.title + '/' + paramFormatted
+
     },
-    updateBreadCrumbs(){
-       
+    updateBreadCrumbs() {
+
       let arr = this.$route.meta.breadcrumb;
 
-      const dynamicBreadcrumb = arr.find(({ dynamic }) => !!dynamic); 
+      const dynamicBreadcrumb = arr.find(({ dynamic }) => !!dynamic);
 
       if (dynamicBreadcrumb) {
         dynamicBreadcrumb.name = this.department;
@@ -205,8 +215,8 @@ export default {
   font-weight: 700;
 }
 
-.noPad { 
-  
+.noPad {
+
   width: 70%;
   margin: 0 0 0 2rem;
   padding: 0 !important;
@@ -215,13 +225,13 @@ export default {
 .colorOnClick {
   color: #643f5d !important;
 }
+
 .branch {
-  
+  padding: 2rem !important;
   font-size: 17px;
 }
 
 .directions-board {
   margin-bottom: 0 !important;
 }
-
 </style>

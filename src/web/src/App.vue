@@ -97,15 +97,6 @@ import { mapState } from "vuex";
 export default {
   name: "App",
   components: {},
-  computed: {
-    ...mapState("isAuthenticated"),
-    username() {
-      return store.getters.fullName;
-    },
-    isAuthenticated() {
-      return store.getters.isAuthenticated;
-    }
-  },
   data: () => ({
     dialog: false,
     drawer: null,

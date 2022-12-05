@@ -18,8 +18,7 @@
         </v-container>
       </div>
       
-      <DepartmentHeader :title="title" :img="this.imgTitle"/>
-  
+      <DepartmentHeader :title="this.department" :img="this.imgTitle"/>
       
       <v-breadcrumbs class="mt-6"
       :items="breadcrumbsList"
@@ -42,7 +41,7 @@
           <h2 class="mb-1" style="color: #DC4405 !important;font-size: 34px !important;">{{item.full_name}}</h2>
           <h3 class="mb-8" style="color: #512A44 !important; font-size: 24px; !important; ">{{item.title}}</h3>
 
-          <v-card class="my-5 py-1 pb-3 px-5 employee-detail">
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Organization</h2>
             <v-row>
                 <v-col class="mb-1">
@@ -55,7 +54,7 @@
                 </v-col>
             </v-row>
           </v-card>
-          <v-card class="my-5 py-1 pb-3 px-5 employee-detail">
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Contact:</h2>
             <v-row>
                 <v-col class="mb-1">
@@ -68,7 +67,7 @@
                 </v-col>
             </v-row>
           </v-card>
-          <v-card class="my-5 py-1 pb-3 px-5 employee-detail">
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Position Information</h2>
             <v-row>
                 <v-col class="mb-1">
@@ -76,7 +75,7 @@
                 </v-col>
             </v-row>
           </v-card>
-          <v-card class="my-5 py-1 pb-3 px-5 employee-detail">
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Location</h2>
             <v-row>
                 <v-col class="mb-1">
@@ -108,39 +107,13 @@
     components: {
       DepartmentHeader,
     },
-    name: "Department",
+    name: "Department Detail",
     data: () => ({
       department: '',
       breadcrumbsList: [],
-      employee: [
-      {
-            "full_name": "Terri McLeod",
-            "first_name": "Terri",
-            "last_name": "McLeod",
-            "organization": '-',
-            "department": "Highways and Public Works",
-            "division": "Information and Communications Technology",
-            "branch": "Service Innovation and Support",
-            "unit": '-',
-            "title": "Director, Service Innovation & Support",
-            "email": "Terri.McLeod@yukon.ca",
-            "suite": '-',
-            "phone_office": "867-667-9515",
-            "fax_office": '-',
-            "mobile": '-',
-            "office": "Jim Smith Building",
-            "address": "2071 2nd Avenue",
-            "po_box": "2703",
-            "community": "Whitehorse",
-            "postal_code": "Y1A 1B2",
-            "latitude": '-',
-            "longitude": '-',
-            "mailcode": "W10",
-            "manager": "Sean McLeish",
-            "username": "tdmcleod"
-        },
-      ],
+      employee: [],
       imgTitle: '',
+      bg: null,
       show: 90,
       loading: false,
       items: [],
@@ -156,13 +129,11 @@
       pageCount: 0,
       iteamsPerPage: 10,
     }),
-    created() {
-      
-    },
     watch: {
       '$route' (){
         this.breadcrumbsList = this.$route.meta.breadcrumb
       },
+      
       options: {
         handler() {
           this.getDataFromApi();
@@ -182,16 +153,11 @@
       this.updateBreadCrumbs();
     },
     methods: {
+        
       generateUrl(param){
-  
         let find = ' ';
         let reg = new RegExp(find, 'g');
-  
         let paramFormatted = param.replace(reg,'-')
-        
-  
-       
-  
         return this.title+'/'+paramFormatted
     
       },
@@ -212,28 +178,26 @@
         } else
           this.show = param;
       },
-      divisionMethod() {
-        let department = req.params.department
-        this.title = department
-      },
       generateImg() {
-        let department = this.title;
-        const noSpaces = department.replace(/\s/g, '');
+        let dept = this.department
+        const noSpaces = dept.replace(/\s/g, '');
         this.imgTitle = noSpaces + '.svg';
+        console.log(this.imgTitle)
       },
       getDataFromApi() {
-        
+        const { full_name } = this.$route.params;
         this.loading = true;
         axios
           .post(
-            `http://localhost:3000/api/employees/`,
-            this.options
+            `http://localhost:3000/api/employees/Find-Employee/Employee-Detail/${full_name}`
           )
           .then((resp) => {
-            this.items = resp.data.data;
-            this.totalLength = resp.data.meta.count;
+            this.employee = resp.data.data;
             this.loading = false;
+            this.department = this.employee[0].department
+            console.log(this.department)
           })
+        
           .catch((err) => console.error(err))
           .finally(() => {
             this.loading = false;
@@ -244,38 +208,7 @@
   </script>
   
   <style scoped>
-  .department-card li {
-    list-style: none;
-  }
-  
-  .department-card a {
-    text-decoration: underline;
-    color: #0097A9;
-  }
-  
-  .division {
-    font-size: 19px;
-    font-weight: 700;
-  }
-  
-  .noPad { 
-    
-    width: 70%;
-    margin: 0 0 0 2rem;
-    padding: 0 !important;
-  }
-  
-  .colorOnClick {
-    color: #643f5d !important;
-  }
-  .branch {
-    
-    font-size: 17px;
-  }
-  
-  .directions-board {
-    margin-bottom: 0 !important;
-  }
+
   .employee-detail a{
     font-size: 22px;
     font-weight: 400;
@@ -291,4 +224,6 @@
   .employee-detail h3 {
     font-size: 22px;
   }
+
+
   </style>

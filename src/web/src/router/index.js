@@ -33,6 +33,18 @@ const routes = [
     component: Form,
   },
   {
+    path: "/Find-Employee/Employee-detail/:full_name",
+    name: "Employee Detail",
+    component: EmployeeDetail,
+    meta: {
+      breadcrumb: [
+        {name: 'Home', link: '/'},
+        {name: 'Find a government employee', link: '/Find-Employee'},
+        {name: 'Department', dynamic: true}
+      ]
+    }
+  },
+  {
     path: "/Find-Employee/:department/:division",
     name: "Data grid",
     component: Grid,
@@ -59,26 +71,6 @@ const routes = [
         {name: 'Department', dynamic: true}
       ]
     }
-  },
-  {
-    path: "/sign-in",
-    name: "Login",
-    component: Login
-  },
-  {
-    path: "/Employee-Detail",
-    name: "Employee Detail",
-    component: EmployeeDetail
-  },
-  {
-    path: "/login-complete",
-    name: "LoginComplete",
-    component: LoginComplete
-  },
-  {
-    path: "/profile",
-    name: "Profile",
-    component: Profile,
   },
   {
     path: "*",
