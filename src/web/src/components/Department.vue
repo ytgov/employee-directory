@@ -57,12 +57,12 @@
             <v-hover v-slot="{ hover }">
               <v-card outlined color="transparent">
                 <v-list-title>
-                <a :href="generateUrl(index)" :key="id" class="division">{{ index }}</a>
+                <a :href="generateUrl('division',index,index)" :key="id" class="division">{{ index }}</a>
               </v-list-title>
               <v-expand-transition>
                 <ul v-if="hover">
                   <li v-for="detail in item">
-                    <a class="branch my-2 px-0 py-3">{{ detail.branch }}</a>
+                    <a :href="generateUrl('branch',detail.branch,index)" class="branch my-2 px-0 py-3">{{ detail.branch }}</a>
                   </li>
                 </ul>
               </v-expand-transition>                
@@ -133,17 +133,20 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
-    generateUrl(param) {
-
+    
+    generateUrl(type,param,index) {
+      
       let find = ' ';
       let reg = new RegExp(find, 'g');
-
+      let indexFormatted = index.replace(reg, '-')
       let paramFormatted = param.replace(reg, '-')
 
-
-
-
-      return this.title + '/' + paramFormatted
+      if(type === 'division') {
+        return window.location.href + '/' + indexFormatted + '/-'
+      } else if(type=== 'branch') {
+        return window.location.href + '/' + indexFormatted + '/' + paramFormatted
+      }
+      
 
     },
     updateBreadCrumbs() {

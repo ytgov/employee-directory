@@ -153,6 +153,8 @@ export default {
     },
     updateBreadCrumbs() {
 
+      var find = ' ';
+      var reg = new RegExp(find, 'g');
       let arr = this.$route.meta.breadcrumb;
 
       const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
@@ -160,7 +162,7 @@ export default {
       dynamicBreadcrumb.forEach((element => {
         if (element.name == 'Department') {
           element.name = this.department;
-          element.link = '/Find-employee/' + this.department
+          element.link = '/Find-employee/' + this.department.replace(reg,'-')
         } else if (element.name == 'Division') {
           element.name = this.div;
         }
@@ -176,13 +178,17 @@ export default {
     getDataFromApi() {
       var find = '-';
       var reg = new RegExp(find, 'g');
-      const { department, division } = this.$route.params;
+      const { department, division,branch } = this.$route.params;
+
+      console.log(department)
       this.loading = true;
       let formattedQueryParam = ''
       if (division == null) {
         formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-      } else {
-        formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}`)}`
+      } else if(division !== null) {
+        formattedQueryParam = `${ encodeURIComponent(`${department}-%252F-${division}`)}`
+      } else if (division !== null && branch !== null) {
+        formattedQueryParam = `${ encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
       }
       this.title = department.replace(reg, ' ')
       this.department = department.replace(reg, ' ')
@@ -193,7 +199,7 @@ export default {
       const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
         .post(
-          `http://localhost:3000/api/employees/Find-Employee/${department}/${division}?search=` + search,
+          `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=` + search,
           this.options
         )
         .then((resp) => {

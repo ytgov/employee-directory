@@ -45,7 +45,7 @@ const routes = [
     }
   },
   {
-    path: "/Find-Employee/:department/:division",
+    path: "/Find-Employee/:department/:division/:branch", 
     name: "Data grid",
     component: Grid,
     meta: {
