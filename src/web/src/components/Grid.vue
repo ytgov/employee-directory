@@ -1,19 +1,13 @@
 <template>
   <div class="books">
     <div class="full-width yellow-border white-bg pt-16 mt-n5">
-      <v-container class="container-content">
-        <h1 class="ml-n3">Find a goverment Employee</h1>
-
-        <v-banner class="mb-6  mx-n9">
-          <span>
-
-          </span> <br /><br />
-
+      <v-container class="container-content ">
+        <h1 class="ml-5">Find a goverment Employee</h1>
+        <v-banner class="">
         </v-banner>
-        <v-row class="flex-end mb-10">
+        <v-row class="flex-end mb-10 px-10">
           <v-text-field label="Search by Name" v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1"
             outlined="outlined" flat="" color="" solo>
-
           </v-text-field>
           <v-select v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1" outlined="outlined" flat=""
             label="Department" color="" solo>
@@ -22,7 +16,7 @@
         </v-row>
       </v-container>
     </div>
-    <DepartmentHeader :title="title" :img="this.imgTitle" />
+    <DepartmentHeader :title="title" :image="title.toLowerCase()" />
     <v-breadcrumbs class="mt-6" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
@@ -52,7 +46,7 @@
     </div>
     <div class="class=d-flex mb-6 mt-6">
 
-      <v-data-table dense class="pa-5 d-table auto width-100" sort-by="manager" hide-default-footer :items="items"
+      <v-data-table dense class="pa-5 d-table auto width-100"  hide-default-footer :items="items"
         :headers="headers" :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" :search="search"
         hide-default-header mobile-breakpoint="0">
         <template v-slot:header="{ props }">
@@ -63,24 +57,10 @@
           <tbody class="table-body">
             <tr class="table-border" v-for='(item, index, id ) in items' :key="id">
               <td>
-                <v-icon v-if="(dataTableParam == index)">
-                  mdi-chevron-down
-                </v-icon>
-                <v-icon v-else="(dataTableParam !== index)" @click="dataTableHover(index)">
-                  mdi-chevron-right
-                </v-icon>
-                <a :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">{{ item.full_name }}</a></td>
+              <a :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">{{ item.full_name }}</a></td>
               <td>{{ item.title }}</td>
               <td>{{ item.email }}</td>
               <td>{{ item.phone_office }}</td>
-              <td>{{ item.manager }}</td>
-            </tr>
-            <tr class="employees table-border" v-for='item in items[dataTableParam].employee' :key="item.full_name">
-              <td><a :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">{{ item.full_name }}</a></td>
-              <td>{{ item.title }}</td>
-              <td>{{ item.email }}</td>
-              <td>{{ item.phone_office }}</td>
-              <td>{{ item.manager }}</td>
             </tr>
           </tbody>
         </template>
@@ -118,7 +98,6 @@ export default {
       { text: "Position", value: "title" },
       { text: "E-Mail Address", value: "email" },
       { text: "Phone Number", value: "phone_office" },
-      { text: "Manager", value: "manager" },
     ],
     page: 1,
     pageCount: 0,
@@ -180,12 +159,11 @@ export default {
       var reg = new RegExp(find, 'g');
       const { department, division,branch } = this.$route.params;
 
-      console.log(department)
       this.loading = true;
       let formattedQueryParam = ''
       if (division == null) {
         formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-      } else if(division !== null) {
+      } else if(division !== null && branch == null || branch == undefined) {
         formattedQueryParam = `${ encodeURIComponent(`${department}-%252F-${division}`)}`
       } else if (division !== null && branch !== null) {
         formattedQueryParam = `${ encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
@@ -193,10 +171,9 @@ export default {
       this.title = department.replace(reg, ' ')
       this.department = department.replace(reg, ' ')
       this.div = division.replace(reg, ' ')
+      const search = `${encodeURIComponent(`${this.search}`)}`;
 
       console.log(formattedQueryParam)
-      const branches = this.branches
-      const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
         .post(
           `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=` + search,
@@ -204,7 +181,6 @@ export default {
         )
         .then((resp) => {
           this.items = resp.data.data;
-          console.log(resp.data.data)
           this.totalLength = resp.data.meta.count;
 
           this.loading = false;

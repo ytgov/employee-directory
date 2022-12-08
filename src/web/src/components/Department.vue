@@ -4,9 +4,9 @@
     <div class="full-width yellow-border white-bg pt-16 mt-n5">
       <v-container class="container-content ">
         <h1 class="ml-5">Find a goverment Employee</h1>
-        <v-banner class="mb-6 mt-13">
+        <v-banner class="">
         </v-banner>
-        <v-row class="flex-end mb-10 px-10 mt-5">
+        <v-row class="flex-end mb-10 px-10">
           <v-text-field label="Search by Name" v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1"
             outlined="outlined" flat="" color="" solo>
           </v-text-field>
@@ -18,7 +18,7 @@
       </v-container>
     </div>
 
-    <DepartmentHeader :title="title" :img="this.imgTitle" />
+    <DepartmentHeader :title="title" :image="title" />
 
 
     <v-breadcrumbs class="mt-6" :items="breadcrumbsList">
@@ -42,26 +42,24 @@
           <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
             max-width="590">
             <div class="py-4 d-flex align-center justify-center" style="width: 200px">
-              <img
-                style=" width:80%; filter: invert(20%) sepia(16%) saturate(1465%) hue-rotate(268deg) brightness(95%) contrast(97%)"
-                :src="require('../assets/svg/' + this.imgTitle)" class="mt" />
+              <IconLoader :image="title" :color="'purple'"/>
             </div>
             <div class="d-flex align-center justify-center" style="width:80%">
               <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
             </div>
           </v-card-actions>
           
-          <v-card outlined color="transparent" class="flex-column">
+          <v-card outlined color="transparent" class="flex-column py-10">
 
-          <v-card outlined color="transparent" v-for="(item, index, id) in items">
+          <v-card outlined color="transparent" v-for="(item, index, id) in items" class="px-8">
             <v-hover v-slot="{ hover }">
               <v-card outlined color="transparent">
-                <v-list-title>
+                <li>
                 <a :href="generateUrl('division',index,index)" :key="id" class="division">{{ index }}</a>
-              </v-list-title>
+                </li>
               <v-expand-transition>
                 <ul v-if="hover">
-                  <li v-for="detail in item">
+                  <li v-for="detail in item" >
                     <a :href="generateUrl('branch',detail.branch,index)" class="branch my-2 px-0 py-3">{{ detail.branch }}</a>
                   </li>
                 </ul>
@@ -81,10 +79,12 @@
 <script>
 
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
+import IconLoader from "./icons/IconLoader.vue";
 
 const axios = require("axios");
 export default {
   components: {
+    IconLoader,
     DepartmentHeader,
   },
   name: "Department",
@@ -129,7 +129,6 @@ export default {
   },
   mounted() {
     this.getDataFromApi();
-    this.generateImg();
     this.updateBreadCrumbs();
   },
   methods: {
@@ -142,9 +141,9 @@ export default {
       let paramFormatted = param.replace(reg, '-')
 
       if(type === 'division') {
-        return window.location.href + '/' + indexFormatted + '/-'
+        return window.location.href + '/' + indexFormatted.toLowerCase() + '/3ajd9h'
       } else if(type=== 'branch') {
-        return window.location.href + '/' + indexFormatted + '/' + paramFormatted
+        return window.location.href + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
       }
       
 
@@ -169,11 +168,6 @@ export default {
     divisionMethod() {
       let department = req.params.department
       this.title = department
-    },
-    generateImg() {
-      let department = this.title;
-      const noSpaces = department.replace(/\s/g, '');
-      this.imgTitle = noSpaces + '.svg';
     },
     getDataFromApi() {
       var find = '-';

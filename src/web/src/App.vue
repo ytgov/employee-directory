@@ -22,7 +22,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <div >
-        <span>{{ username }}</span>
+        
         <v-menu bottom left class="ml-0">
           <template v-slot:activator="{ on, attrs }">
             <v-btn retain-focus-on-click color="black"  plain  v-bind="attrs" v-on="on">

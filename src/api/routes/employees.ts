@@ -13,10 +13,10 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
 
     var employeesByDept = Object();
 
-    axios.get('http://localhost:8080/json/employees.json')
+    axios.get('http://localhost:8080/json/division.json')
         .then((response: any) => {
 
-            var resultEmployees = response.data.employees;
+            var resultEmployees = response.data.divisions;
             var search = req.query.search;
             var searchTerm = "";
             var departments = Array();
@@ -134,13 +134,13 @@ employeesRouter.post("/Find-Employee/Employee-Detail/:full_name", [param("full_n
         });
 });
 
-employeesRouter.post("/find-employee/:department/:division/:branch", [param("department"), param('division'), param('branch').notEmpty()], async (req: Request, res: Response) => {
+employeesRouter.post("/find-employee/:department/:division/:branch?", [param("department" , "division"), param('branch').notEmpty()], async (req: Request, res: Response) => {
     const page = req.body.page || 1;
     const itemsPerPage = req.body.itemsPerPage || 100;
     const start = (page - 1) * itemsPerPage;
     // const sortBy = req.body.sortBy || []; // capable of sort by multiple columns
     const sortDesc = req.body.sortDesc || []; // likewise
-
+    
     var search = req.query.search;
     var searchTerm = "";
     var employeesByDept: any[] = Array();
@@ -151,8 +151,13 @@ employeesRouter.post("/find-employee/:department/:division/:branch", [param("dep
 
     let paramDepartment = (req.params.department.replace(reg, ' '))
     let paramDivision = (req.params.division.replace(reg, ' '))
-    let paramBranch = (req.params.branch.replace(reg, ' '))
-
+    let paramBranch = (req.params.branch)
+    
+    if (paramBranch === '3ajd9h') {
+        paramBranch = ''
+    } else {
+        paramBranch = req.params.branch.replace(reg,' ')
+    }
 
     axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment, division: paramDivision, branch: paramBranch, } })
         .then((response: any) => {
@@ -205,10 +210,12 @@ employeesRouter.post("/find-employee/:department/:division/:branch", [param("dep
                 }
             })
 
-            employeesByDept = employeesByDept.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
+            employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
 
-            if (paramBranch !== '-') {
-                employeesByDept = employeesByDept.filter(item => { return item.branch.indexOf(paramBranch.replace(reg, ' ')) >= 0 })
+            employeesByDept = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+
+            if (paramBranch !== '') {
+                employeesByDept = employeesByDept.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
 
 
@@ -233,7 +240,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch", [param("dep
                 const currentEmployees = employeesArray.filter((employee:any) => employee.manager === currentManager.full_name);
                 
                 if (!currentEmployees.length) {
-                  console.log('NO EMPLOYEES FOUND FOR ', currentManager);
                   return currentManager;
                 }
                 
@@ -242,16 +248,13 @@ employeesRouter.post("/find-employee/:department/:division/:branch", [param("dep
                   const employees = getEmployeesByManager(employeesArray, manager);
                   employeesList = [...employeesList, employees];
                 }
-                console.log('!!!!! list!!!!!', employeesList);
                 return [currentManager, ...employeesList];
                }
               
               let result:any = [];
               
               for (const manager of managers) {
-                console.log('.......', manager.full_name)
                 result = [...result, ...getEmployeesByManager(employeesByManager, manager)];
-                console.log('------------')
               }
 
 
@@ -287,7 +290,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
     axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment}})
         .then((response: any) => {
-            
+
             var resultEmployees = response.data.employees;
             var urlDepartment = req.params.department.replace(reg, " ");
             var departments = Array();

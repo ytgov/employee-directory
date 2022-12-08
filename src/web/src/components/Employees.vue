@@ -19,51 +19,43 @@
             outlined="outlined" flat="" color="" solo>
 
           </v-text-field>
-          <v-select v-model="search" class="pl-5 pr-5" dense="" items-value="'item.index'"
-            background-color="#F1F1F1" outlined="outlined" flat="" label="Department" color="" solo>
+          <v-select v-model="search" class="pl-5 pr-5" dense="" items-value="'item.index'" background-color="#F1F1F1"
+            outlined="outlined" flat="" label="Department" color="" solo>
 
           </v-select>
           <v-btn class="search-responsive mt-n3 pa-4 py-5" style="display: flex;" color="#00616D">Search</v-btn>
         </v-row>
       </v-container>
     </div>
-      <v-breadcrumbs large class="mt-6"
-    :items="breadcrumbsList"
-    >
+    <v-breadcrumbs large class="mt-6" :items="breadcrumbsList">
 
-    <template v-slot:item="{ item }">
-      
-        <v-breadcrumbs-item
-        :href="item.link"
-      >
-        {{ item.name }}
-      </v-breadcrumbs-item>
-      
-    </template>
+      <template v-slot:item="{ item }">
+
+        <v-breadcrumbs-item :href="item.link">
+          {{ item.name }}
+        </v-breadcrumbs-item>
+
+      </template>
     </v-breadcrumbs>
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
     <v-row class="py-10 mt-16"></v-row>
-    <v-row class="mb-6 mt-16">
-      <v-col md="4" v-for='(items, index, id) in item'>
+    <v-row  class="mb-6 mt-16">
+      <v-col cols="12" md="4" sm="6" xs="12"  v-for='(items, index, id) in item'>
         <v-hover v-slot="{ hover }">
           <v-card :href="indexUrl(index, 'department')" class="mx-auto employee-division-card" max-width="344" outlined>
             <v-card class="d-flex">
               <v-list-item three-line class="icon-list">
-
                 <v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
                   :style="{ 'background-color': hover ? '#DC4001' : '#512A44' }">
                   <v-avatar tile>
-                    <img style="filter:invert()" :src="require('../assets/svg/' + generateUrlImg(index))">
+                    <IconLoader :image="index.toLowerCase()" :color="'white'" />
                   </v-avatar>
                 </v-list-item-avatar>
-
-
                 <v-list-item-content>
                   <v-list-item-title class="text-h6 mb-1">
-                    <a class="index-text"
-                      >{{ index }}</a>
+                    <a class="index-text">{{ index }}</a>
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -77,14 +69,16 @@
 </template>
 
 <script>
+import IconLoader from './icons/IconLoader.vue'
+
 const axios = require("axios");
 export default {
   components: {
-
+    IconLoader
   },
   name: "Grid",
   data: () => ({
-    breadcrumbsList:[],
+    breadcrumbsList: [],
     show: false,
     loading: false,
     item: [],
@@ -104,9 +98,9 @@ export default {
       handler() {
         this.getEmployeesData();
       },
-      '$route' (){
-      this.breadcrumbsList = this.$route.meta.breadcrumb
-    },
+      '$route'() {
+        this.breadcrumbsList = this.$route.meta.breadcrumb
+      },
       deep: true,
     },
     search: {
@@ -119,9 +113,10 @@ export default {
   mounted() {
     this.getEmployeesData();
     this.updateBreadCrumbs();
+
   },
   methods: {
-    updateBreadCrumbs(){
+    updateBreadCrumbs() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
     replaceSpaces(find, replace, obj) {
@@ -132,9 +127,9 @@ export default {
     },
     generateUrl(field, type) {
       if (type == "division")
-        return "/Find-Employee/" + field.departmentUrl + "/" + field.divisionUrl;
+        return "/find-employee/" + field.departmentUrl.toLowerCase() + "/" + field.divisionUrl.tolowercase();
       else if (type == 'department')
-        return "/Find-Employee/" + field.departmentUrl;
+        return "/find-employee/" + field.departmentUrl.toLowerCase();
     },
 
     generateUrlImg(field, type) {
@@ -145,9 +140,9 @@ export default {
 
     indexUrl(field, type) {
       if (type == "department") {
-        let department = "/Find-Employee/" + field
+        let department = "/find-employee/" + field
         let noSpaces = department.replaceAll(/\s/g, '-');
-        return String(noSpaces)
+        return String(noSpaces.toLowerCase())
       }
 
     },
