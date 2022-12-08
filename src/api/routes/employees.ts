@@ -152,7 +152,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     let paramDepartment = (req.params.department.replace(reg, ' '))
     let paramDivision = (req.params.division.replace(reg, ' '))
     let paramBranch = (req.params.branch)
-    
+
     if (paramBranch === '3ajd9h') {
         paramBranch = ''
     } else {
@@ -173,7 +173,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 phone_office: String
                 department: string
                 manager: string
-                managerSort: string
+                managerSorter: string
                 employee: any
                 division_url: string
                 full_name_url: string
@@ -190,7 +190,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     'phone_office': element.phone_office,
                     'department': element.department,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
-                    'managerSort': '',
+                    'managerSorter': '',
                     'employee': null,
                     'division_url': division_url,
                     'full_name_url': element.full_name,
@@ -204,9 +204,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     element.manager = '-'
                 }
                 if (element.manager === '-') {
-                    element.managerSort = element.full_name
+                    element.managerSorter = element.full_name
                 } else {
-                    element.managerSort = element.manager
+                    element.managerSorter = element.manager
                 }
             })
 

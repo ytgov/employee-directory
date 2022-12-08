@@ -42,32 +42,34 @@
           <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
             max-width="590">
             <div class="py-4 d-flex align-center justify-center" style="width: 200px">
-              <IconLoader :image="title" :color="'purple'"/>
+              <IconLoader :image="title" :color="'purple'" />
             </div>
             <div class="d-flex align-center justify-center" style="width:80%">
               <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
             </div>
           </v-card-actions>
-          
+
           <v-card outlined color="transparent" class="flex-column py-10">
 
-          <v-card outlined color="transparent" v-for="(item, index, id) in items" class="px-8">
-            <v-hover v-slot="{ hover }">
-              <v-card outlined color="transparent">
-                <li>
-                <a :href="generateUrl('division',index,index)" :key="id" class="division">{{ index }}</a>
-                </li>
-              <v-expand-transition>
-                <ul v-if="hover">
-                  <li v-for="detail in item" >
-                    <a :href="generateUrl('branch',detail.branch,index)" class="branch my-2 px-0 py-3">{{ detail.branch }}</a>
+            <v-card outlined color="transparent" v-for="(item, index, id) in items" class="px-8">
+              <v-hover v-slot="{ hover }">
+                <v-card outlined color="transparent">
+                  <li>
+                    <a :href="generateUrl('division', index, index)" :key="id" class="division">{{ index }}</a>
                   </li>
-                </ul>
-              </v-expand-transition>                
-              </v-card>
-          </v-hover>
+                  <v-expand-transition>
+                    <ul v-if="hover">
+                      <li v-for="detail in item">
+                        <a :href="generateUrl('branch', detail.branch, index)" class="branch my-2 px-0 py-3">{{
+                            detail.branch
+                        }}</a>
+                      </li>
+                    </ul>
+                  </v-expand-transition>
+                </v-card>
+              </v-hover>
+            </v-card>
           </v-card>
-        </v-card>
         </v-card>
 
       </v-col>
@@ -132,20 +134,20 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
-    
-    generateUrl(type,param,index) {
-      
+
+    generateUrl(type, param, index) {
+
       let find = ' ';
       let reg = new RegExp(find, 'g');
       let indexFormatted = index.replace(reg, '-')
       let paramFormatted = param.replace(reg, '-')
 
-      if(type === 'division') {
+      if (type === 'division') {
         return window.location.href + '/' + indexFormatted.toLowerCase() + '/3ajd9h'
-      } else if(type=== 'branch') {
+      } else if (type === 'branch') {
         return window.location.href + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
       }
-      
+
 
     },
     updateBreadCrumbs() {

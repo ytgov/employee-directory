@@ -41,8 +41,8 @@
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
     <v-row class="py-10 mt-16"></v-row>
-    <v-row  class="mb-6 mt-16">
-      <v-col cols="12" md="4" sm="6" xs="12"  v-for='(items, index, id) in item'>
+    <v-row class="mb-6 mt-16">
+      <v-col cols="12" md="4" sm="6" xs="12" v-for='(items, index, id) in item'>
         <v-hover v-slot="{ hover }">
           <v-card :href="indexUrl(index, 'department')" class="mx-auto employee-division-card" max-width="344" outlined>
             <v-card class="d-flex">
