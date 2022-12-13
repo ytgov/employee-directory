@@ -29,15 +29,17 @@
 <script>
 const axios = require("axios");
 export default {
-    props:['division','branch'],
+    
+    props:['department'],
     data() {
         return {
             items: [],
-            department: 'highways and public works',
         }
     },
-    created() {
-        this.getDataFromApi();
+    watch: {
+        department: function(){
+            this.getDataFromApi();
+        }
     },
     methods: {
         getDataFromApi() {
@@ -46,7 +48,7 @@ export default {
             axios.request({
                 method: 'POST',
                 data: {
-                    department: this.department
+                    department: this.$props.department
                 },
                 url: `http://localhost:3000/api/employees/DivisionsCard`
                 }
