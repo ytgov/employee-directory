@@ -36,7 +36,7 @@
     </div>
     </v-app-bar>
 
-    <v-main v-bind:style="{ 'padding-left: 33px !important': !hasSidebar }">
+    <v-main :class="{ active: isActive}" v-bind:style="{ 'padding-left: 33px !important': !hasSidebar }">
       <!-- Provides the application the proper gutter -->
       <v-container fluid id="container-main">
         <v-row id="container-row">
@@ -97,7 +97,9 @@ import { mapState } from "vuex";
 export default {
   name: "App",
   components: {},
+  props:['isActive'],
   data: () => ({
+    
     dialog: false,
     drawer: null,
     drawerRight: null,
@@ -136,6 +138,10 @@ export default {
 </script>
 
 <style>
+
+.active {
+    background: white !important;
+}
   .v-toolbar--flat {
   box-shadow: 1px 0px 7px 4px rgba(0,0,0,0.24) !important;
   -webkit-box-shadow: 1px 0px 7px 4px rgba(0,0,0,0.24) !important;

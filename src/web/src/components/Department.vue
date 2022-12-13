@@ -21,7 +21,7 @@
     <DepartmentHeader :title="title" :image="title" />
 
 
-    <v-breadcrumbs class="mt-6" :items="breadcrumbsList">
+    <v-breadcrumbs class="mt-6 breadcrumbs"  :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
           {{ item.name }}
@@ -100,14 +100,6 @@ export default {
     search: "",
     title: '',
     options: {},
-    totalLength: 0,
-    headers: [
-      { text: "id", value: "id" },
-      { text: "name", value: "name" },
-    ],
-    page: 1,
-    pageCount: 0,
-    iteamsPerPage: 10,
   }),
   created() {
 
@@ -143,8 +135,15 @@ export default {
       let paramFormatted = param.replace(reg, '-')
 
       if (type === 'division') {
+        if(indexFormatted === 'N/A') {
+          return window.location.href + '/-'
+        }
         return window.location.href + '/' + indexFormatted.toLowerCase() + '/3ajd9h'
+        
       } else if (type === 'branch') {
+        if(param === 'N/A') {
+          return window.location.href + '/' + indexFormatted.toLowerCase() + '/-'
+        }
         return window.location.href + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
       }
 
@@ -199,7 +198,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .department-card li {
   list-style: none;
 }
@@ -215,7 +214,6 @@ export default {
 }
 
 .noPad {
-
   width: 70%;
   margin: 0 0 0 2rem;
   padding: 0 !important;

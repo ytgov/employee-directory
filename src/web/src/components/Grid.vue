@@ -17,7 +17,7 @@
       </v-container>
     </div>
     <DepartmentHeader :title="title" :image="title.toLowerCase()" />
-    <v-breadcrumbs class="mt-6" :items="breadcrumbsList">
+    <v-breadcrumbs class="mt-6 mb-8 breadcrumbs" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
           {{ item.name }}
@@ -27,8 +27,6 @@
     <v-row class="d-flex container pr-1 flex-column">
       
 
-      
-      <h3 class="ml-3">Your search found {{ totalLength }} results.</h3>
       <div class="d-flex wrap ml-3 align-center">
         <h4 class="mr-3 mt-1">Grouped by their:</h4>
         <div class="d-md-flex chips">
@@ -39,8 +37,21 @@
     
     </v-row>
     
-
+    <v-row>
+      <DivisionsCard :department="this.department" class="mt-16"/>
+    </v-row>
     
+    <div class="pa-6 mt-10 d-flex flex-column align-start justify-center">
+      
+      <div class=" d-flex align-end justify-start">
+        <h2 style="font-size: 34px !important;">{{div}}</h2>
+        <h3 class="ml-4">( {{divisionLength}} Results )</h3>
+      </div>
+      <div v-if="branch !== '3ajd9h'" class=" d-flex align-end justify-start">
+        <h2 style="font-size: 25px !important;" >{{branch}}</h2>
+        <h3 style="font-size: 16px !important;" class="ml-4">( {{totalLength}} Results )</h3>
+      </div>
+    </div>
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
@@ -74,15 +85,17 @@
 <script>
 const axios = require("axios");
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
+import DivisionsCard from "./UI/DivisionsCard.vue";
 
 export default {
   name: "Grid",
   components: {
     DepartmentHeader,
+    DivisionsCard,
   },
   data: () => ({
-    branches: "Service-Innovation-and-Support",
     dataTableParam: 0,
+    branch: '',
     breadcrumbsList: [],
     department: '',
     title: '',
@@ -93,6 +106,7 @@ export default {
     search: "",
     options: {},
     totalLength: 0,
+    divisionLength: 0,
     headers: [
       { text: "Name", value: "full_name" },
       { text: "Position", value: "title" },
@@ -123,13 +137,9 @@ export default {
   },
   mounted() {
     this.getDataFromApi();
-    this.generateImg();
     this.updateBreadCrumbs();
   },
   methods: {
-    dataTableHover(param) {
-      this.dataTableParam = param
-    },
     updateBreadCrumbs() {
 
       var find = ' ';
@@ -141,17 +151,27 @@ export default {
       dynamicBreadcrumb.forEach((element => {
         if (element.name == 'Department') {
           element.name = this.department;
-          element.link = '/Find-employee/' + this.department.replace(reg,'-')
+          element.link = '/find-employee/' + this.department.replace(reg,'-').toLowerCase()
         } else if (element.name == 'Division') {
+          
           element.name = this.div;
+          if(this.branch !== '3ajd9h'){
+            element.link = ('/find-employee/' + this.department + '/'+ this.div ).replace(reg,'-').toLowerCase() + '/3ajd9h'
+          } else {
+            element.link = null
+          }
+          
+        } else if (element.name == 'Branch') {
+          if(this.branch === '3ajd9h') {
+            element.name = null
+          } else {
+            element.name = this.branch;
+          }
+          
         }
+        
       }))
       this.breadcrumbsList = arr
-    },
-    generateImg() {
-      let department = this.title;
-      const noSpaces = department.replace(/\s/g, '');
-      this.imgTitle = noSpaces + '.svg';
     },
 
     getDataFromApi() {
@@ -171,9 +191,10 @@ export default {
       this.title = department.replace(reg, ' ')
       this.department = department.replace(reg, ' ')
       this.div = division.replace(reg, ' ')
+      this.branch = branch.replace(reg, ' ')
       const search = `${encodeURIComponent(`${this.search}`)}`;
 
-      console.log(formattedQueryParam)
+      
       axios
         .post(
           `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=` + search,
@@ -181,8 +202,9 @@ export default {
         )
         .then((resp) => {
           this.items = resp.data.data;
-          this.totalLength = resp.data.meta.count;
-
+          this.totalLength = resp.data.meta.branchCount;
+          this.divisionLength = resp.data.meta.divisionCount
+          this.updateBreadCrumbs();
           this.loading = false;
         })
         .catch((err) => console.error(err))

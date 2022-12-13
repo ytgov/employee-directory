@@ -30,7 +30,7 @@ const routes = [
   },
   {
     path: "/find-Employee/employee-detail/:full_name",
-    name: "employee Detail",
+    name: "Employee Detail",
     component: EmployeeDetail,
     meta: {
       breadcrumb: [

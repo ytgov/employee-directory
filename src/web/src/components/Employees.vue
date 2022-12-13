@@ -27,7 +27,7 @@
         </v-row>
       </v-container>
     </div>
-    <v-breadcrumbs large class="mt-6" :items="breadcrumbsList">
+    <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
 
       <template v-slot:item="{ item }">
 

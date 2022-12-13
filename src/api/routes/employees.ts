@@ -99,10 +99,10 @@ employeesRouter.post("/Find-Employee/Employee-Detail/:full_name", [param("full_n
                     'full_name': element.full_name.replace(".", " "),
                     'organization': element.organization,
                     'department': element.department,
-                    'division': element.division !== null ? element.division : '-',
-                    'branch': element.branch !== null ? element.branch : '-',
+                    'division': element.division,
+                    'branch': element.branch,
                     'unit': element.unit,
-                    'title': element.title !== '' ? element.title : '-',
+                    'title': element.title,
                     'email': element.email,
                     'suite': element.suite,
                     'phone_office': element.phone_office,
@@ -144,6 +144,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     var search = req.query.search;
     var searchTerm = "";
     var employeesByDept: any[] = Array();
+    var employeesFullList: any[] = Array();
     var _ = require("lodash");
 
     var find = '-';
@@ -197,29 +198,35 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 };
 
                 employeesByDept.push(employee);
+                
+                
 
             });
             employeesByDept.forEach(function (element: any) {
-                if (element.manager == null) {
-                    element.manager = '-'
+                if (element.manager == null || element.manager == '' || element.manager == '-') {
+                    element.manager = 'Boss'
                 }
                 if (element.manager === '-') {
                     element.managerSorter = element.full_name
                 } else {
-                    element.managerSorter = element.manager
+                    element.managerSort = element.manager
                 }
             })
 
+        
+
             employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
 
-            employeesByDept = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+            let compare = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
+
+            let employeesByDivision = employeesByDept = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
 
             if (paramBranch !== '') {
-                employeesByDept = employeesByDept.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
 
 
-            let managerArr = employeesByDept.map(a => a.manager)
+            let managerArr = employeesByDivision.map(a => a.manager)
 
 
             managerArr = managerArr.filter(function (elem, index, self) {
@@ -227,9 +234,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             });
 
 
-            let managers = employeesByDept.filter(function (e) {
+            let managers = compare.filter(function (e) {
                 return managerArr.includes(e.full_name)
             })
+            
 
             let employeesByManager = employeesByDept.filter(function (e) {
                 return !managerArr.includes(e.full_name)
@@ -273,7 +281,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             //     }
             // }
 
-            res.send({ data: result.slice(start, start + itemsPerPage), meta: { count: result.length } });
+            res.send({ data: result.slice(start, start + itemsPerPage), meta: { branchCount: result.length, divisionCount: employeesByDivision.length } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -284,7 +292,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
     var find = '-';
     var reg = new RegExp(find, 'g');
-
+    var _ = require("lodash");
     let paramDepartment = (req.params.department.replace(reg, ' '))
     var employeesByDept = Object();
 
@@ -308,6 +316,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                 }
             });
 
+
             var divisionsReady = divisions.filter(function (elem, index, self) {
                 return index === self.indexOf(elem);
             });
@@ -322,15 +331,90 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                         if (!arrayDivElementssUq.includes(elementDiv.branch)) {
                             arrayDivElements.push(elementDiv);
                             arrayDivElementssUq.push(elementDiv.branch)
+                            
                         }
-                    } else if (elementDiv.branch == null) {
-                        elementDiv.branch = 'N/A'
                     }
+                    if(elementDiv.branch == null ) { elementDiv.branch = 'N/A'}
+                    
 
-
+                    
+                 
+                    
                 })
+
                 employeesByDept[elementDiv] = arrayDivElements;
+
             });
+            
+            console.log(employeesByDept)
+            res.send({ data: employeesByDept, meta: { count: 0 } });
+
+        })
+        .catch((error: any) => {
+            console.log(error);
+        });
+});
+
+employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
+
+    var find = '-';
+    var reg = new RegExp(find, 'g');
+    const paramDepartment = req.body.department
+    
+    console.log(paramDepartment)
+    var employeesByDept = Object();
+    
+
+    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment}})
+        .then((response: any) => {
+
+            var resultEmployees = response.data.employees;
+            var urlDepartment = paramDepartment;
+            var departments = Array();
+            var divisions = Array();
+
+
+            resultEmployees.forEach(function (element: any) {
+                if (element.department.toLowerCase() == urlDepartment) {
+                    departments.push(element.department);
+                    if (element.division == null) {
+                        element.division = 'N/A'
+                    }
+                    divisions.push(element.division);
+                    divisions.push(divisions.splice(divisions.indexOf('N/A'), 1)[0]);
+                }
+            });
+
+
+            var divisionsReady = divisions.filter(function (elem, index, self) {
+                return index === self.indexOf(elem);
+            });
+
+            divisionsReady.forEach((elementDiv: any) => {
+                var keyDiv = elementDiv;
+                var arrayDivElements = Array();
+                var arrayDivElementssUq = Array();
+
+                resultEmployees.forEach(function (elementDiv: any) {
+                    if (keyDiv == elementDiv.division && elementDiv.branch !== null) {
+                        if (!arrayDivElementssUq.includes(elementDiv.branch)) {
+                            arrayDivElements.push(elementDiv);
+                            arrayDivElementssUq.push(elementDiv.branch)
+                            
+                        }
+                    }
+                    if(elementDiv.branch == null ) { elementDiv.branch = 'N/A'}
+                    
+
+                    
+                 
+                    
+                })
+
+                employeesByDept[elementDiv] = arrayDivElements;
+
+            });
+            
             res.send({ data: employeesByDept, meta: { count: 0 } });
 
         })
