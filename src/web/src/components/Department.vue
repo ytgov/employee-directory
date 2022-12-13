@@ -59,8 +59,8 @@
                   </li>
                   <v-expand-transition>
                     <ul v-if="hover">
-                      <li v-for="detail in item">
-                        <a :href="generateUrl('branch', detail.branch, index)" class="branch my-2 px-0 py-3">{{
+                      <li v-for="detail in item" class="py-2">
+                        <a :href="generateUrl('branch', detail.branch, index)" class="my-2 px-0 py-3 branch">{{
                             detail.branch
                         }}</a>
                       </li>
