@@ -145,6 +145,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     var searchTerm = "";
     var employeesByDept: any[] = Array();
     var employeesFullList: any[] = Array();
+    
     var _ = require("lodash");
 
     var find = '-';
@@ -361,7 +362,6 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
     var reg = new RegExp(find, 'g');
     const paramDepartment = req.body.department
     
-    console.log(paramDepartment)
     var employeesByDept = Object();
     
 
@@ -403,12 +403,7 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
                             
                         }
                     }
-                    if(elementDiv.branch == null ) { elementDiv.branch = 'N/A'}
-                    
-
-                    
-                 
-                    
+                    if(elementDiv.branch == null ) { elementDiv.branch = 'N/A'}                    
                 })
 
                 employeesByDept[elementDiv] = arrayDivElements;

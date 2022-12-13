@@ -43,11 +43,11 @@
     
     <div class="pa-6 mt-10 d-flex flex-column align-start justify-center">
       
-      <div class=" d-flex align-end justify-start">
+      <div class=" d-flex align-center justify-start">
         <h2 style="font-size: 34px !important;">{{div}}</h2>
         <h3 class="ml-4">( {{divisionLength}} Results )</h3>
       </div>
-      <div v-if="branch !== '3ajd9h'" class=" d-flex align-end justify-start">
+      <div v-if="branch !== '3ajd9h'" class=" d-flex align-center justify-start">
         <h2 style="font-size: 25px !important;" >{{branch}}</h2>
         <h3 style="font-size: 16px !important;" class="ml-4">( {{totalLength}} Results )</h3>
       </div>
@@ -99,7 +99,6 @@ export default {
     breadcrumbsList: [],
     department: '',
     title: '',
-    imgTitle: '',
     div: '',
     loading: false,
     items: [],

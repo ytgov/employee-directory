@@ -34,7 +34,7 @@
     </div>
     <v-row class="mt-16"></v-row>
     <v-row>
-      <v-col>
+      <v-col col="6">
 
         <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
           max-width="1180" min-height="542" outlined>
@@ -71,7 +71,7 @@
             </v-card>
           </v-card>
         </v-card>
-
+        <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
       </v-col>
     </v-row>
 
