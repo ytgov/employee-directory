@@ -126,7 +126,6 @@ employeesRouter.post("/Find-Employee/Employee-Detail/:full_name", [param("full_n
 
             let employeeFiltered = employeeArr.filter(item => { return item.full_name_url.indexOf(req.params.full_name) >= 0 })
 
-            console.log(employeeFiltered)
             res.send({ data: employeeFiltered });
         })
         .catch((error: any) => {
@@ -134,18 +133,18 @@ employeesRouter.post("/Find-Employee/Employee-Detail/:full_name", [param("full_n
         });
 });
 
-employeesRouter.post("/find-employee/:department/:division/:branch?", [param("department" , "division"), param('branch').notEmpty()], async (req: Request, res: Response) => {
+employeesRouter.post("/find-employee/:department/:division/:branch?", [param("department", "division"), param('branch').notEmpty()], async (req: Request, res: Response) => {
     const page = req.body.page || 1;
     const itemsPerPage = req.body.itemsPerPage || 100;
     const start = (page - 1) * itemsPerPage;
     // const sortBy = req.body.sortBy || []; // capable of sort by multiple columns
     const sortDesc = req.body.sortDesc || []; // likewise
-    
+
     var search = req.query.search;
     var searchTerm = "";
     var employeesByDept: any[] = Array();
     var employeesFullList: any[] = Array();
-    
+
     var _ = require("lodash");
 
     var find = '-';
@@ -158,7 +157,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     if (paramBranch === '3ajd9h') {
         paramBranch = ''
     } else {
-        paramBranch = req.params.branch.replace(reg,' ')
+        paramBranch = req.params.branch.replace(reg, ' ')
     }
 
     axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment, division: paramDivision, branch: paramBranch, } })
@@ -187,9 +186,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     'full_name': element.full_name.replace(".", " "),
                     'title': element.title !== '' ? element.title : '-',
                     'division': element.division !== null ? element.division : '-',
-                    'branch': element.branch !== null ? element.branch : '-',
+                    'branch': element.branch !== null ? element.branch : '',
                     'email': element.email,
-                    'phone_office': element.phone_office,
+                    'phone_office': element.phone_office !== '' ? element.phone_office : '-',
                     'department': element.department,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
                     'managerSorter': '',
@@ -199,13 +198,13 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 };
 
                 employeesByDept.push(employee);
-                
-                
+
+
 
             });
             employeesByDept.forEach(function (element: any) {
                 if (element.manager == null || element.manager == '' || element.manager == '-') {
-                    element.manager = 'Boss'
+                    element.manager = '-'
                 }
                 if (element.manager === '-') {
                     element.managerSorter = element.full_name
@@ -214,7 +213,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 }
             })
 
-        
+
 
             employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
 
@@ -222,7 +221,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
             let employeesByDivision = employeesByDept = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
 
-            if (paramBranch !== '') {
+            let divLength = employeesByDivision.length
+
+            if (paramBranch !== '' ) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
 
@@ -238,35 +239,32 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let managers = compare.filter(function (e) {
                 return managerArr.includes(e.full_name)
             })
-            
 
-            let employeesByManager = employeesByDept.filter(function (e) {
-                return !managerArr.includes(e.full_name)
+            
+            let employeesByManager = employeesByDivision.filter(function (e) {
+                return !managers.includes(e.full_name)
             })
 
+            const getEmployeesByManager = (employeesArray: any, currentManager: any) => {
+                const currentEmployees = employeesArray.filter((employee: any) => employee.manager === currentManager.full_name);
 
-            const getEmployeesByManager = (employeesArray:any, currentManager:any) => {
-                const currentEmployees = employeesArray.filter((employee:any) => employee.manager === currentManager.full_name);
-                
                 if (!currentEmployees.length) {
-                  return currentManager;
+                    return currentManager;
                 }
-                
-                let employeesList:any = [];
+
+                let employeesList: any = [];
                 for (const manager of currentEmployees) {
-                  const employees = getEmployeesByManager(employeesArray, manager);
-                  employeesList = [...employeesList, employees];
+                    const employees = getEmployeesByManager(employeesArray, manager);
+                    employeesList = [...employeesList, employees];
                 }
-                return [currentManager, ...employeesList];
-               }
-              
-              let result:any = [];
-              
-              for (const manager of managers) {
+                return [currentManager, ...employeesList.flat()];
+            }
+
+            let result: any = [];
+
+            for (const manager of managers) {
                 result = [...result, ...getEmployeesByManager(employeesByManager, manager)];
-              }
-
-
+            }
 
             if (search?.length) {
                 searchTerm = search.toString().trim();
@@ -282,7 +280,11 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             //     }
             // }
 
-            res.send({ data: result.slice(start, start + itemsPerPage), meta: { branchCount: result.length, divisionCount: employeesByDivision.length } });
+            result = result.filter(function (elem:any, index:any, self:any) {
+                return index === self.indexOf(elem);
+            });
+
+            res.send({ data: result.slice(start, start + itemsPerPage), meta: { branchCount: result.length, divisionCount: divLength } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -297,7 +299,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     let paramDepartment = (req.params.department.replace(reg, ' '))
     var employeesByDept = Object();
 
-    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment}})
+    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
@@ -332,22 +334,18 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                         if (!arrayDivElementssUq.includes(elementDiv.branch)) {
                             arrayDivElements.push(elementDiv);
                             arrayDivElementssUq.push(elementDiv.branch)
-                            
+
                         }
                     }
-                    if(elementDiv.branch == null ) { elementDiv.branch = 'N/A'}
-                    
+                    if (elementDiv.branch == null) { elementDiv.branch = 'N/A' }
 
-                    
-                 
-                    
                 })
 
                 employeesByDept[elementDiv] = arrayDivElements;
 
             });
-            
-            console.log(employeesByDept)
+
+
             res.send({ data: employeesByDept, meta: { count: 0 } });
 
         })
@@ -361,11 +359,11 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
     var find = '-';
     var reg = new RegExp(find, 'g');
     const paramDepartment = req.body.department
-    
-    var employeesByDept = Object();
-    
 
-    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment}})
+    var employeesByDept = Object();
+
+
+    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
@@ -400,16 +398,16 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
                         if (!arrayDivElementssUq.includes(elementDiv.branch)) {
                             arrayDivElements.push(elementDiv);
                             arrayDivElementssUq.push(elementDiv.branch)
-                            
+
                         }
                     }
-                    if(elementDiv.branch == null ) { elementDiv.branch = 'N/A'}                    
+                    if (elementDiv.branch == null) { elementDiv.branch = 'N/A' }
                 })
 
                 employeesByDept[elementDiv] = arrayDivElements;
 
             });
-            
+
             res.send({ data: employeesByDept, meta: { count: 0 } });
 
         })

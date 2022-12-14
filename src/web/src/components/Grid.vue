@@ -25,7 +25,7 @@
       </template>
     </v-breadcrumbs>
     <v-row class="d-flex container pr-1 flex-column">
-      
+
 
       <div class="d-flex wrap ml-3 align-center">
         <h4 class="mr-3 mt-1">Grouped by their:</h4>
@@ -34,22 +34,22 @@
           <v-chip class="ma-2 px-8" label outlined color="#00616D">Position</v-chip>
         </div>
       </div>
-    
+
     </v-row>
-    
+
     <v-row>
-      <DivisionsCard :department="this.department" class="mt-16"/>
+      <DivisionsCard :department="this.department.toLowerCase()" class="mt-16" />
     </v-row>
-    
+
     <div class="pa-6 mt-10 d-flex flex-column align-start justify-center">
-      
+
       <div class=" d-flex align-center justify-start">
-        <h2 style="font-size: 34px !important;">{{div}}</h2>
-        <h3 class="ml-4">( {{divisionLength}} Results )</h3>
+        <h2 style="font-size: 34px !important;">{{ div }}</h2>
+        <h3 class="ml-4">( {{ divisionLength }} Results )</h3>
       </div>
       <div v-if="branch !== '3ajd9h'" class=" d-flex align-center justify-start">
-        <h2 style="font-size: 25px !important;" >{{branch}}</h2>
-        <h3 style="font-size: 16px !important;" class="ml-4">( {{totalLength}} Results )</h3>
+        <h2 style="font-size: 25px !important;">{{ branch }}</h2>
+        <h3 style="font-size: 16px !important;" class="ml-4">( {{ totalLength }} Results )</h3>
       </div>
     </div>
     <div class="text-center loading" v-show="loading">
@@ -57,9 +57,9 @@
     </div>
     <div class="class=d-flex mb-6 mt-6">
 
-      <v-data-table dense class="pa-5 d-table auto width-100"  hide-default-footer :items="items"
-        :headers="headers" :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" :search="search"
-        hide-default-header mobile-breakpoint="0">
+      <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="items" :headers="headers"
+        :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" :search="search" hide-default-header
+        mobile-breakpoint="0">
         <template v-slot:header="{ props }">
           <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
           </th>
@@ -68,10 +68,14 @@
           <tbody class="table-body">
             <tr class="table-border" v-for='(item, index, id ) in items' :key="id">
               <td>
-              <a :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">{{ item.full_name }}</a></td>
+                <a :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">{{ item.full_name }}</a>
+              </td>
               <td>{{ item.title }}</td>
               <td>{{ item.email }}</td>
               <td>{{ item.phone_office }}</td>
+              <td>{{ item.manager }}</td>
+              <td>{{ item.division }}</td>
+              <td>{{ item.branch }}</td>
             </tr>
           </tbody>
         </template>
@@ -111,6 +115,9 @@ export default {
       { text: "Position", value: "title" },
       { text: "E-Mail Address", value: "email" },
       { text: "Phone Number", value: "phone_office" },
+      { text: "Manager", value: "manager" },
+      { text: "Division", value: "division" },
+      { text: "Branch", value: "branch" },
     ],
     page: 1,
     pageCount: 0,
@@ -139,6 +146,10 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
+    capitalizeString(param){
+      const string = param
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
     updateBreadCrumbs() {
 
       var find = ' ';
@@ -150,25 +161,25 @@ export default {
       dynamicBreadcrumb.forEach((element => {
         if (element.name == 'Department') {
           element.name = this.department;
-          element.link = '/find-employee/' + this.department.replace(reg,'-').toLowerCase()
+          element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
         } else if (element.name == 'Division') {
-          
+
           element.name = this.div;
-          if(this.branch !== '3ajd9h'){
-            element.link = ('/find-employee/' + this.department + '/'+ this.div ).replace(reg,'-').toLowerCase() + '/3ajd9h'
+          if (this.branch !== '3ajd9h') {
+            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-').toLowerCase() + '/3ajd9h'
           } else {
             element.link = null
           }
-          
+
         } else if (element.name == 'Branch') {
-          if(this.branch === '3ajd9h') {
+          if (this.branch === '3ajd9h') {
             element.name = null
           } else {
             element.name = this.branch;
           }
-          
+
         }
-        
+
       }))
       this.breadcrumbsList = arr
     },
@@ -176,24 +187,24 @@ export default {
     getDataFromApi() {
       var find = '-';
       var reg = new RegExp(find, 'g');
-      const { department, division,branch } = this.$route.params;
+      const { department, division, branch } = this.$route.params;
 
       this.loading = true;
       let formattedQueryParam = ''
       if (division == null) {
         formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-      } else if(division !== null && branch == null || branch == undefined) {
-        formattedQueryParam = `${ encodeURIComponent(`${department}-%252F-${division}`)}`
+      } else if (division !== null && branch == null || branch == undefined) {
+        formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}`)}`
       } else if (division !== null && branch !== null) {
-        formattedQueryParam = `${ encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
+        formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
       }
-      this.title = department.replace(reg, ' ')
-      this.department = department.replace(reg, ' ')
-      this.div = division.replace(reg, ' ')
-      this.branch = branch.replace(reg, ' ')
+      this.title = this.capitalizeString(department.replace(reg, ' '))
+      this.department =  this.capitalizeString(department.replace(reg, ' '))
+      this.div = this.capitalizeString(division.replace(reg, ' '))
+      this.branch = this.capitalizeString(branch.replace(reg, ' '))
       const search = `${encodeURIComponent(`${this.search}`)}`;
 
-      
+
       axios
         .post(
           `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=` + search,

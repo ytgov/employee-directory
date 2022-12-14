@@ -18,10 +18,10 @@
       </v-container>
     </div>
 
-    <DepartmentHeader :title="title" :image="title" />
+    <DepartmentHeader :title="title" :image="department" />
 
 
-    <v-breadcrumbs class="mt-6 breadcrumbs"  :items="breadcrumbsList">
+    <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
           {{ item.name }}
@@ -42,7 +42,7 @@
           <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
             max-width="590">
             <div class="py-4 d-flex align-center justify-center" style="width: 200px">
-              <IconLoader :image="title" :color="'purple'" />
+              <IconLoader :image="department" :color="'purple'" />
             </div>
             <div class="d-flex align-center justify-center" style="width:80%">
               <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
@@ -126,7 +126,10 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
-
+    capitalizeString(param){
+      const string = param
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
     generateUrl(type, param, index) {
 
       let find = ' ';
@@ -135,13 +138,13 @@ export default {
       let paramFormatted = param.replace(reg, '-')
 
       if (type === 'division') {
-        if(indexFormatted === 'N/A') {
+        if (indexFormatted === 'N/A') {
           return window.location.href + '/-'
         }
         return window.location.href + '/' + indexFormatted.toLowerCase() + '/3ajd9h'
-        
+
       } else if (type === 'branch') {
-        if(param === 'N/A') {
+        if (param === 'N/A') {
           return window.location.href + '/' + indexFormatted.toLowerCase() + '/-'
         }
         return window.location.href + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
@@ -177,8 +180,8 @@ export default {
       this.loading = true;
       let formattedQueryParam = ''
       formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-      this.department = department.replace(reg, ' ')
-      this.title = department.replace(reg, ' ')
+      this.department = department.replace(reg, ' ') 
+      this.title = this.capitalizeString(department.replace(reg, ' '))
       axios
         .post(
           `http://localhost:3000/api/employees/Find-Employee/${department}`,
