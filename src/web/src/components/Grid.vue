@@ -68,14 +68,14 @@
           <tbody class="table-body">
             <tr class="table-border" v-for='(item, index, id ) in items' :key="id">
               <td>
-                <a :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">{{ item.full_name }}</a>
+                <a class="d-flex flex-wrap align-center" :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+                  <IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
+                  {{ item.full_name }}</a>
               </td>
               <td>{{ item.title }}</td>
               <td>{{ item.email }}</td>
               <td>{{ item.phone_office }}</td>
-              <td>{{ item.manager }}</td>
-              <td>{{ item.division }}</td>
-              <td>{{ item.branch }}</td>
+
             </tr>
           </tbody>
         </template>
@@ -90,12 +90,14 @@
 const axios = require("axios");
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import DivisionsCard from "./UI/DivisionsCard.vue";
+import IconLoader from "./icons/IconLoader.vue";
 
 export default {
   name: "Grid",
   components: {
     DepartmentHeader,
     DivisionsCard,
+    IconLoader,
   },
   data: () => ({
     dataTableParam: 0,
@@ -115,9 +117,7 @@ export default {
       { text: "Position", value: "title" },
       { text: "E-Mail Address", value: "email" },
       { text: "Phone Number", value: "phone_office" },
-      { text: "Manager", value: "manager" },
-      { text: "Division", value: "division" },
-      { text: "Branch", value: "branch" },
+
     ],
     page: 1,
     pageCount: 0,
