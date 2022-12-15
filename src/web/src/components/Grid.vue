@@ -41,7 +41,7 @@
       <DivisionsCard :department="this.department.toLowerCase()" class="mt-16" />
     </v-row>
 
-    <div class="pa-6 mt-10 d-flex flex-column align-start justify-center">
+    <div class=" pl-6 pt-6 pb-n12 mt-10 d-flex flex-column align-start justify-center">
 
       <div class=" d-flex align-center justify-start">
         <h2 style="font-size: 34px !important;">{{ div }}</h2>
@@ -55,7 +55,7 @@
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <div class="class=d-flex mb-6 mt-6">
+    <div class="class=d-flex mb-6 mt-2">
 
       <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="items" :headers="headers"
         :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" :search="search" hide-default-header
