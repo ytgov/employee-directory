@@ -69,7 +69,7 @@
             <tr class="table-border" v-for='(item, index, id ) in items' :key="id">
               <td>
                 <a class="d-flex flex-wrap align-center" :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
-                  <IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
+                  <div style="width:10px" v-if="(item.level === 2)" ></div><IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
                   {{ item.full_name }}</a>
               </td>
               <td>{{ item.title }}</td>

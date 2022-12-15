@@ -242,13 +242,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 return managerArr.includes(e.full_name)
             })
 
-            
-            managers.forEach((element=> {
-                return element.levelVal = 0
-            }))
-
-            
-            
             let employeesByManager = employeesByDivision.filter(function (e) {
                 return !managers.includes(e.full_name)
             })
@@ -258,26 +251,37 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             const getEmployeesByManager = (employeesArray: any, currentManager: any, level:any) => {
                 const currentEmployees = employeesArray.filter((employee: any) => employee.manager === currentManager.full_name);
                 Object.assign(currentManager, { level } );
+
+                
                 
                 if (!currentEmployees.length) {
+                    
+                    
                     return currentManager;
                 }
 
                 let employeesList: any = [];
                 const currentLevel = level +=1;
                 for (const manager of currentEmployees) {
+                    
                     const employees = getEmployeesByManager(employeesArray, manager, currentLevel);
+                    
                     employees.value += manager.value
                     employeesList = [...employeesList, employees];
                 }
+
+                
+                
                 return [currentManager, ...employeesList.flat()];
             }
 
             let result: any = [];
             let levelOfDepth:any = 0;
-
+            
             for (const manager of managers) {
-                result = [...result, ...getEmployeesByManager(employeesByManager, manager, levelOfDepth)];
+                
+                
+                result = [...result, ...getEmployeesByManager(employeesByManager, manager, levelOfDepth+1)];
             }
 
             if (search?.length) {
@@ -298,6 +302,11 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 return index === self.indexOf(elem);
             });
 
+            result.forEach(function (element:any) {
+                if( element.manager === '-' || element.manager === 0 ) {
+                    element.level = 0
+                }
+            })
 
             res.send({ data: result.slice(start, start + itemsPerPage), meta: { branchCount: result.length, divisionCount: divLength } });
         })
