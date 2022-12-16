@@ -151,15 +151,25 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     var reg = new RegExp(find, 'g');
 
     let paramDepartment = (req.params.department.replace(reg, ' '))
-    let paramDivision = (req.params.division.replace(reg, ' '))
+    let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
 
-    if (paramBranch === '3ajd9h') {
+    
+
+    if(paramDivision === 'not-division'){
+        paramDivision = ''
+    } else {
+        paramDivision = (req.params.division.replace(reg,' '))
+    }
+    
+
+    if (paramBranch === 'all-branches' || paramBranch === 'all branches' ) {
         paramBranch = ''
     } else {
         paramBranch = req.params.branch.replace(reg, ' ')
     }
-
+     
+    
     axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment, division: paramDivision, branch: paramBranch, } })
         .then((response: any) => {
 
@@ -204,6 +214,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
 
             });
+
+
             employeesByDept.forEach(function (element: any) {
                 if (element.manager == null || element.manager == '' || element.manager == '-') {
                     element.manager = '-'
@@ -215,13 +227,21 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 }
             })
 
-
+            let compare = employeesByDept
 
             employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
 
-            let compare = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
+            
 
-            let employeesByDivision = employeesByDept = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+
+            let employeesByDivision = employeesByDept
+
+            if(paramDivision !== '') {
+                employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+            }
+            console.log(employeesByDept.length, 'employees length')
+            console.log(employeesByDivision.length, 'division length')
+            
 
             let divLength = employeesByDivision.length
 
@@ -229,6 +249,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
 
+            console.log(employeesByDivision.length, 'division length 2')
 
             let managerArr = employeesByDivision.map(a => a.manager)
 
@@ -302,9 +323,12 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 return index === self.indexOf(elem);
             });
 
+            
             result.forEach(function (element:any) {
                 if( element.manager === '-' || element.manager === 0 ) {
                     element.level = 0
+                } else if( element.level > 2) {
+                    element.level = 2
                 }
             })
 

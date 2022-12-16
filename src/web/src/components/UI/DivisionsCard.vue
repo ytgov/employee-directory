@@ -59,18 +59,22 @@ export default {
             let department = this.department.replace(reg,'-')
             let indexFormatted = index.replace(reg, '-')
             let paramFormatted = param.replace(reg, '-')
+            
+            if(indexFormatted === 'N/A'){
+                indexFormatted = 'not-division'
+            }
 
             if (type === 'division') {
 
                 console.log(indexFormatted)
                 if (indexFormatted === 'N/A') {
-                    return url +'/find-employee/' + department + '/'
+                    return url +'/find-employee/' + department + '/not-division/all-branches'
                 }
-                return url + '/find-employee/'+ department + '/' + indexFormatted.toLowerCase() + '/3ajd9h'
+                return url + '/find-employee/'+ department + '/' + indexFormatted.toLowerCase() + '/all-branches'
 
             } else if (type === 'branch') {
                 if (param === 'N/A') {
-                    return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/-'
+                    return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/not-branch'
                 }
                 return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
             }
