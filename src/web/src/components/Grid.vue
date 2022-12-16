@@ -165,14 +165,14 @@ export default {
         } else if (element.name == 'Division') {
 
           element.name = this.div;
-          if (this.branch !== '3ajd9h') {
-            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-').toLowerCase() + '/3ajd9h'
+          if (this.branch !== 'all-branches') {
+            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-').toLowerCase() + '/all-branches'
           } else {
             element.link = null
           }
 
         } else if (element.name == 'Branch') {
-          if (this.branch === '3ajd9h') {
+          if (this.branch === 'all-branches') {
             element.name = null
           } else {
             element.name = this.branch;

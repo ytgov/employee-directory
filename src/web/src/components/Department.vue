@@ -126,28 +126,43 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
-    capitalizeString(param){
+    capitalizeString(param) {
       const string = param
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     generateUrl(type, param, index) {
 
+      const urlLocation = String(window.location.href)
+      let url = urlLocation.split(window.location.pathname)
+
+      url = url.filter(element => {
+        return element !== ''
+      })
+      url = url[0]
       let find = ' ';
+
       let reg = new RegExp(find, 'g');
+      let department = this.department.replace(reg, '-')
       let indexFormatted = index.replace(reg, '-')
       let paramFormatted = param.replace(reg, '-')
 
+      if (indexFormatted === 'N/A') {
+        indexFormatted = 'not-division'
+      }
+
       if (type === 'division') {
+
+        console.log(indexFormatted)
         if (indexFormatted === 'N/A') {
-          return window.location.href + '/-'
+          return url + '/find-employee/' + department + '/not-division/all-branches'
         }
-        return window.location.href + '/' + indexFormatted.toLowerCase() + '/3ajd9h'
+        return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
 
       } else if (type === 'branch') {
         if (param === 'N/A') {
-          return window.location.href + '/' + indexFormatted.toLowerCase() + '/-'
+          return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/not-branch'
         }
-        return window.location.href + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
+        return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
       }
 
 
@@ -180,7 +195,7 @@ export default {
       this.loading = true;
       let formattedQueryParam = ''
       formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-      this.department = department.replace(reg, ' ') 
+      this.department = department.replace(reg, ' ')
       this.title = this.capitalizeString(department.replace(reg, ' '))
       axios
         .post(
