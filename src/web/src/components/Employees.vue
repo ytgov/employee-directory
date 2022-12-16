@@ -76,7 +76,7 @@ export default {
   components: {
     IconLoader
   },
-  name: "Grid",
+  name: "Employees",
   data: () => ({
     breadcrumbsList: [],
     show: false,
@@ -85,13 +85,6 @@ export default {
     search: "",
     options: {},
     totalLength: 0,
-    headers: [
-      { text: "id", value: "id" },
-      { text: "name", value: "name" },
-    ],
-    page: 1,
-    pageCount: 0,
-    iteamsPerPage: 10,
   }),
   watch: {
     options: {

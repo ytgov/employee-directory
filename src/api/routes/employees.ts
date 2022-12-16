@@ -347,7 +347,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             
             
 
-            res.send({ data: finalResult.slice(start, start + itemsPerPage), meta: { branchCount: finalResult.length, divisionCount: finalResult.length } });
+            res.send({ data: finalResult.slice(start, start + itemsPerPage), meta: { branchCount: finalResult.length, divisionCount: divLength } });
         })
         .catch((error: any) => {
             console.log(error);
