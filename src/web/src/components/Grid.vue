@@ -47,7 +47,7 @@
         <h2 style="font-size: 34px !important;">{{ div }}</h2>
         <h3 class="ml-4">( {{ divisionLength }} Results )</h3>
       </div>
-      <div v-if="branch !== 'All branches'" class=" d-flex align-center justify-start">
+      <div  class=" d-flex align-center justify-start">
         <h2 style="font-size: 25px !important;">{{ branch }}</h2>
         <h3 style="font-size: 16px !important;" class="ml-4">( {{ totalLength }} Results )</h3>
       </div>
@@ -68,7 +68,7 @@
           <tbody class="table-body">
             <tr class="table-border" v-for='(item, index, id ) in items' :key="id">
               <td>
-                <a class="d-flex flex-wrap align-center" :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+                <a class="d-flex flex-wrap align-center" style="word-wrap: normal" :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
                   <div style="width:10px" v-if="(item.level === 2)" ></div><IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
                   {{ item.full_name }}</a>
               </td>
@@ -213,7 +213,8 @@ export default {
         .then((resp) => {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
-          this.divisionLength = resp.data.meta.divisionCount
+          this.divisionLength = resp.data.meta.divisionCount;
+          this.itemsPerPage = resp.data.meta.divisionCount;
           this.updateBreadCrumbs();
           this.loading = false;
         })

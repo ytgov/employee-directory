@@ -150,7 +150,7 @@ export default {
     },
     methods: {
         checkStatus(param) {
-            if (param == null || param == "") {
+            if (param == null || param == "" || param == "-") {
                 return false
             } else if (param.length > 0) {
                 return true
@@ -221,7 +221,7 @@ export default {
                 }
             }))
 
-            
+
 
             console.log(arr)
             this.breadcrumbsList = arr
@@ -231,10 +231,10 @@ export default {
 </script>
   
 <style>
-
 .v-main {
     background: white !important;
 }
+
 .employee-detail a {
     font-size: 22px;
     font-weight: 400;

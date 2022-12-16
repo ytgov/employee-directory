@@ -135,7 +135,7 @@ employeesRouter.post("/Find-Employee/Employee-Detail/:full_name", [param("full_n
 
 employeesRouter.post("/find-employee/:department/:division/:branch?", [param("department", "division"), param('branch').notEmpty()], async (req: Request, res: Response) => {
     const page = req.body.page || 1;
-    const itemsPerPage = req.body.itemsPerPage || 100;
+    let itemsPerPage  = req.body.itemsPerPage;
     const start = (page - 1) * itemsPerPage;
     // const sortBy = req.body.sortBy || []; // capable of sort by multiple columns
     const sortDesc = req.body.sortDesc || []; // likewise
@@ -244,6 +244,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             
 
             let divLength = employeesByDivision.length
+            
 
             if (paramBranch !== '' ) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
@@ -285,10 +286,13 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 const currentLevel = level +=1;
                 for (const manager of currentEmployees) {
                     
+
+
                     const employees = getEmployeesByManager(employeesArray, manager, currentLevel);
                     
                     employees.value += manager.value
                     employeesList = [...employeesList, employees];
+                    
                 }
 
                 
@@ -319,20 +323,31 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             //     }
             // }
 
-            result = result.filter(function (elem:any, index:any, self:any) {
-                return index === self.indexOf(elem);
+            
+
+            let resultRev = result.slice().reverse();
+
+            let resultFilttered = resultRev.filter(function (elem:any, index:any, self:any) {
+                return index == self.indexOf(elem);
             });
 
+            let finalResult = resultFilttered.slice().reverse();
+
             
-            result.forEach(function (element:any) {
+            
+
+            
+            finalResult.forEach(function (element:any) {
                 if( element.manager === '-' || element.manager === 0 ) {
                     element.level = 0
                 } else if( element.level > 2) {
                     element.level = 2
                 }
             })
+            
+            
 
-            res.send({ data: result.slice(start, start + itemsPerPage), meta: { branchCount: result.length, divisionCount: divLength } });
+            res.send({ data: finalResult.slice(start, start + itemsPerPage), meta: { branchCount: finalResult.length, divisionCount: finalResult.length } });
         })
         .catch((error: any) => {
             console.log(error);
