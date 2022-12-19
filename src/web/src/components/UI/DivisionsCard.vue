@@ -66,7 +66,7 @@ export default {
 
             if (type === 'division') {
 
-                console.log(indexFormatted)
+                
                 if (indexFormatted === 'N/A') {
                     return url +'/find-employee/' + department + '/not-division/all-branches'
                 }

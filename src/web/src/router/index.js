@@ -7,6 +7,7 @@ import Grid from "../components/Grid";
 import Employees from "../components/Employees";
 import Department from "../components/Department";
 import EmployeeDetail from "../components/EmployeeDetail";
+import EmployeeSearch from "../components/EmployeeSearch";
 
 
 Vue.use(VueRouter);
@@ -17,16 +18,6 @@ const routes = [
     name: "Home",
     redirect: {name: "Find a government employee"}
 
-  },
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    component: Dashboard
-  },
-  {
-    path: "/form",
-    name: "Basic Form",
-    component: Form,
   },
   {
     path: "/find-Employee/employee-detail/:full_name",
@@ -44,6 +35,14 @@ const routes = [
     }
   },
   {
+    path: "/find-employee/search/keyword=:full_name&department=:department?",
+    name: "Search Employee",
+    component: EmployeeSearch,
+    meta: {
+      
+    }
+  },
+  {
     path: "/find-employee/:department/:division/:branch?", 
     name: "Data grid",
     component: Grid,
@@ -57,8 +56,6 @@ const routes = [
       ]
     }
   },
-
-
   {
     path: "/find-Employee/:department",
     name: "Department",

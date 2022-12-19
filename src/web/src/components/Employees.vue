@@ -1,32 +1,6 @@
 <template>
   <div class="books">
-    <div class="full-width yellow-border white-bg pt-16 mt-n5">
-
-      <v-container class="container-content ">
-        <h1 class="ml-5">Find a goverment Employee</h1>
-
-        <v-banner class="mb-6 mt-13">
-          <span>
-            You can use this service to find the contact information of a person who works for a Government of Yukon
-            organization.
-          </span> <br /><br />
-          Enter the person's first or last name, position title, email address or telephone number in the search box to
-          get started. You can also enter the name of a department, division or branch to view all employees in that
-          specific organization.
-        </v-banner>
-        <v-row class="flex-end mb-10 px-10 mt-8">
-          <v-text-field label="Search by Name" v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1"
-            outlined="outlined" flat="" color="" solo>
-
-          </v-text-field>
-          <v-select v-model="search" class="pl-5 pr-5" dense="" items-value="'item.index'" background-color="#F1F1F1"
-            outlined="outlined" flat="" label="Department" color="" solo>
-
-          </v-select>
-          <v-btn class="search-responsive mt-n3 pa-4 py-5" style="display: flex;" color="#00616D">Search</v-btn>
-        </v-row>
-      </v-container>
-    </div>
+    <SearchBarHeader :info="this.findEmployeeHeaderInfo"/>
     <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
 
       <template v-slot:item="{ item }">
@@ -70,11 +44,14 @@
 
 <script>
 import IconLoader from './icons/IconLoader.vue'
+import SearchBarHeader from './UI/SearchBarHeader.vue'
 
 const axios = require("axios");
 export default {
   components: {
-    IconLoader
+
+    IconLoader,
+    SearchBarHeader,
   },
   name: "Employees",
   data: () => ({
@@ -85,6 +62,7 @@ export default {
     search: "",
     options: {},
     totalLength: 0,
+    findEmployeeHeaderInfo: true,
   }),
   watch: {
     options: {
@@ -161,6 +139,6 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 
 </style>

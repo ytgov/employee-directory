@@ -1,22 +1,10 @@
 <template>
   <div class="books">
-    <div class="full-width yellow-border white-bg pt-16 mt-n5">
-      <v-container class="container-content ">
-        <h1 class="ml-5">Find a goverment Employee</h1>
-        <v-banner class="">
-        </v-banner>
-        <v-row class="flex-end mb-10 px-10">
-          <v-text-field label="Search by Name" v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1"
-            outlined="outlined" flat="" color="" solo>
-          </v-text-field>
-          <v-select v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1" outlined="outlined" flat=""
-            label="Department" color="" solo>
-          </v-select>
-          <v-btn class="search-responsive mt-n3 pa-4 py-5" style="display: flex;" color="#00616D">Search</v-btn>
-        </v-row>
-      </v-container>
-    </div>
+
+    <SearchBarHeader/>
+
     <DepartmentHeader :title="title" :image="title.toLowerCase()" />
+
     <v-breadcrumbs class="mt-6 mb-8 breadcrumbs" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
@@ -25,16 +13,7 @@
       </template>
     </v-breadcrumbs>
     <v-row class="d-flex container pr-1 flex-column">
-
-
-      <div class="d-flex wrap ml-3 align-center">
-        <h4 class="mr-3 mt-1">Grouped by their:</h4>
-        <div class="d-md-flex chips">
-          <v-chip class="ma-2 px-8" label outlined color="#00616D">Location</v-chip>
-          <v-chip class="ma-2 px-8" label outlined color="#00616D">Position</v-chip>
-        </div>
-      </div>
-
+      <GridChips/>
     </v-row>
 
     <v-row>
@@ -91,6 +70,8 @@ const axios = require("axios");
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import DivisionsCard from "./UI/DivisionsCard.vue";
 import IconLoader from "./icons/IconLoader.vue";
+import SearchBarHeader from "./UI/SearchBarHeader.vue";
+import GridChips from "./UI/GridChips.vue"
 
 export default {
   name: "Grid",
@@ -98,7 +79,9 @@ export default {
     DepartmentHeader,
     DivisionsCard,
     IconLoader,
-  },
+    SearchBarHeader,
+    GridChips
+},
   data: () => ({
     dataTableParam: 0,
     branch: '',
@@ -215,6 +198,8 @@ export default {
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
           this.itemsPerPage = resp.data.meta.divisionCount;
+
+          
           this.updateBreadCrumbs();
           this.loading = false;
         })
@@ -231,10 +216,6 @@ export default {
 .table-header {
   height: 300px !important;
   background-color: green;
-}
-
-.v-text-field>>>fieldset {
-  border: 1.5px solid #F3A901;
 }
 
 .bg-img {

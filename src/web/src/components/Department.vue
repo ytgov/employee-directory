@@ -1,22 +1,7 @@
 <template>
   <div class="books">
 
-    <div class="full-width yellow-border white-bg pt-16 mt-n5">
-      <v-container class="container-content ">
-        <h1 class="ml-5">Find a goverment Employee</h1>
-        <v-banner class="">
-        </v-banner>
-        <v-row class="flex-end mb-10 px-10">
-          <v-text-field label="Search by Name" v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1"
-            outlined="outlined" flat="" color="" solo>
-          </v-text-field>
-          <v-select v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1" outlined="outlined" flat=""
-            label="Department" color="" solo>
-          </v-select>
-          <v-btn class="search-responsive mt-n3 pa-4 py-5" style="display: flex;" color="#00616D">Search</v-btn>
-        </v-row>
-      </v-container>
-    </div>
+    <SearchBarHeader/>
 
     <DepartmentHeader :title="title" :image="department" />
 
@@ -58,13 +43,13 @@
                     <a :href="generateUrl('division', index, index)" :key="id" class="division">{{ index }}</a>
                   </li>
                   <v-expand-transition>
+                    
                     <ul v-if="hover">
                       <li v-for="detail in item" class="py-2">
-                        <a :href="generateUrl('branch', detail.branch, index)" class="my-2 px-0 py-3 branch">{{
-                            detail.branch
-                        }}</a>
+                        <a :href="generateUrl('branch', detail.branch, index)" class="my-2 px-0 py-3 branch">{{ detail.branch }}</a>
                       </li>
                     </ul>
+                  
                   </v-expand-transition>
                 </v-card>
               </v-hover>
@@ -82,13 +67,15 @@
 
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import IconLoader from "./icons/IconLoader.vue";
+import SearchBarHeader from "./UI/SearchBarHeader.vue";
 
 const axios = require("axios");
 export default {
   components: {
     IconLoader,
     DepartmentHeader,
-  },
+    SearchBarHeader
+},
   name: "Department",
   data: () => ({
     department: '',
@@ -100,6 +87,7 @@ export default {
     search: "",
     title: '',
     options: {},
+    
   }),
   created() {
 

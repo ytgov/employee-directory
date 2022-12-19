@@ -116,6 +116,8 @@ export default {
 </script>
 
 <style>
+
+
 .active {
   background: white !important;
 }
@@ -229,5 +231,32 @@ export default {
     background-position-y: center;
 
   }
+}
+
+
+.data-header {
+  background-color: #DC4405;
+  text-align: left;
+  color: white;
+}
+
+.table-body td {
+  padding: 1rem 1rem !important;
+}
+
+.table-body a {
+  text-decoration: underline;
+}
+
+.table-body .employees a {
+  padding-left: 1rem !important;
+}
+
+.table-body .table-border {
+  border-bottom: none !important;
+}
+
+.table-body tr:nth-child(even) {
+  background-color: #EDEDED;
 }
 </style>
