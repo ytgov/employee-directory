@@ -1,23 +1,7 @@
 <template>
     <div class="books">
 
-        <div class="full-width yellow-border white-bg pt-16 mt-n5">
-            <v-container class="container-content ">
-                <h1 class="ml-5">Find a goverment Employee</h1>
-                <v-banner class="">
-                </v-banner>
-                <v-row class="flex-end mb-10 px-10">
-                    <v-text-field label="Search by Name" v-model="search" class="pl-5 pr-5" dense=""
-                        background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
-                    </v-text-field>
-                    <v-select v-model="search" class="pl-5 pr-5" dense="" background-color="#F1F1F1" outlined="outlined"
-                        flat="" label="Department" color="" solo>
-                    </v-select>
-                    <v-btn class="search-responsive mt-n3 pa-4 py-5" style="display: flex;"
-                        color="#00616D">Search</v-btn>
-                </v-row>
-            </v-container>
-        </div>
+        <SearchBarHeader/>
 
         <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
 
@@ -34,7 +18,7 @@
         </div>
         <v-row class=" mt-16"></v-row>
         <v-row>
-            <v-col v-for="item in employee">
+            <v-col  v-for="item in employee">
                 <h2 class="mb-1" style="color: #DC4405 !important;font-size: 34px !important;">{{ item.full_name }}</h2>
                 <h3 v-if="checkStatus(item.title)" class="mb-8"
                     style="color: #512A44 !important; font-size: 24px !important; ">{{ item.title }}</h3>
@@ -42,12 +26,12 @@
                 <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
                     <h2 class="mt-4 mb-2">Organization</h2>
                     <v-row>
-                        <v-col class="mb-1">
+                        <v-col cols="6" class="mb-1">
                             <h3 v-if="checkStatus(item.department)" class="mb-0">Department: <a>{{ item.department
                             }}</a></h3>
                             <h3 v-if="checkStatus(item.division)" class="mb-0">Division: <a>{{ item.division }}</a></h3>
                         </v-col>
-                        <v-col>
+                        <v-col cols="6">
                             <h3 v-if="checkStatus(item.branch)" class="mb-0">Branch: <a>{{ item.branch }}</a></h3>
                             <h3 v-if="checkStatus(item.unit)" class="mb-0">Unit: <span>{{ item.unit }}</span></h3>
                         </v-col>
@@ -106,11 +90,13 @@
 <script>
 
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
+import SearchBarHeader from "./UI/SearchBarHeader.vue";
 
 const axios = require("axios");
 export default {
     components: {
         DepartmentHeader,
+        SearchBarHeader,
     },
     name: "EmployeeDetail",
     data: () => ({

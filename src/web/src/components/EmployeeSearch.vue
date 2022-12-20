@@ -1,7 +1,17 @@
 <template>
     <div class="books">
         <SearchBarHeader />
-        <DepartmentHeaderVue :title="this.department" :image="this.department.toLowerCase()"/>
+        <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
+
+        <v-breadcrumbs class="mt-6 mb-8 breadcrumbs" :items="breadcrumbsList">
+            <template v-slot:item="{ item }">
+                <v-breadcrumbs-item :href="item.link">
+                    {{ item.name }}
+                </v-breadcrumbs-item>
+            </template>
+        </v-breadcrumbs>
+
+
         <h2 class="mt-8 ml-3">Your search for {{ this.searchTitle }} found {{ this.itemsLength }} results.</h2>
         <GridChips :search="chipsData" />
         <div class="text-center loading" v-show="loading">
@@ -16,7 +26,7 @@
             <div v-for="(item, index) in value">
                 <div class="mt-8 ml-5 d-flex align-center">
                     <h3 class="division-text">{{ cleanParam(index) }}</h3>
-                    <h3 class="ml-3 py-1 px-3 division-length" >{{ item.length }}</h3>
+                    <h3 class="ml-3 py-1 px-3 division-length">{{ item.length }}</h3>
                 </div>
 
                 <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="item"
@@ -55,7 +65,7 @@
 <script>
 const axios = require("axios");
 import SearchBarHeader from './UI/SearchBarHeader.vue'
-import DepartmentHeaderVue from './UI/DepartmentHeader.vue';
+import DepartmentHeader from './UI/DepartmentHeader.vue';
 import GridChips from "./UI/GridChips.vue"
 import IconLoader from "./icons/IconLoader.vue"
 
@@ -65,7 +75,7 @@ export default {
         SearchBarHeader,
         GridChips,
         IconLoader,
-        DepartmentHeaderVue
+        DepartmentHeader
     },
     watch: {
         options: {
@@ -74,13 +84,18 @@ export default {
             },
             deep: true,
         },
+        '$route'() {
+            this.breadcrumbsList = this.$route.meta.breadcrumb
+        },
 
     },
     mounted() {
         this.getDataFromApi();
+        this.updateBreadCrumbs();
     },
     data() {
         return {
+            breadcrumbsList: [],
             chipsData: true,
             department: '',
             pastSearch: '',
@@ -108,15 +123,33 @@ export default {
 
             return paramFormatted;
         },
+        updateBreadCrumbs() {
+
+            var find = ' ';
+            var reg = new RegExp(find, 'g');
+            let arr = this.$route.meta.breadcrumb;
+
+            const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
+
+            dynamicBreadcrumb.forEach((element => {
+                if (element.name == 'Department') {
+                    element.name = this.department;
+                    element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
+                } else if (element.name == 'Search') {
+
+                    element.name = 'Search Employee: ' + this.searchTitle;
+
+                }
+            }))
+            this.breadcrumbsList = arr
+        },
         getDataFromApi() {
             var find = '-';
             var reg = new RegExp(find, 'g');
             let { full_name, department } = this.$route.params;
 
             this.searchTitle = full_name
-            this.department = department.replace(reg,' ')
-
-           
+            this.department = department.replace(reg, ' ')
 
             this.loading = true;
 
@@ -130,7 +163,6 @@ export default {
                     this.items = resp.data.data;
                     this.itemsLength = resp.data.meta.count
                     this.loading = false;
-                    console.log(this.items)
                 })
                 .catch((err) => console.error(err))
                 .finally(() => {
@@ -156,17 +188,18 @@ export default {
 </script>
 
 <style scoped>
-.department-text{
+.department-text {
     font-size: 34px !important;
 }
-.division-text{
+
+.division-text {
     font-size: 30px !important;
 }
-.division-length{
+
+.division-length {
     background-color: #00616D;
     font-size: 16px;
     border-radius: 5px;
-    color:white !important;
+    color: white !important;
 }
-
 </style>

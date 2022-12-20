@@ -24,7 +24,7 @@
                     background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
                 </v-text-field>
                 <v-select :items="item" v-model="departmentSearch" class="pl-5 pr-5" dense="" background-color="#F1F1F1" outlined="outlined"
-                    flat="" label="Department" color="" solo>
+                    flat="" label="Department" solo>
                 </v-select>
                 <v-btn :href="updateSearch()" class="search-responsive mt-n3 pa-4 py-5" color="#00616D">Search</v-btn>
             </v-row>

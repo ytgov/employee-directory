@@ -39,7 +39,12 @@ const routes = [
     name: "Search Employee",
     component: EmployeeSearch,
     meta: {
-      
+      breadcrumb: [
+        {name: 'Home', link: '/'},
+        {name: 'Find a government employee', link: '/Find-Employee'},
+        {name: 'Department', link: '/find-employee/Department' , dynamic: true},
+        {name: 'Search', dynamic: true},
+      ]
     }
   },
   {

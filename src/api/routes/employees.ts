@@ -71,7 +71,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     var find = '-';
     var reg = new RegExp(find, 'g');
 
-    
+
     let paramDepartment = (req.params.department)
 
     if (paramDepartment === 'any-department') {
@@ -134,7 +134,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
 
             let departments = _.groupBy(employeesByDept, item => `"${item.department}"`);
-            
+
             for (const [key, value] of Object.entries(departments)) {
                 const groupByDivision: any = _.groupBy(departments[key], (deparment) => deparment.division);
 
@@ -142,7 +142,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             }
 
 
-            res.send({ data: departments , meta: { count: employeesByDept.length } });
+            res.send({ data: departments, meta: { count: employeesByDept.length } });
         })
         .catch((error: any) => {
             console.log(error);
