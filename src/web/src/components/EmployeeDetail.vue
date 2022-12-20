@@ -201,7 +201,7 @@ export default {
             let arr = this.$route.meta.breadcrumb;
 
             const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-            console.log(this.branch)
+
             dynamicBreadcrumb.forEach((element => {
                 if (element.name == 'Department') {
                     element.name = this.department;
@@ -223,7 +223,7 @@ export default {
 
 
 
-            console.log(arr)
+            
             this.breadcrumbsList = arr
         },
     }
