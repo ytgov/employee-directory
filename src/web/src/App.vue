@@ -10,15 +10,6 @@
           </v-toolbar-title>
           <v-spacer></v-spacer>
           <div>
-
-            <v-menu bottom left class="ml-0">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn retain-focus-on-click color="black" plain v-bind="attrs" v-on="on">
-                  <img class="mr-4" style="width:30px;" src='../public/m.svg' />
-                  <a style="color:black; text-transform: none;">Menu</a>
-                </v-btn>
-              </template>
-            </v-menu>
           </div>
         </v-row>
       </div>
@@ -34,9 +25,6 @@
         </v-row>
       </v-container>
     </v-main>
-    <!-- <div class="container text-center">
-      <img src="/Aurora-mini.svg" style="margin: 5% 0px 3% 0px" height="44" />
-    </div> -->
     <v-footer class="mt-16" flat style="z-index: 10" padless height="70">
       <v-card class="flex " flat tile>
         <v-card-title class="py-16 header-container" id="footer-bg">
@@ -48,10 +36,10 @@
           <div class="header-container d-flex justify-space-between">
 
             <div class="d-flex flex-column pa-2 width-100">
-              <a href="https://yukon.ca/">Government of Yukon</a>
-              <a href="https://yukon.ca/en/copyright">Copyright</a>
-              <a href="https://yukon.ca/en/disclaimer">Disclaimer</a>
-              <a href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
+              <a href="#">Government of Yukon</a>
+              <a href="#">Copyright</a>
+              <a href="#">Disclaimer</a>
+              <a href="#">Privacy statement</a>
             </div>
             <v-card-text class="white--text text-right with-100">
               <span>© {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
@@ -107,10 +95,6 @@ export default {
     toggleMenu: function () {
       this.menuShow = !this.menuShow;
     },
-    signOut: function () {
-      store.dispatch("signOut");
-      router.push("/");
-    }
   }
 };
 </script>

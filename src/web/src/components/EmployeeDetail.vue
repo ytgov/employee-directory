@@ -1,7 +1,7 @@
 <template>
     <div class="books">
 
-        <SearchBarHeader/>
+        <SearchBarHeader />
 
         <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
 
@@ -18,7 +18,7 @@
         </div>
         <v-row class=" mt-16"></v-row>
         <v-row>
-            <v-col  v-for="item in employee">
+            <v-col v-for="item in employee">
                 <h2 class="mb-1" style="color: #DC4405 !important;font-size: 34px !important;">{{ item.full_name }}</h2>
                 <h3 v-if="checkStatus(item.title)" class="mb-8"
                     style="color: #512A44 !important; font-size: 24px !important; ">{{ item.title }}</h3>
@@ -27,12 +27,12 @@
                     <h2 class="mt-4 mb-2">Organization</h2>
                     <v-row>
                         <v-col cols="6" class="mb-1">
-                            <h3 v-if="checkStatus(item.department)" class="mb-0">Department: <a>{{ item.department
+                            <h3 v-if="checkStatus(item.department)" class="mb-0">Department: <a :href="generateUrl('department', 'n/a', 'n/a')">{{ item.department
                             }}</a></h3>
-                            <h3 v-if="checkStatus(item.division)" class="mb-0">Division: <a>{{ item.division }}</a></h3>
+                            <h3 v-if="checkStatus(item.division)" class="mb-0">Division: {{ item.division }}</h3>
                         </v-col>
                         <v-col cols="6">
-                            <h3 v-if="checkStatus(item.branch)" class="mb-0">Branch: <a>{{ item.branch }}</a></h3>
+                            <h3 v-if="checkStatus(item.branch)" class="mb-0">Branch: <a :href="generateUrl('branch', item.branch, item.division)">{{ item.branch }}</a></h3>
                             <h3 v-if="checkStatus(item.unit)" class="mb-0">Unit: <span>{{ item.unit }}</span></h3>
                         </v-col>
                     </v-row>
@@ -41,12 +41,16 @@
                     <h2 class="mt-4 mb-2">Contact:</h2>
                     <v-row>
                         <v-col class="mb-1">
-                            <h3 v-if="checkStatus(item.phone_office)" class="mb-0">Phone Office: <a>{{ item.phone_office
+                            <h3 v-if="checkStatus(item.phone_office)" class="mb-0">Phone Office: <a
+                                    :href="getPhone(item.phone_office)">{{ item.phone_office
+                                    }}</a></h3>
+                            <h3 v-if="checkStatus(item.mobile)" class="mb-0">Mobile: <a :href="getPhone(item.mobile)">{{
+                                    item.mobile
                             }}</a></h3>
-                            <h3 v-if="checkStatus(item.mobile)" class="mb-0">Mobile: <a>{{ item.mobile }}</a></h3>
                         </v-col>
                         <v-col>
-                            <h3 v-if="checkStatus(item.email)" class="mb-0">E-mail Address: <a>{{ item.email }}</a></h3>
+                            <h3 v-if="checkStatus(item.email)" class="mb-0">E-mail Address: <a
+                                    :href="getMail(item.email)">{{ item.email }}</a></h3>
                             <h3 v-if="checkStatus(item.fax_office)" class="mb-0">Fax Office: <span>{{ item.fax_office
                             }}</span></h3>
                         </v-col>
@@ -56,7 +60,7 @@
                     <h2 class="mt-4 mb-2">Position Information</h2>
                     <v-row>
                         <v-col class="mb-1">
-                            <h3 class="mb-0">Manager: <span>{{ item.manager }}</span></h3>
+                            <h3 class="mb-0">Manager: <a :href="generateUrl('manager', item.manager, 'n/a')">{{ item.manager }}</a></h3>
                         </v-col>
                     </v-row>
                 </v-card>
@@ -135,6 +139,17 @@ export default {
 
     },
     methods: {
+        getMail(mail) {
+            const link = 'mailto:' + mail
+            return String(link)
+        },
+        getPhone(number) {
+            const find = '-';
+            const reg = new RegExp(find, 'g');
+            const numberFormatted = number.replace(reg, '')
+            const link = 'tel:' + numberFormatted
+            return String(link)
+        },
         checkStatus(param) {
             if (param == null || param == "" || param == "-") {
                 return false
@@ -143,11 +158,47 @@ export default {
             }
         },
 
-        generateUrl(param) {
+        generateUrl(type, param, index) {
+
+            const urlLocation = String(window.location.href)
+            let url = urlLocation.split(window.location.pathname)
+
+            url = url.filter(element => {
+                return element !== ''
+            })
+            url = url[0]
             let find = ' ';
+
             let reg = new RegExp(find, 'g');
+            let department = this.department.replace(reg, '-').toLowerCase()
+            let indexFormatted = index.replace(reg, '-')
             let paramFormatted = param.replace(reg, '-')
-            return this.title + '/' + paramFormatted
+
+            if(type === 'manager'){
+                return url + '/find-employee/employee-detail/' + param.replace(reg,'.')
+            }
+
+            if (indexFormatted === 'N/A') {
+                indexFormatted = 'not-division'
+            }
+            if(type === 'department') {
+                return url + '/find-employee/' + department
+            }
+            if (type === 'division') {
+
+                
+                if (indexFormatted === 'N/A') {
+                    return url + '/find-employee/' + department + '/not-division/all-branches'
+                }
+                return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
+
+            } else if (type === 'branch') {
+                if (param === 'N/A') {
+                    return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/not-branch'
+                }
+                return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
+            }
+
 
         },
         toggleBranches(param) {
@@ -209,7 +260,7 @@ export default {
 
 
 
-            
+
             this.breadcrumbsList = arr
         },
     }
