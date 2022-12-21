@@ -212,9 +212,6 @@ export default {
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
           this.itemsPerPage = resp.data.meta.divisionCount;
-          console.log(this.branch)
-
-
           this.updateBreadCrumbs();
           this.loading = false;
         })

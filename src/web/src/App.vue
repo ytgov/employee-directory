@@ -152,10 +152,11 @@ export default {
 }
 
 .full-width {
-  width: 110%;
-  margin-left: -5%;
-
+  width: 100vw;
+  position: relative;
+  left: calc(-50vw + 50%);
 }
+
 
 .yellow-border {
   border-bottom: 3px #f3b228 solid;
@@ -170,19 +171,13 @@ export default {
 }
 
 @media (min-width: 1180px) {
-  .full-width {
-    width: 500%;
-    margin-left: -200%;
-
-  }
-
   .container-content {
     width: 1180px !important;
   }
 }
 
 .container-content {
-  width: 90%;
+  width: 100%;
   padding: 12px 24px;
 }
 
@@ -211,7 +206,7 @@ export default {
 
 @media (min-width: 1180px) {
   .bg-img {
-    background-position-x: 2878px;
+    background-position-x: 130% !important;
     background-position-y: center;
 
   }

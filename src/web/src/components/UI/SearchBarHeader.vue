@@ -1,6 +1,6 @@
 <template>
 
-    <div class="full-width yellow-border white-bg pt-16 mt-n5">
+    <div class="full-width yellow-border white-bg ml-0 pl-0 pt-16 mt-n5">
 
         <v-container class="container-content ">
             <h1 class="ml-5">Find a goverment Employee</h1>
@@ -20,7 +20,9 @@
                 specific organization.
             </v-banner>
 
+            <v-form>
 
+            
             <v-row>
                 <v-col sm="5" cols="12">
                     <v-text-field label="Search by Name" v-model="nameSearch" dense=""
@@ -33,9 +35,10 @@
                     </v-select>
                 </v-col>
                 <v-col class="d-flex justify-top" sm="2" cols="12">
-                    <v-btn :href="updateSearch()" class="mt-0 py-2" height="40px" type="submit" color="#00616D">Search</v-btn>
+                    <v-btn width="100%" :href="updateSearch()" class="mt-0 py-2" height="40px" type="submit" color="#00616D">Search</v-btn>
                 </v-col>
             </v-row>
+        </v-form>
 
 
 
