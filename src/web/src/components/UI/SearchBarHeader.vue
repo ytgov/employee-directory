@@ -19,18 +19,33 @@
                 that
                 specific organization.
             </v-banner>
-            <v-row class="flex-end mb-10 px-10 mt-8">
-                <v-text-field label="Search by Name" v-model="nameSearch" class="pl-5 pr-5" dense=""
-                    background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
-                </v-text-field>
-                <v-select :items="item" v-model="departmentSearch" class="pl-5 pr-5" dense="" background-color="#F1F1F1" outlined="outlined"
-                    flat="" label="Department" solo>
-                </v-select>
-                <v-btn :href="updateSearch()" class="search-responsive mt-n3 pa-4 py-5" color="#00616D">Search</v-btn>
-            </v-row>
-        </v-container>
-    </div>
 
+
+            <v-row>
+                <v-col sm="5" cols="12">
+                    <v-text-field width="100%" label="Search by Name" v-model="nameSearch" dense=""
+                        background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
+                    </v-text-field>
+                </v-col>
+                <v-col sm="5" cols="12">
+                    <v-select width="100%" :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
+                        outlined="outlined" flat="" label="Department" solo>
+                    </v-select>
+                </v-col>
+                <v-col class="d-flex justify-top" sm="2" cols="12">
+                    <v-btn :href="updateSearch()" class="mt-0 py-2" width="100%" height="40px" type="submit" color="#00616D">Search</v-btn>
+                </v-col>
+            </v-row>
+
+
+
+        </v-container>
+
+
+
+
+
+    </div>
 </template>
 
 
@@ -39,13 +54,13 @@
 const axios = require("axios");
 
 export default {
-    
+
     created() {
         this.getEmployeesData()
     },
-    data(){
+    data() {
         return {
-            options:[],
+            options: [],
             item: [],
             nameSearch: '',
             departmentSearch: ''
@@ -54,19 +69,24 @@ export default {
     props: ['info',],
 
     methods: {
+        submit() {
+            if (this.departmentSearch === '') {
+                console.log('working')
+            }
+        },
 
-        updateSearch(){
+        updateSearch() {
             const find = ' ';
             const reg = new RegExp(find, 'g');
             let name = this.nameSearch.replace(/\s+/g, '.').trim()
-            let department = this.departmentSearch.replace(reg,'-')
+            let department = this.departmentSearch.replace(reg, '-')
 
-            if(name === '') {
+            if (name === '') {
                 return '/find-employee/' + department.toLowerCase()
             }
-            
+
             name = 'keyword=' + name.trim()
-            
+
             if (department !== '') {
                 department = '&department=' + department.toLowerCase()
             } else {

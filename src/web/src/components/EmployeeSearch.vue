@@ -95,6 +95,7 @@ export default {
     },
     data() {
         return {
+
             breadcrumbsList: [],
             chipsData: true,
             department: '',
@@ -137,7 +138,7 @@ export default {
                     element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
                 } else if (element.name == 'Search') {
 
-                    element.name = 'Search Employee: ' + this.searchTitle;
+                    element.name = 'Search Employee : ' + this.searchTitle;
 
                 }
             }))
