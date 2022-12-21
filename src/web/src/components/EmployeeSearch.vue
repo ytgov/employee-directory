@@ -98,10 +98,46 @@
 
         </div>
 
+        <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+            <v-row>
+                <div class="mt-8 ml-12 d-flex align-center">
+                    <h3 class="division-text ">{{ cleanLocation(parent_array) }}</h3>
+                </div>
+            </v-row>
+            <div class="mt-8 ml-5 d-flex align-center">
+                <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="value"
+                    :headers="headers" :loading="loading" hide-default-header mobile-breakpoint="0">
+                    <template v-slot:header="{ props }">
+                        <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+                        </th>
+                    </template>
+                    <template v-slot:body="{ items }">
+                        <tbody class="table-body">
+                            <tr class="table-border" v-for='item in value'>
+                                <td>
+                                    <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                                        :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+
+                                        {{ item.full_name }}
+                                    </a>
+                                </td>
+                                <td>{{ item.title }}</td>
+                                <td>{{ item.email }}</td>
+                                <td>{{ item.phone_office }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+
+                </v-data-table>
+
+            </div>
+
+        </div>
+
         <div v-if="itemsValue === 3" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
             <v-row>
                 <div class="mt-8 ml-12 d-flex align-center">
-                    <h3 class="division-text ">{{cleanParam(parent_array) }}</h3>
+                    <h3 class="division-text ">{{ cleanParam(parent_array) }}</h3>
                 </div>
             </v-row>
             <div class="mt-8 ml-5 d-flex align-center">
@@ -196,8 +232,6 @@ export default {
     },
 
     methods: {
-
-
         cleanParam(param) {
 
             let paramFormatted = param.replace(/['"]+/g, '')
@@ -207,6 +241,15 @@ export default {
             }
 
             return paramFormatted;
+        },
+        cleanLocation(location) {
+                
+            if (location[1] === ',') {
+                let link = location.slice(2);
+                return link.replace(/['"]+/g, '')
+            } else {
+                return location.replace(/['"]+/g, '')
+            }
         },
         updateBreadCrumbs() {
 
@@ -222,7 +265,7 @@ export default {
                     element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
                 } else if (element.name == 'Search') {
 
-                    element.name = 'Search Employee : ' + this.searchTitle;
+                    element.name = 'Employee Search';
 
                 }
             }))
@@ -254,7 +297,7 @@ export default {
                     this.items = resp.data.data;
                     this.itemsLength = resp.data.meta.count
                     this.itemsPerPage = resp.data.meta.count
-                    
+
                     this.itemsValue = this.selection
                     this.loading = false;
                 })

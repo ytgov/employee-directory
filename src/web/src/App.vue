@@ -240,7 +240,7 @@ export default {
   border-bottom: none !important;
 }
 
-.table-body tr:nth-child(even) {
+.table-body tr:nth-child(odd) {
   background-color: #EDEDED;
 }
 </style>

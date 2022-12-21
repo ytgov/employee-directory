@@ -107,6 +107,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                 full_name_url: string
                 value: number
                 address: String
+                community: String
             }
 
 
@@ -126,7 +127,8 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                     'division_url': division_url,
                     'full_name_url': element.full_name,
                     'value': 0,
-                    'address': '',
+                    'address': element.address,
+                    'community': element.community,
                 };
 
 
@@ -148,9 +150,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
             }
 
-            let location = _.groupBy(employeesByDept, item => `"${item.address}"`);
-
-            console.log(location)
+            let location = _.groupBy(employeesByDept, item => `"${item.address}, ${item.community}"`);
 
             let position = _.groupBy(employeesByDept, item => `"${item.title}"`);
 
