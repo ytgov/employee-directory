@@ -1,7 +1,7 @@
 <template>
   <div class="books">
 
-    <SearchBarHeader/>
+    <SearchBarHeader />
 
     <DepartmentHeader :title="title" :image="title.toLowerCase()" />
 
@@ -12,13 +12,26 @@
         </v-breadcrumbs-item>
       </template>
     </v-breadcrumbs>
-    <v-row class="d-flex container pr-1 flex-column">
-      <GridChips/>
+
+    <v-row class="pl-6">
+      <v-col xs="12" md="2" class="d-flex align-center justify-start">
+        <h4 class="">Group by their: </h4>
+      </v-col>
+      <v-col xs="12" md="10">
+        <v-chip-group v-model="selection" center-active mandatory>
+          <v-chip label outlined color="#00616D" active-class="primary-color">All Employees</v-chip>
+          <v-chip label outlined color="#00616D">By Department</v-chip>
+          <v-chip label outlined color="#00616D">By Location</v-chip>
+          <v-chip label outlined color="#00616D">By Position</v-chip>
+        </v-chip-group>
+      </v-col>
     </v-row>
 
     <v-row>
-      <DivisionsCard :department="this.department.toLowerCase()" class="mt-16" />
+      <DivisionsCard :department="this.department.toLowerCase()" class="mt-6" />
     </v-row>
+
+
 
     <div class=" pl-6 pt-6 pb-n12 mt-10 d-flex flex-column align-start justify-center">
 
@@ -47,9 +60,12 @@
           <tbody class="table-body">
             <tr class="table-border" v-for='(item, index, id ) in items' :key="id">
               <td>
-                <a class="d-flex flex-wrap align-center" style="word-wrap: normal" :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
-                  <div style="width:10px" v-if="(item.level === 2)" ></div><IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
-                  {{ item.full_name }}</a>
+                <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                  :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+                  <div style="width:10px" v-if="(item.level === 2)"></div>
+                  <IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
+                  {{ item.full_name }}
+                </a>
               </td>
               <td>{{ item.title }}</td>
               <td>{{ item.email }}</td>
@@ -71,7 +87,6 @@ import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import DivisionsCard from "./UI/DivisionsCard.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
-import GridChips from "./UI/GridChips.vue"
 
 export default {
   name: "Grid",
@@ -80,8 +95,7 @@ export default {
     DivisionsCard,
     IconLoader,
     SearchBarHeader,
-    GridChips
-},
+  },
   data: () => ({
     dataTableParam: 0,
     branch: '',
@@ -129,7 +143,7 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
-    capitalizeString(param){
+    capitalizeString(param) {
       const string = param
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
@@ -182,7 +196,7 @@ export default {
         formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
       }
       this.title = this.capitalizeString(department.replace(reg, ' '))
-      this.department =  this.capitalizeString(department.replace(reg, ' '))
+      this.department = this.capitalizeString(department.replace(reg, ' '))
       this.div = this.capitalizeString(division.replace(reg, ' '))
       this.branch = this.capitalizeString(branch.replace(reg, ' '))
       const search = `${encodeURIComponent(`${this.search}`)}`;
@@ -199,7 +213,7 @@ export default {
           this.divisionLength = resp.data.meta.divisionCount;
           this.itemsPerPage = resp.data.meta.divisionCount;
 
-          
+
           this.updateBreadCrumbs();
           this.loading = false;
         })
@@ -236,31 +250,5 @@ export default {
 .overf {
   z-index: 1;
   overflow: hidden;
-}
-
-.data-header {
-  background-color: #DC4405;
-  text-align: left;
-  color: white;
-}
-
-.table-body td {
-  padding: 1rem 1rem !important;
-}
-
-.table-body a {
-  text-decoration: underline;
-}
-
-.table-body .employees a {
-  padding-left: 1rem !important;
-}
-
-.table-body .table-border {
-  border-bottom: none !important;
-}
-
-.table-body tr:nth-child(even) {
-  background-color: #EDEDED;
 }
 </style>

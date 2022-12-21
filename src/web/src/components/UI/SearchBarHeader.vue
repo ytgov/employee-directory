@@ -23,17 +23,17 @@
 
             <v-row>
                 <v-col sm="5" cols="12">
-                    <v-text-field width="100%" label="Search by Name" v-model="nameSearch" dense=""
+                    <v-text-field label="Search by Name" v-model="nameSearch" dense=""
                         background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
                     </v-text-field>
                 </v-col>
                 <v-col sm="5" cols="12">
-                    <v-select width="100%" :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
+                    <v-select  :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
                         outlined="outlined" flat="" label="Department" solo>
                     </v-select>
                 </v-col>
                 <v-col class="d-flex justify-top" sm="2" cols="12">
-                    <v-btn :href="updateSearch()" class="mt-0 py-2" width="100%" height="40px" type="submit" color="#00616D">Search</v-btn>
+                    <v-btn :href="updateSearch()" class="mt-0 py-2" height="40px" type="submit" color="#00616D">Search</v-btn>
                 </v-col>
             </v-row>
 

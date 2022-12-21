@@ -12,14 +12,54 @@
         </v-breadcrumbs>
 
 
-        <h2 class="mt-8 ml-3">Your search for {{ this.searchTitle }} found {{ this.itemsLength }} results.</h2>
-        <GridChips :search="chipsData" />
+        <h2 class="mt-8">Your search for {{ this.searchTitle }} found {{ this.itemsLength }} results.</h2>
+        <v-row>
+            <v-col xs="12" md="2" class="d-flex align-center justify-start">
+                <h4 class="">Group by their: </h4>
+            </v-col>
+            <v-col xs="12" md="10">
+                <v-chip-group v-model="selection" center-active mandatory>
+                    <v-chip label outlined color="#00616D" active-class="primary-color">All Employees</v-chip>
+                    <v-chip label outlined color="#00616D">By Department</v-chip>
+                    <v-chip label outlined color="#00616D">By Location</v-chip>
+                    <v-chip label outlined color="#00616D">By Position</v-chip>
+                </v-chip-group>
+            </v-col>
+        </v-row>
+
         <div class="text-center loading" v-show="loading">
             <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
         </div>
 
+        <div v-if="itemsValue === 0">
 
-        <div v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+            <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="items"
+                :headers="headers" :loading="loading" hide-default-header :items-per-page="itemsPerPage"
+                mobile-breakpoint="0">
+                <template v-slot:header="{ props }">
+                    <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+                    </th>
+                </template>
+                <template v-slot:body="{ items }">
+                    <tbody class="table-body">
+                        <tr class="table-border" v-for='item in items'>
+                            <td>
+                                <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                                    :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+
+                                    {{ item.full_name }}
+                                </a>
+                            </td>
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.phone_office }}</td>
+                        </tr>
+                    </tbody>
+                </template>
+
+            </v-data-table>
+        </div>
+        <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
             <h2 class="mt-8 ml-5 department-text">{{ cleanParam(parent_array) }}</h2>
 
             <p>{{ value.length }}</p>
@@ -58,6 +98,41 @@
 
         </div>
 
+        <div v-if="itemsValue === 3" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+            <v-row>
+                <div class="mt-8 ml-12 d-flex align-center">
+                    <h3 class="division-text ">{{cleanParam(parent_array) }}</h3>
+                </div>
+            </v-row>
+            <div class="mt-8 ml-5 d-flex align-center">
+                <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="value"
+                    :headers="headers" :loading="loading" hide-default-header mobile-breakpoint="0">
+                    <template v-slot:header="{ props }">
+                        <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+                        </th>
+                    </template>
+                    <template v-slot:body="{ items }">
+                        <tbody class="table-body">
+                            <tr class="table-border" v-for='item in value'>
+                                <td>
+                                    <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                                        :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+
+                                        {{ item.full_name }}
+                                    </a>
+                                </td>
+                                <td>{{ item.title }}</td>
+                                <td>{{ item.email }}</td>
+                                <td>{{ item.phone_office }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+
+                </v-data-table>
+
+            </div>
+
+        </div>
     </div>
 
 </template>
@@ -66,14 +141,12 @@
 const axios = require("axios");
 import SearchBarHeader from './UI/SearchBarHeader.vue'
 import DepartmentHeader from './UI/DepartmentHeader.vue';
-import GridChips from "./UI/GridChips.vue"
 import IconLoader from "./icons/IconLoader.vue"
 
 
 export default {
     components: {
         SearchBarHeader,
-        GridChips,
         IconLoader,
         DepartmentHeader
     },
@@ -88,6 +161,13 @@ export default {
             this.breadcrumbsList = this.$route.meta.breadcrumb
         },
 
+        selection: {
+            handler() {
+                this.loading = true
+                this.getDataFromApi();
+            },
+        }
+
     },
     mounted() {
         this.getDataFromApi();
@@ -95,7 +175,9 @@ export default {
     },
     data() {
         return {
-
+            itemsPerPage: null,
+            selection: '',
+            itemsValue: null,
             breadcrumbsList: [],
             chipsData: true,
             department: '',
@@ -114,6 +196,8 @@ export default {
     },
 
     methods: {
+
+
         cleanParam(param) {
 
             let paramFormatted = param.replace(/['"]+/g, '')
@@ -156,13 +240,22 @@ export default {
 
 
             axios
-                .post(
-                    `http://localhost:3000/api/employees/find-employee/search/keyword=${full_name}&department=${department}`,
-                    this.options
+                .request({
+                    method: 'POST',
+                    data: {
+                        groupBy: this.selection,
+                        itemsperPage: this.itemsPerPage,
+                    },
+                    url: `http://localhost:3000/api/employees/find-employee/search/keyword=${full_name}&department=${department}`
+                }
+
                 )
                 .then((resp) => {
                     this.items = resp.data.data;
                     this.itemsLength = resp.data.meta.count
+                    this.itemsPerPage = resp.data.meta.count
+                    
+                    this.itemsValue = this.selection
                     this.loading = false;
                 })
                 .catch((err) => console.error(err))
@@ -171,18 +264,6 @@ export default {
                 });
         },
     },
-
-    computed: {
-        item: function () {
-            var filtered_array = [];
-            for (var i = 0; i < this.items.length; i++) {
-                if (filtered_array.indexOf(this.items[i].name) === -1) {
-                    filtered_array.push(this.items[i].name)
-                }
-            }
-            return filtered_array;
-        }
-    }
 
 }
 
@@ -202,5 +283,10 @@ export default {
     font-size: 16px;
     border-radius: 5px;
     color: white !important;
+}
+
+.primary-color {
+    color: white;
+    background-color: #00616D;
 }
 </style>

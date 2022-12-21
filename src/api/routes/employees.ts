@@ -68,6 +68,10 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
     var employeesByDept: any[] = Array();
 
+
+    let groupBy = (req.body.groupBy) || 0;
+    const itemsPerPage = (req.body.itemsPerPage);
+
     var find = '-';
     var reg = new RegExp(find, 'g');
 
@@ -102,6 +106,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                 division_url: string
                 full_name_url: string
                 value: number
+                address: String
             }
 
 
@@ -121,6 +126,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                     'division_url': division_url,
                     'full_name_url': element.full_name,
                     'value': 0,
+                    'address': '',
                 };
 
 
@@ -136,13 +142,31 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             let departments = _.groupBy(employeesByDept, item => `"${item.department}"`);
 
             for (const [key, value] of Object.entries(departments)) {
-                const groupByDivision: any = _.groupBy(departments[key], (deparment) => deparment.division);
+                const groupByDivision: any = _.groupBy(departments[key], (department) => department.division);
 
                 departments[key] = groupByDivision;
+
             }
 
+            let location = _.groupBy(employeesByDept, item => `"${item.address}"`);
 
-            res.send({ data: departments, meta: { count: employeesByDept.length } });
+            console.log(location)
+
+            let position = _.groupBy(employeesByDept, item => `"${item.title}"`);
+
+            let finalResult: any
+
+            if (groupBy === 0) {
+                finalResult = employeesByDept
+            } else if (groupBy === 1) {
+                finalResult = departments
+            } else if (groupBy === 2) {
+                finalResult = location
+            } else if (groupBy === 3) {
+                finalResult = position
+            }
+
+            res.send({ data: finalResult, meta: { count: employeesByDept.length } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -320,15 +344,11 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
 
 
-
-
             let employeesByDivision = employeesByDept
 
             if (paramDivision !== '') {
                 employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
             }
-
-
 
             let divLength = employeesByDivision.length
 
@@ -337,11 +357,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
 
-
-
             let managerArr = employeesByDivision.map(a => a.manager)
-
-
 
             managerArr = managerArr.filter(function (elem, index, self) {
                 return index === self.indexOf(elem);
@@ -352,11 +368,15 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 return managerArr.includes(e.full_name)
             })
 
+            managers = managers.filter((value, index, self) =>
+                index === self.findIndex((t) => (
+                    t.full_name === value.full_name
+                ))
+            )
+
             let employeesByManager = employeesByDivision.filter(function (e) {
                 return !managers.includes(e.full_name)
             })
-
-
 
             const getEmployeesByManager = (employeesArray: any, currentManager: any, level: any) => {
                 const currentEmployees = employeesArray.filter((employee: any) => employee.manager === currentManager.full_name);
@@ -411,9 +431,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             //     }
             // }
 
-
-
             let resultRev = result.slice().reverse();
+
 
             let resultFilttered = resultRev.filter(function (elem: any, index: any, self: any) {
                 return index == self.indexOf(elem);
@@ -435,7 +454,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
 
 
-            res.send({ data: finalResult.slice(start, start + itemsPerPage), meta: { branchCount: finalResult.length, divisionCount: divLength } });
+            res.send({ data: finalResult.slice(start, start + itemsPerPage), meta: { branchCount: finalResult, divisionCount: divLength } });
         })
         .catch((error: any) => {
             console.log(error);
