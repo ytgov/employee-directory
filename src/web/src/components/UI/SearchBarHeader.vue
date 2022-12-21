@@ -20,22 +20,22 @@
                 specific organization.
             </v-banner>
 
-            <v-form>
+            <v-form @submit.prevent="updateSearch">
 
             
             <v-row>
-                <v-col sm="5" cols="12">
-                    <v-text-field label="Search by Name" v-model="nameSearch" dense=""
+                <v-col class="mb-n9" sm="5" cols="12">
+                    <v-text-field :error-messages="this.nameError?  ['Please enter a valid name.'] : []" label="Search by Name" v-model="nameSearch" dense=""
                         background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
                     </v-text-field>
                 </v-col>
-                <v-col sm="5" cols="12">
-                    <v-select  :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
+                <v-col class="mb-n9" sm="5" cols="12">
+                    <v-select :error-messages="this.dptError?  ['Please select a department.'] : []" :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
                         outlined="outlined" flat="" label="Department" solo>
                     </v-select>
                 </v-col>
-                <v-col class="d-flex justify-top" sm="2" cols="12">
-                    <v-btn width="100%" :href="updateSearch()" class="mt-0 py-2" height="40px" type="submit" color="#00616D">Search</v-btn>
+                <v-col class="d-flex justify-top mb-3" sm="2" cols="12">
+                    <v-btn width="100%" class="mt-0 py-2" height="40px" type="submit" color="#00616D">Search</v-btn>
                 </v-col>
             </v-row>
         </v-form>
@@ -57,7 +57,18 @@
 const axios = require("axios");
 
 export default {
-
+    watch:{
+        nameSearch(){
+            if(this.nameSearch !== ''){
+                this.nameError = false
+            }
+        },
+        departmentSearch(){
+            if(this.departmentSearch !== ''){
+                this.dptError =false
+            }
+        }
+    },
     created() {
         this.getEmployeesData()
     },
@@ -66,17 +77,14 @@ export default {
             options: [],
             item: [],
             nameSearch: '',
-            departmentSearch: ''
+            departmentSearch: '',
+            nameError: false,
+            dptError: false,
         }
     },
     props: ['info',],
 
     methods: {
-        submit() {
-            if (this.departmentSearch === '') {
-                console.log('working')
-            }
-        },
 
         updateSearch() {
             const find = ' ';
@@ -85,17 +93,18 @@ export default {
             let department = this.departmentSearch.replace(reg, '-')
 
             if (name === '') {
-                return '/find-employee/' + department.toLowerCase()
+                this.nameError =true
+                return
+            } else if(department === '') {
+                this.dptError = true
+                return
             }
 
             name = 'keyword=' + name.trim()
 
-            if (department !== '') {
-                department = '&department=' + department.toLowerCase()
-            } else {
-                department = '&department=any-department'
-            }
-            return '/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase()
+            department = '&department=' + department.toLowerCase()
+            
+            window.location.href = '/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase()
         },
         getEmployeesData() {
             this.loading = true;

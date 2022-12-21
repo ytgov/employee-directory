@@ -18,8 +18,8 @@
                 <h4 class="">Group by their: </h4>
             </v-col>
             <v-col xs="12" md="10">
-                <v-chip-group v-model="selection" center-active mandatory>
-                    <v-chip label outlined color="#00616D" active-class="primary-color">All Employees</v-chip>
+                <v-chip-group v-model="selection" center-active mandatory active-class="chips--active">
+                    <v-chip label outlined color="#00616D">All Employees</v-chip>
                     <v-chip label outlined color="#00616D">By Department</v-chip>
                     <v-chip label outlined color="#00616D">By Location</v-chip>
                     <v-chip label outlined color="#00616D">By Position</v-chip>
@@ -277,7 +277,11 @@ export default {
             let { full_name, department } = this.$route.params;
 
             this.searchTitle = full_name
-            this.department = department.replace(reg, ' ')
+
+            let departmentFormatted = department.replace(reg,' ')
+
+            departmentFormatted = departmentFormatted.charAt(0).toUpperCase() + departmentFormatted.slice(1);
+            this.department = departmentFormatted
 
             this.loading = true;
 
@@ -328,8 +332,8 @@ export default {
     color: white !important;
 }
 
-.primary-color {
-    color: white;
-    background-color: #00616D;
+.chips--active {
+  opacity: 1!important;
+  background-color: red!important;
 }
 </style>

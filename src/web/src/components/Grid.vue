@@ -58,7 +58,9 @@
         </template>
         <template v-slot:body="{ items }">
           <tbody class="table-body">
-            <tr class="table-border" v-for='(item, index, id ) in items' :key="id">
+            <tr :class="{ 'table-body-managers': item.level === 0 || item.level === 1}"
+                
+                class="table-border" v-for='(item, index, id ) in items' :key="id">
               <td>
                 <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                   :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">

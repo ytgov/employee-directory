@@ -3,7 +3,7 @@
     <v-app-bar elevation="2" app color="#fff" flat height="70">
       <div class="header-container">
         <v-row align-content="space-between">
-          <img src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
+          <img  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
@@ -227,6 +227,10 @@ export default {
   text-decoration: underline;
 }
 
+.table-body-managers {
+  font-weight: 700;
+}
+
 .table-body .employees a {
   padding-left: 1rem !important;
 }
@@ -237,5 +241,10 @@ export default {
 
 .table-body tr:nth-child(odd) {
   background-color: #EDEDED;
+}
+
+.chips-active{
+  opacity: 1!important;
+  background-color: red!important;
 }
 </style>

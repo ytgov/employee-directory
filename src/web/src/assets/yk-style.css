@@ -212,7 +212,7 @@ a {
     #container-main{
         content: '';
         top: 0;
-        background: url(/Aurora-small-mobile.svg);
+        /* background: url(/Aurora-small-mobile.svg); */
         background-repeat: no-repeat;
         background-position: 200% 0%;
     }
