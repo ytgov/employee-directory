@@ -473,50 +473,39 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
-            var urlDepartment = req.params.department.replace(reg, " ");
-            var departments = Array();
-            var divisions = Array();
 
+            
+            
+            employeesByDept = resultEmployees.filter(function (e:any) {
+                return e.department.toLowerCase().indexOf(paramDepartment) >= 0 
+            })
 
-            resultEmployees.forEach(function (element: any) {
-                if (element.department.toLowerCase() == urlDepartment) {
-                    departments.push(element.department);
-                    if (element.division == null) {
-                        element.division = 'N/A'
-                    }
-                    divisions.push(element.division);
-                    divisions.push(divisions.splice(divisions.indexOf('N/A'), 1)[0]);
+            let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division','branch'],['desc','asc'])
+
+            employeesByDept.forEach((element:any)=>{
+                if(element.division === null){
+                    element.division = 'N/A'
                 }
-            });
+                if(element.branch === null) {
+                    element.branch = 'N/A'
+                }
+            })
+
+            let division:any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
 
 
-            var divisionsReady = divisions.filter(function (elem, index, self) {
-                return index === self.indexOf(elem);
-            });
+            for (const [key, value] of Object.entries(division)) {
+                const groupByDivision: any = _.groupBy(division[key], (division:any) => division.branch);
 
-            divisionsReady.forEach((elementDiv: any) => {
-                var keyDiv = elementDiv;
-                var arrayDivElements = Array();
-                var arrayDivElementssUq = Array();
+                division[key] = groupByDivision;
 
-                resultEmployees.forEach(function (elementDiv: any) {
-                    if (keyDiv == elementDiv.division && elementDiv.branch !== null) {
-                        if (!arrayDivElementssUq.includes(elementDiv.branch)) {
-                            arrayDivElements.push(elementDiv);
-                            arrayDivElementssUq.push(elementDiv.branch)
+            }
 
-                        }
-                    }
-                    if (elementDiv.branch == null) { elementDiv.branch = 'N/A' }
+            
 
-                })
+            
 
-                employeesByDept[elementDiv] = arrayDivElements;
-
-            });
-
-
-            res.send({ data: employeesByDept, meta: { count: 0 } });
+            res.send({ data: division, meta: { count: 0 } });
 
         })
         .catch((error: any) => {
@@ -537,46 +526,33 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
-            var urlDepartment = paramDepartment;
-            var departments = Array();
-            var divisions = Array();
 
+            employeesByDept = resultEmployees.filter(function (e:any) {
+                return e.department.toLowerCase().indexOf(paramDepartment) >= 0 
+            })
 
-            resultEmployees.forEach(function (element: any) {
-                if (element.department.toLowerCase() == urlDepartment) {
-                    departments.push(element.department);
-                    if (element.division == null) {
-                        element.division = 'N/A'
-                    }
-                    divisions.push(element.division);
-                    divisions.push(divisions.splice(divisions.indexOf('N/A'), 1)[0]);
+            let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division','branch'],['desc','asc'])
+
+            employeesByDept.forEach((element:any)=>{
+                if(element.division === null){
+                    element.division = 'N/A'
                 }
-            });
+                if(element.branch === null) {
+                    element.branch = 'N/A'
+                }
+            })
+            
+            let division:any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
 
 
-            var divisionsReady = divisions.filter(function (elem, index, self) {
-                return index === self.indexOf(elem);
-            });
+            for (const [key, value] of Object.entries(division)) {
+                const groupByDivision: any = _.groupBy(division[key], (division:any) => division.branch);
 
-            divisionsReady.forEach((elementDiv: any) => {
-                var keyDiv = elementDiv;
-                var arrayDivElements = Array();
-                var arrayDivElementssUq = Array();
+                division[key] = groupByDivision;
 
-                resultEmployees.forEach(function (elementDiv: any) {
-                    if (keyDiv == elementDiv.division && elementDiv.branch !== null) {
-                        if (!arrayDivElementssUq.includes(elementDiv.branch)) {
-                            arrayDivElements.push(elementDiv);
-                            arrayDivElementssUq.push(elementDiv.branch)
+            }
 
-                        }
-                    }
-                    if (elementDiv.branch == null) { elementDiv.branch = 'N/A' }
-                })
-                employeesByDept[elementDiv] = arrayDivElements;
-            });
-
-            res.send({ data: employeesByDept, meta: { count: 0 } });
+            res.send({ data: division, meta: { count: 0 } });
 
         })
         .catch((error: any) => {

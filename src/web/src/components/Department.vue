@@ -36,17 +36,17 @@
 
           <v-card outlined color="transparent" class="flex-column py-10">
 
-            <v-card outlined color="transparent" v-for="(item, index, id) in items" class="px-8">
+            <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" class="px-8">
               <v-hover v-slot="{ hover }">
                 <v-card outlined color="transparent">
                   <li>
-                    <a :href="generateUrl('division', index, index)" :key="id" class="division">{{ index }}</a>
+                    <a :href="generateUrl('division', parent_item, parent_item)" :key="id" class="division">{{ parent_item }}</a>
                   </li>
                   <v-expand-transition>
                     
                     <ul v-if="hover">
-                      <li v-for="detail in item" class="py-2">
-                        <a :href="generateUrl('branch', detail.branch, index)" class="my-2 px-0 py-3 branch">{{ detail.branch }}</a>
+                      <li v-for="(item, index, id) in item" class="py-2">
+                        <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index }}</a>
                       </li>
                     </ul>
                   
@@ -194,6 +194,7 @@ export default {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
           this.loading = false;
+          console.log(this.items)
         })
         .catch((err) => console.error(err))
         .finally(() => {

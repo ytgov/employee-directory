@@ -4,16 +4,16 @@
 
             <v-card elevation="1" max-width="1090" class="mx-auto flex-column py-10">
                 <v-row>
-                    <v-col cols="6" v-for="(item, index, id) in items" class="px-8 py-1">
+                    <v-col cols="6" v-for="(item, parent_item, id) in items" class="px-8 py-1">
                         <v-hover v-slot="{ hover }">
                             <v-card outlined color="transparent">
                                 <li>
-                                    <a :href="generateUrl('division', index, index)" :key="id" class="division">{{ index }}</a>
+                                    <a :href="generateUrl('division', 'n/a', parent_item)" :key="id" class="division">{{ parent_item }}</a>
                                 </li>
                                 <v-expand-transition>
                                     <ul v-if="hover">
-                                        <li v-for="detail in item">
-                                            <a :href="generateUrl('branch', detail.branch, index)" class="branch my-2 px-0 py-3">{{ detail.branch }}</a>
+                                        <li v-for="(value, index, id) in item">
+                                            <a :href="generateUrl('branch', index, parent_item)" class="branch my-2 px-0 py-3">{{ index }}</a>
                                         </li>
                                     </ul>
                                 </v-expand-transition>
