@@ -28,7 +28,7 @@
     </v-row>
 
     <v-row>
-      <DivisionsCard :department="this.department.toLowerCase()" class="mt-6" />
+      <DivisionsCard :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()" :department="this.department.toLowerCase()" class="mt-6" />
     </v-row>
 
 
