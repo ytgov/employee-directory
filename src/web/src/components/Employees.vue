@@ -1,6 +1,6 @@
 <template>
   <div class="books">
-    <SearchBarHeader :info="this.findEmployeeHeaderInfo"/>
+    <SearchBarHeader :info="this.findEmployeeHeaderInfo" />
     <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
 
       <template v-slot:item="{ item }">
@@ -18,7 +18,7 @@
     <v-row class="mb-6 mt-16">
       <v-col cols="12" md="4" sm="6" xs="12" v-for='(items, index, id) in item'>
         <v-hover v-slot="{ hover }">
-          <v-card :href="indexUrl(index, 'department')" class="mx-auto employee-division-card" max-width="344" outlined>
+          <v-card :href="indexUrl(index, items)" class="mx-auto employee-division-card" max-width="344" outlined>
             <v-card class="d-flex">
               <v-list-item three-line class="icon-list">
                 <v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
@@ -59,9 +59,7 @@ export default {
     show: false,
     loading: false,
     item: [],
-    search: "",
     options: {},
-    totalLength: 0,
     findEmployeeHeaderInfo: true,
   }),
   watch: {
@@ -71,12 +69,6 @@ export default {
       },
       '$route'() {
         this.breadcrumbsList = this.$route.meta.breadcrumb
-      },
-      deep: true,
-    },
-    search: {
-      handler() {
-        this.getEmployeesData();
       },
       deep: true,
     },
@@ -90,33 +82,20 @@ export default {
     updateBreadCrumbs() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
-    replaceSpaces(find, replace, obj) {
-      find = find
-      replace = replace
-      var reg = new RegExp(find, 'g');
-      return obj.replace(reg, replace)
-    },
-    generateUrl(field, type) {
-      if (type == "division")
-        return "/find-employee/" + field.departmentUrl.toLowerCase() + "/" + field.divisionUrl.tolowercase();
-      else if (type == 'department')
-        return "/find-employee/" + field.departmentUrl.toLowerCase();
-    },
 
-    generateUrlImg(field, type) {
-      let department = field + '.svg';
-      const noSpaces = department.replaceAll(/\s/g, '');
-      return String(noSpaces);
-    },
-
-    indexUrl(field, type) {
-      if (type == "department") {
+    indexUrl(field, value) {
+        
         let department = "/find-employee/" + field
-        let noSpaces = department.replaceAll(/\s/g, '-');
-        return String(noSpaces.toLowerCase())
-      }
+        let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
 
-    },
+        console.log(value.length)
+        if(value.length === 0) {
+          return "" + noSpaces + '/not-division/all-branches'
+        } else {
+          return String(noSpaces)
+        }
+        
+      },
     getEmployeesData() {
       this.loading = true;
 

@@ -8,14 +8,16 @@
                         <v-hover v-slot="{ hover }">
                             <v-card outlined color="transparent">
                                 <li>
-                                    <a :href="generateUrl('division', 'n/a', parent_item)" :key="id" class="division">{{ parent_item }}</a>
+                                    <a :href="generateUrl('division', 'n/a', parent_item)" :key="id" class="division">{{
+                                            parent_item
+                                    }}</a>
                                 </li>
                                 <v-expand-transition>
                                     <ul v-if="hover || checkHover === parent_item.toLowerCase()">
-                                        <li class="py-1" v-for="(value,index,id) in item">
+                                        <li class="py-1" v-for="(value, index, id) in item">
                                             <a :class="{ 'branch-pressed': checkClass === index.toLowerCase() }"
-                                            
-                                            :href="generateUrl('branch', index, parent_item)" class="branch my-2 px-0 py-3">{{ index }}</a>
+                                                :href="generateUrl('branch', index, parent_item)"
+                                                class="branch my-2 px-0 py-3">{{ index }}</a>
                                         </li>
                                     </ul>
                                 </v-expand-transition>
@@ -34,7 +36,7 @@
 const axios = require("axios");
 export default {
 
-    props: ['department','division','branch','checkHover','checkClass'],
+    props: ['department', 'division', 'branch', 'checkHover', 'checkClass'],
     data() {
         return {
             items: [],
@@ -56,23 +58,23 @@ export default {
             })
             url = url[0]
             let find = ' ';
-            
+
             let reg = new RegExp(find, 'g');
-            let department = this.department.replace(reg,'-')
+            let department = this.department.replace(reg, '-')
             let indexFormatted = index.replace(reg, '-')
             let paramFormatted = param.replace(reg, '-')
-            
-            if(indexFormatted === 'N/A'){
+
+            if (indexFormatted === 'N/A') {
                 indexFormatted = 'not-division'
             }
 
             if (type === 'division') {
 
-                
+
                 if (indexFormatted === 'N/A') {
-                    return url +'/find-employee/' + department + '/not-division/all-branches'
+                    return url + '/find-employee/' + department + '/not-division/all-branches'
                 }
-                return url + '/find-employee/'+ department + '/' + indexFormatted.toLowerCase() + '/all-branches'
+                return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
 
             } else if (type === 'branch') {
                 if (param === 'N/A') {
@@ -122,7 +124,7 @@ li {
 a {
     font-size: 19px;
     text-decoration: underline;
-    color: #0097A9!important;
+    color: #0097A9 !important;
 }
 
 .branch-pressed {

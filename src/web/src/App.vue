@@ -242,9 +242,4 @@ export default {
 .table-body tr:nth-child(odd) {
   background-color: #EDEDED;
 }
-
-.chips-active{
-  opacity: 1!important;
-  background-color: red!important;
-}
 </style>
