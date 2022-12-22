@@ -20,7 +20,7 @@ const routes = [
 
   },
   {
-    path: "/find-Employee/employee-detail/:full_name",
+    path: "/find-Employee/employee-detail/:department/:full_name",
     name: "Employee Detail",
     component: EmployeeDetail,
     meta: {

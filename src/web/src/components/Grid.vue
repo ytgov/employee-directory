@@ -63,7 +63,7 @@
                 class="table-border" v-for='(item, index, id ) in items' :key="id">
               <td>
                 <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                  :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+                  :href=" urlEmployee( item.department,item.full_name_url)">
                   <div style="width:10px" v-if="(item.level === 2)"></div>
                   <IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
                   {{ item.full_name }}
@@ -145,6 +145,11 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
+    urlEmployee(department,name){
+      var find = ' ';
+      var reg = new RegExp(find, 'g');
+      return '/find-employee/employee-detail/' + department.replace(reg,'-').toLowerCase() + '/' + name.toLowerCase()
+    },
     capitalizeString(param) {
       const string = param
       return string.charAt(0).toUpperCase() + string.slice(1);

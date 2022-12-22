@@ -1,7 +1,7 @@
 <template>
   <div class="books">
 
-    <SearchBarHeader/>
+    <SearchBarHeader />
 
     <DepartmentHeader :title="title" :image="department" />
 
@@ -40,16 +40,19 @@
               <v-hover v-slot="{ hover }">
                 <v-card outlined color="transparent">
                   <li>
-                    <a :href="generateUrl('division', parent_item, parent_item)" :key="id" class="division">{{ parent_item }}</a>
+                    <a :href="generateUrl('division', parent_item, parent_item)" :key="id" class="division">{{
+                        parent_item
+                    }}</a>
                   </li>
                   <v-expand-transition>
-                    
+
                     <ul v-if="hover">
-                      <li v-for="(item,index,id) in item" class="py-2">
-                        <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index }}</a>
+                      <li v-for="(item, index, id) in item" class="py-2">
+                        <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
+                        }}</a>
                       </li>
                     </ul>
-                  
+
                   </v-expand-transition>
                 </v-card>
               </v-hover>
@@ -75,7 +78,7 @@ export default {
     IconLoader,
     DepartmentHeader,
     SearchBarHeader
-},
+  },
   name: "Department",
   data: () => ({
     department: '',
@@ -87,7 +90,7 @@ export default {
     search: "",
     title: '',
     options: {},
-    
+
   }),
   created() {
 
@@ -140,7 +143,7 @@ export default {
 
       if (type === 'division') {
 
-        
+
         if (indexFormatted === 'N/A') {
           return url + '/find-employee/' + department + '/not-division/all-branches'
         }
@@ -194,7 +197,6 @@ export default {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
           this.loading = false;
-          console.log(this.items)
         })
         .catch((err) => console.error(err))
         .finally(() => {

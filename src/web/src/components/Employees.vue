@@ -84,18 +84,16 @@ export default {
     },
 
     indexUrl(field, value) {
-        
-        let department = "/find-employee/" + field
-        let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
 
-        console.log(value.length)
-        if(value.length === 0) {
-          return "" + noSpaces + '/not-division/all-branches'
-        } else {
-          return String(noSpaces)
-        }
-        
-      },
+      let department = "/find-employee/" + field
+      let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
+      if (value.length === 0) {
+        return "" + noSpaces + '/not-division/all-branches'
+      } else {
+        return String(noSpaces)
+      }
+
+    },
     getEmployeesData() {
       this.loading = true;
 

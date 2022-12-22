@@ -243,7 +243,7 @@ export default {
             return paramFormatted;
         },
         cleanLocation(location) {
-                
+
             if (location[1] === ',') {
                 let link = location.slice(2);
                 return link.replace(/['"]+/g, '')
@@ -278,7 +278,7 @@ export default {
 
             this.searchTitle = full_name
 
-            let departmentFormatted = department.replace(reg,' ')
+            let departmentFormatted = department.replace(reg, ' ')
 
             departmentFormatted = departmentFormatted.charAt(0).toUpperCase() + departmentFormatted.slice(1);
             this.department = departmentFormatted
@@ -333,7 +333,7 @@ export default {
 }
 
 .chips--active {
-  opacity: 1!important;
-  background-color: red!important;
+    opacity: 1 !important;
+    background-color: red !important;
 }
 </style>

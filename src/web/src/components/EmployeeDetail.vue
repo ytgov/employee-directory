@@ -27,12 +27,14 @@
                     <h2 class="mt-4 mb-2">Organization</h2>
                     <v-row>
                         <v-col cols="6" class="mb-1">
-                            <h3 v-if="checkStatus(item.department)" class="mb-0">Department: <a :href="generateUrl('department', 'n/a', 'n/a')">{{ item.department
-                            }}</a></h3>
+                            <h3 v-if="checkStatus(item.department)" class="mb-0">Department: <a
+                                    :href="generateUrl('department', 'n/a', 'n/a')">{{ item.department
+                                    }}</a></h3>
                             <h3 v-if="checkStatus(item.division)" class="mb-0">Division: {{ item.division }}</h3>
                         </v-col>
                         <v-col cols="6">
-                            <h3 v-if="checkStatus(item.branch)" class="mb-0">Branch: <a :href="generateUrl('branch', item.branch, item.division)">{{ item.branch }}</a></h3>
+                            <h3 v-if="checkStatus(item.branch)" class="mb-0">Branch: <a
+                                    :href="generateUrl('branch', item.branch, item.division)">{{ item.branch }}</a></h3>
                             <h3 v-if="checkStatus(item.unit)" class="mb-0">Unit: <span>{{ item.unit }}</span></h3>
                         </v-col>
                     </v-row>
@@ -60,7 +62,9 @@
                     <h2 class="mt-4 mb-2">Position Information</h2>
                     <v-row>
                         <v-col class="mb-1">
-                            <h3 class="mb-0">Manager: <a :href="generateUrl('manager', item.manager, 'n/a')">{{ item.manager }}</a></h3>
+                            <h3 class="mb-0">Manager: <a :href="generateUrl('manager', item.manager, 'n/a')">{{
+                                    item.manager
+                            }}</a></h3>
                         </v-col>
                     </v-row>
                 </v-card>
@@ -105,6 +109,7 @@ export default {
     name: "EmployeeDetail",
     data: () => ({
         department: '',
+        managerDepartment: [],
         breadcrumbsList: [],
         employee: [],
         show: 90,
@@ -174,19 +179,19 @@ export default {
             let indexFormatted = index.replace(reg, '-')
             let paramFormatted = param.replace(reg, '-')
 
-            if(type === 'manager'){
-                return url + '/find-employee/employee-detail/' + param.replace(reg,'.')
+            if (type === 'manager') {
+                return url + '/find-employee/employee-detail/' + this.managerDepartment + '/' + param.replace(reg, '.').toLowerCase()
             }
 
             if (indexFormatted === 'N/A') {
                 indexFormatted = 'not-division'
             }
-            if(type === 'department') {
+            if (type === 'department') {
                 return url + '/find-employee/' + department
             }
             if (type === 'division') {
 
-                
+
                 if (indexFormatted === 'N/A') {
                     return url + '/find-employee/' + department + '/not-division/all-branches'
                 }
@@ -208,18 +213,25 @@ export default {
                 this.show = param;
         },
         getDataFromApi() {
-            const { full_name } = this.$route.params;
+            var find = '-';
+            var reg = new RegExp(find, 'g');
+            const { department, full_name } = this.$route.params;
+            this.department = department.replace(reg, ' ')
             this.loading = true;
             axios
                 .post(
-                    `http://localhost:3000/api/employees/Find-Employee/Employee-Detail/${full_name}`
+                    `http://localhost:3000/api/employees/find-employee/employee-detail/${department}/${full_name}`
                 )
                 .then((resp) => {
+
                     this.employee = resp.data.data;
-                    this.department = resp.data.data[0].department
+
                     this.division = resp.data.data[0].division
                     this.branch = resp.data.data[0].branch
                     this.title = resp.data.data[0].full_name
+                    this.managerDepartment = resp.data.meta.manager[0].department.toLowerCase().replace(/\s+/g, '-')
+
+                    this.department = resp.data.data[0].department
                     this.loading = false;
                     this.updateBreadCrumbs();
                 })
@@ -257,9 +269,6 @@ export default {
                     element.name = this.title
                 }
             }))
-
-
-
 
             this.breadcrumbsList = arr
         },
