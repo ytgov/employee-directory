@@ -3,7 +3,18 @@ import axios from "axios";
 import { body, param } from "express-validator";
 import _ from 'lodash';
 
-import sortBy from "lodash/sortBy";
+import * as dotenv from "dotenv";
+
+let path;
+switch (process.env.NODE_ENV) {
+    default:
+        path = `.env.development`;
+}
+dotenv.config({ path: path });
+
+export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
+export const DIVISIONSJSON = process.env.DIVISIONSJSON;
+
 
 export const employeesRouter = express.Router();
 
@@ -11,7 +22,7 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
 
     var employeesByDept = Object();
 
-    axios.get('http://localhost:8080/json/division.json')
+    axios.get(String(DIVISIONSJSON))
         .then((response: any) => {
 
             var resultEmployees = response.data.divisions;
@@ -83,7 +94,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     let paramFullName = (req.params.full_name).replace(".", " ")
 
 
-    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment, full_name: paramFullName } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, full_name: paramFullName } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
@@ -183,7 +194,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
 
 
-    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment, full_name: paramFullName } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, full_name: paramFullName } })
         .then((response: any) => {
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
@@ -293,7 +304,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     }
 
 
-    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment, division: paramDivision, branch: paramBranch, } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, division: paramDivision, branch: paramBranch, } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
@@ -346,9 +357,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
             let employeesByDivision = employeesByDept
 
-
-            console.log(employeesByDivision)
-
             employeesByDivision = _.filter(employeesByDivision, (employee: any) => employee.full_name !== employee.manager);
 
             if (paramDivision !== '') {
@@ -389,10 +397,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let employeesByManager = employeesByDivision.filter(function (e) {
                 return !managers.includes(e.full_name)
             })
-            console.log(employeesByManager)
+            
             employeesWithoutManager = employeesByDivision.filter(item => { return item.manager.indexOf('-') >= 0 })
 
-            console.log(employeesWithoutManager)
+            
 
             const getEmployeesByManager = (employeesArray: any, currentManager: any, level: any) => {
                 const currentEmployees = employeesArray.filter((employee: any) => employee.manager === currentManager.full_name);
@@ -480,7 +488,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     let paramDepartment = (req.params.department.replace(reg, ' '))
     var employeesByDept = Object();
 
-    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
@@ -529,7 +537,7 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
     var employeesByDept = Object();
 
 
-    axios.get('http://localhost:8080/json/employees.json', { params: { department: paramDepartment } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
@@ -570,7 +578,7 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
 
 employeesRouter.post("/SearchBar", async (req: Request, res: Response) => {
 
-    axios.get('http://localhost:8080/json/division.json')
+    axios.get(String(DIVISIONSJSON))
         .then((response: any) => {
 
             var resultEmployees = response.data.divisions;
