@@ -45,7 +45,7 @@
                         <tr class="table-border" v-for='item in items'>
                             <td>
                                 <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                    :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+                                    :href="urlEmployee(item.department, item.full_name_url)">
 
                                     {{ item.full_name }}
                                 </a>
@@ -61,12 +61,11 @@
         </div>
         <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
             <h2 class="mt-8 ml-5 department-text">{{ cleanParam(parent_array) }}</h2>
-
-            <p>{{ value.length }}</p>
+            
             <div v-for="(item, index) in value">
                 <div class="mt-8 ml-5 d-flex align-center">
                     <h3 class="division-text">{{ cleanParam(index) }}</h3>
-                    <h3 class="ml-3 py-1 px-3 division-length">{{ item.length }}</h3>
+                    <h3 class="ml-3 py-1 px-3 division-length" >{{ item.length }}</h3>
                 </div>
 
                 <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="item"
@@ -80,7 +79,7 @@
                             <tr class="table-border" v-for='item in item'>
                                 <td>
                                     <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                        :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+                                        :href="urlEmployee(item.department, item.full_name_url)">
 
                                         {{ item.full_name }}
                                     </a>
@@ -104,7 +103,7 @@
                     <h3 class="division-text ">{{ cleanLocation(parent_array) }}</h3>
                 </div>
             </v-row>
-            <div class="mt-8 ml-5 d-flex align-center">
+            <div class="mt-4 ml-5 d-flex align-center">
                 <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="value"
                     :headers="headers" :loading="loading" hide-default-header mobile-breakpoint="0">
                     <template v-slot:header="{ props }">
@@ -116,7 +115,7 @@
                             <tr class="table-border" v-for='item in value'>
                                 <td>
                                     <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                        :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
+                                        :href="urlEmployee(item.department, item.full_name_url)">
 
                                         {{ item.full_name }}
                                     </a>
@@ -127,7 +126,6 @@
                             </tr>
                         </tbody>
                     </template>
-
                 </v-data-table>
 
             </div>
@@ -152,8 +150,7 @@
                             <tr class="table-border" v-for='item in value'>
                                 <td>
                                     <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                        :href="'/Find-Employee/Employee-Detail/' + item.full_name_url">
-
+                                        :href="urlEmployee(item.department, item.full_name_url)">
                                         {{ item.full_name }}
                                     </a>
                                 </td>
@@ -211,6 +208,7 @@ export default {
     },
     data() {
         return {
+            
             itemsPerPage: null,
             selection: '',
             itemsValue: null,
@@ -232,20 +230,23 @@ export default {
     },
 
     methods: {
+        urlEmployee(department, name) {
+            var find = ' ';
+            var reg = new RegExp(find, 'g');
+            return '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
+        },
         cleanParam(param) {
 
-            let paramFormatted = param.replace(/['"]+/g, '')
-
-            if (paramFormatted === '-') {
-                paramFormatted = 'N/A'
+            if (param === '-') {
+                param = 'N/A'
             }
 
-            return paramFormatted;
+            return param;
         },
         cleanLocation(location) {
 
-            if (location[1] === ',') {
-                let link = location.slice(2);
+            if (location[0] === ',') {
+                let link = location.slice(1);
                 return link.replace(/['"]+/g, '')
             } else {
                 return location.replace(/['"]+/g, '')
@@ -298,10 +299,11 @@ export default {
 
                 )
                 .then((resp) => {
+                    
                     this.items = resp.data.data;
                     this.itemsLength = resp.data.meta.count
                     this.itemsPerPage = resp.data.meta.count
-
+                    
                     this.itemsValue = this.selection
                     this.loading = false;
                 })
@@ -326,7 +328,7 @@ export default {
 }
 
 .division-length {
-    background-color: #00616D;
+    background-color: #DC4405;
     font-size: 16px;
     border-radius: 5px;
     color: white !important;

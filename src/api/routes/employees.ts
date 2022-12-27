@@ -1,12 +1,9 @@
 import express, { Request, Response } from "express";
 import axios from "axios";
 import { body, param } from "express-validator";
-import { basename } from "path";
 import _ from 'lodash';
 
 import sortBy from "lodash/sortBy";
-import e from "express";
-import { forEach, replace } from "lodash";
 
 export const employeesRouter = express.Router();
 
@@ -141,7 +138,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
 
 
-            let departments = _.groupBy(employeesByDept, item => `"${item.department}"`);
+            let departments = _.groupBy(employeesByDept, item => `${item.department}`);
 
 
             for (const [key, value] of Object.entries(departments)) {
@@ -151,9 +148,9 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
             }
 
-            let location = _.groupBy(employeesByDept, item => `"${item.address}, ${item.community}"`);
+            let location = _.groupBy(employeesByDept, item => `${item.address}, ${item.community}`);
 
-            let position = _.groupBy(employeesByDept, item => `"${item.title}"`);
+            let position = _.groupBy(employeesByDept, item => `${item.title}`);
 
             let finalResult: any
 
@@ -265,16 +262,11 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 });
 
 employeesRouter.post("/find-employee/:department/:division/:branch?", [param("department", "division"), param('branch').notEmpty()], async (req: Request, res: Response) => {
-    const page = req.body.page || 1;
-    let itemsPerPage = req.body.itemsPerPage;
-    const start = (page - 1) * itemsPerPage;
-    // const sortBy = req.body.sortBy || []; // capable of sort by multiple columns
-    const sortDesc = req.body.sortDesc || []; // likewise
 
-    var search = req.query.search;
-    var searchTerm = "";
+
+    let groupBy = (req.body.groupBy) || 0;
+
     var employeesByDept: any[] = Array();
-    var employeesFullList: any[] = Array();
 
     var _ = require("lodash");
 
@@ -318,6 +310,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 division_url: string
                 full_name_url: string
                 value: number
+                address: string
+                community: string
             }
             resultEmployees.forEach(function (element: any) {
                 var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
@@ -334,6 +328,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     'division_url': division_url,
                     'full_name_url': element.full_name,
                     'value': 0,
+                    'address': element.address,
+                    'community': element.community,
+
                 };
 
                 employeesByDept.push(employee);
@@ -348,6 +345,11 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
 
             let employeesByDivision = employeesByDept
+
+
+            console.log(employeesByDivision)
+
+            employeesByDivision = _.filter(employeesByDivision, (employee: any) => employee.full_name !== employee.manager);
 
             if (paramDivision !== '') {
                 employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
@@ -372,17 +374,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 return managerArr.includes(e.full_name)
             })
 
+
             let employeesWithoutManager = employeesByDivision.filter(function (e) {
                 return e.manager === '-'
             })
-
-            employeesWithoutManager.forEach(function (element) {
-
-                element.manager = Math.floor(Math.random() * 999);
-
-            })
-
-
 
             managers = managers.filter((value, index, self) =>
                 index === self.findIndex((t) => (
@@ -390,26 +385,25 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 ))
             )
 
+
             let employeesByManager = employeesByDivision.filter(function (e) {
                 return !managers.includes(e.full_name)
             })
+            console.log(employeesByManager)
+            employeesWithoutManager = employeesByDivision.filter(item => { return item.manager.indexOf('-') >= 0 })
 
+            console.log(employeesWithoutManager)
 
             const getEmployeesByManager = (employeesArray: any, currentManager: any, level: any) => {
                 const currentEmployees = employeesArray.filter((employee: any) => employee.manager === currentManager.full_name);
                 Object.assign(currentManager, { level });
-
                 if (!currentEmployees.length) {
-
                     return currentManager;
                 }
 
                 let employeesList: any = [];
                 const currentLevel = level += 1;
                 for (const manager of currentEmployees) {
-
-
-
                     const employees = getEmployeesByManager(employeesArray, manager, currentLevel);
 
                     employees.value += manager.value
@@ -423,7 +417,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let levelOfDepth: any = 0;
 
             for (const manager of managers) {
-
                 result = [...result, ...getEmployeesByManager(employeesByManager, manager, levelOfDepth + 1)];
             }
 
@@ -458,7 +451,21 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 divLength = finalResult.length
             }
 
-            res.send({ data: finalResult.slice(start, start + itemsPerPage), meta: { branchCount: finalResult.length, divisionCount: divLength } });
+            let location = _.groupBy(finalResult, function (item: any) { return `${item.address}, ${item.community}` });
+
+            let position = _.groupBy(finalResult, function (item: any) { return `${item.title}` });
+
+            let endResult: any
+
+            if (groupBy === 0) {
+                endResult = finalResult
+            } else if (groupBy === 1) {
+                endResult = location
+            } else if (groupBy === 2) {
+                endResult = position
+            }
+
+            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
         })
         .catch((error: any) => {
             console.log(error);

@@ -13,23 +13,23 @@
       </template>
     </v-breadcrumbs>
 
-    <v-row class="pl-6">
+    <v-row>
       <v-col xs="12" md="2" class="d-flex align-center justify-start">
         <h4 class="">Group by their: </h4>
       </v-col>
       <v-col xs="12" md="10">
-        <v-chip-group v-model="selection" center-active mandatory>
-          <v-chip label outlined color="#00616D" active-class="primary-color">All Employees</v-chip>
-          <v-chip label outlined color="#00616D">By Department</v-chip>
+        <v-chip-group v-model="selection" center-active mandatory active-class="chips--active">
+          <v-chip label outlined color="#00616D">All Employees</v-chip>
           <v-chip label outlined color="#00616D">By Location</v-chip>
           <v-chip label outlined color="#00616D">By Position</v-chip>
         </v-chip-group>
       </v-col>
     </v-row>
 
-    <v-row>
-      <DivisionsCard :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()" :department="this.department.toLowerCase()" class="mt-6" />
-    </v-row>
+    <!-- <v-row>
+      <DivisionsCard :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()"
+        :department="this.department.toLowerCase()" class="mt-6" />
+    </v-row> -->
 
 
 
@@ -47,10 +47,10 @@
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <div class="class=d-flex mb-6 mt-2">
+    <div v-if="itemsValue === 0" class="class=d-flex mb-6 mt-2">
 
       <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="items" :headers="headers"
-        :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" :search="search" hide-default-header
+        :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" hide-default-header
         mobile-breakpoint="0">
         <template v-slot:header="{ props }">
           <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
@@ -58,12 +58,11 @@
         </template>
         <template v-slot:body="{ items }">
           <tbody class="table-body">
-            <tr :class="{ 'table-body-managers': item.level === 0 || item.level === 1}"
-                
-                class="table-border" v-for='(item, index, id ) in items' :key="id">
+            <tr :class="{ 'table-body-managers': item.level === 0 || item.level === 1 }" class="table-border"
+              v-for='(item, index, id ) in items' :key="id">
               <td>
                 <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                  :href=" urlEmployee( item.department,item.full_name_url)">
+                  :href="urlEmployee(item.department, item.full_name_url)">
                   <div style="width:10px" v-if="(item.level === 2)"></div>
                   <IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
                   {{ item.full_name }}
@@ -80,6 +79,70 @@
       </v-data-table>
 
     </div>
+
+    <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+      <v-row>
+        <div class="mt-8 ml-12 d-flex align-center">
+          <h3 class="division-text ">{{ cleanLocation(parent_array) }}</h3>
+        </div>
+      </v-row>
+      <div class="mt-4 ml-5 d-flex align-center">
+        <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="value" :headers="headers"
+          :loading="loading" hide-default-header mobile-breakpoint="0">
+          <template v-slot:header="{ props }">
+            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+            </th>
+          </template>
+          <template v-slot:body="{ items }">
+            <tbody class="table-body">
+              <tr class="table-border" v-for='item in value'>
+                <td>
+                  <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                    :href="urlEmployee(item.department, item.full_name_url)">
+                    {{ item.full_name }}
+                  </a>
+                </td>
+                <td>{{ item.title }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.phone_office }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-data-table>
+      </div>
+    </div>
+
+    <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+      <v-row>
+        <div class="mt-8 ml-12 d-flex align-center">
+          <h3 class="division-text ">{{ cleanParam(parent_array) }}</h3>
+        </div>
+      </v-row>
+      <div class="mt-8 ml-5 d-flex align-center">
+        <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="value" :headers="headers"
+          :loading="loading" hide-default-header mobile-breakpoint="0">
+          <template v-slot:header="{ props }">
+            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+            </th>
+          </template>
+          <template v-slot:body="{ items }">
+            <tbody class="table-body">
+              <tr class="table-border" v-for='item in value'>
+                <td>
+                  <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                    :href="urlEmployee(item.department, item.full_name_url)">
+                    {{ item.full_name }}
+                  </a>
+                </td>
+                <td>{{ item.title }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.phone_office }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-data-table>
+      </div>
+    </div>›
   </div>
 </template>
 
@@ -99,6 +162,8 @@ export default {
     SearchBarHeader,
   },
   data: () => ({
+    itemsValue: null,
+    selection: '',
     dataTableParam: 0,
     branch: '',
     breadcrumbsList: [],
@@ -120,7 +185,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 100,
+    itemsPerPage: 9999,
   }),
   watch: {
     '$route'() {
@@ -139,16 +204,41 @@ export default {
       },
       deep: true,
     },
+    selection: {
+      handler() {
+        this.loading = true
+        this.getDataFromApi();
+      },
+    }
   },
   mounted() {
     this.getDataFromApi();
     this.updateBreadCrumbs();
   },
   methods: {
-    urlEmployee(department,name){
+
+    cleanParam(param) {
+
+      if (param === '-') {
+        param = 'N/A'
+      }
+
+      return param;
+    },
+
+    cleanLocation(location) {
+
+      if (location[0] === ',') {
+        let link = location.slice(1);
+        return link.replace(/['"']+/g, '')
+      } else {
+        return location.replace(/['"']+/g, '')
+      }
+    },
+    urlEmployee(department, name) {
       var find = ' ';
       var reg = new RegExp(find, 'g');
-      return '/find-employee/employee-detail/' + department.replace(reg,'-').toLowerCase() + '/' + name.toLowerCase()
+      return '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
     },
     capitalizeString(param) {
       const string = param
@@ -210,15 +300,21 @@ export default {
 
 
       axios
-        .post(
-          `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=` + search,
-          this.options
-        )
+        .request({
+          method: 'POST',
+          data: {
+            groupBy: this.selection,
+          },
+          url: `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=`
+        })
+
+
         .then((resp) => {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
           this.itemsPerPage = resp.data.meta.divisionCount;
+          this.itemsValue = this.selection
           this.updateBreadCrumbs();
           this.loading = false;
         })
