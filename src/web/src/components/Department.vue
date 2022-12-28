@@ -37,25 +37,21 @@
           <v-card outlined color="transparent" class="flex-column py-10">
 
             <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" class="px-8">
-              <v-hover v-slot="{ hover }">
-                <v-card outlined color="transparent">
-                  <li>
-                    <a :href="generateUrl('division', parent_item, parent_item)" :key="id" class="division">{{
-                        parent_item
-                    }}</a>
-                  </li>
-                  <v-expand-transition>
-
-                    <ul v-if="hover">
-                      <li v-for="(item, index, id) in item" class="py-2">
-                        <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
-                        }}</a>
-                      </li>
-                    </ul>
-
-                  </v-expand-transition>
-                </v-card>
-              </v-hover>
+              <v-card outlined color="transparent">
+                <li>
+                  <a @click="activateBranches(parent_item)" :key="id" class="division">{{
+                      parent_item
+                  }}</a>
+                </li>
+                <v-expand-transition>
+                  <ul v-if="check === parent_item.toLowerCase()">
+                    <li v-for="(item, index, id) in item" class="py-2">
+                      <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
+                      }}</a>
+                    </li>
+                  </ul>
+                </v-expand-transition>
+              </v-card>
             </v-card>
           </v-card>
         </v-card>
@@ -81,6 +77,7 @@ export default {
   },
   name: "Department",
   data: () => ({
+    check: '',
     department: '',
     breadcrumbsList: [],
     imgTitle: '',
@@ -117,6 +114,16 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
+    activateBranches(item) {
+      let find = ' ';
+      let reg = new RegExp(find, 'g');
+      let department = this.department.toLowerCase().replace(reg, '-')
+      let division = item.toLowerCase()
+      if (this.check === item.toLowerCase()) {
+        window.location.href = '/find-employee/' + department + '/' + item.toLowerCase().replace(reg, '-') + '/all-branches'
+      }
+      this.check = division
+    },
     capitalizeString(param) {
       const string = param
       return string.charAt(0).toUpperCase() + string.slice(1);

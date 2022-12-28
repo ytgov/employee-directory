@@ -5,24 +5,25 @@
             <v-card elevation="1" max-width="1090" class="mx-auto flex-column py-10">
                 <v-row>
                     <v-col cols="6" v-for="(item, parent_item, id) in items" class="px-8 py-1">
-                        <v-hover v-slot="{ hover }">
-                            <v-card outlined color="transparent">
-                                <li>
-                                    <a :href="generateUrl('division', 'n/a', parent_item)" :key="id" class="division">{{
+
+                        <v-card outlined color="transparent">
+                            <li>
+                                <a :class="{ 'branch-pressed': checkHover == parent_item.toLowerCase() }"
+                                    @click="activateBranches(parent_item)" :key="id" class="division">{{
                                             parent_item
                                     }}</a>
-                                </li>
-                                <v-expand-transition>
-                                    <ul v-if="hover || checkHover === parent_item.toLowerCase()">
-                                        <li class="py-1" v-for="(value, index, id) in item">
-                                            <a :class="{ 'branch-pressed': checkClass === index.toLowerCase() }"
-                                                :href="generateUrl('branch', index, parent_item)"
-                                                class="branch my-2 px-0 py-3">{{ index }}</a>
-                                        </li>
-                                    </ul>
-                                </v-expand-transition>
-                            </v-card>
-                        </v-hover>
+                            </li>
+                            <v-expand-transition>
+                                <ul
+                                    v-if="checkHover === parent_item.toLowerCase() || check === parent_item.toLowerCase()">
+                                    <li class="py-1" v-for="(value, index, id) in item">
+                                        <a :class="{ 'branch-pressed': checkClass === index.toLowerCase() }"
+                                            :href="generateUrl('branch', index, parent_item)"
+                                            class="branch my-2 px-0 py-3">{{ index }}</a>
+                                    </li>
+                                </ul>
+                            </v-expand-transition>
+                        </v-card>
                     </v-col>
                 </v-row>
             </v-card>
@@ -39,6 +40,7 @@ export default {
     props: ['department', 'division', 'branch', 'checkHover', 'checkClass'],
     data() {
         return {
+            check: null,
             items: [],
         }
     },
@@ -48,6 +50,17 @@ export default {
         }
     },
     methods: {
+        activateBranches(item) {
+            let find = ' ';
+            let reg = new RegExp(find, 'g');
+            let department = this.$props.department.toLowerCase().replace(reg, '-')
+            let division = this.$props.division.toLowerCase().replace(reg, '-')
+
+            if (this.check === item.toLowerCase() || division === item.toLowerCase().replace(reg, '-')) {
+                window.location.href = '/find-employee/' + department + '/' + item.toLowerCase().replace(reg, '-') + '/all-branches'
+            }
+            this.check = item.toLowerCase()
+        },
         generateUrl(type, param, index) {
 
             const urlLocation = String(window.location.href)

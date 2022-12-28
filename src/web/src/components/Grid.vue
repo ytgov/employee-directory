@@ -26,13 +26,11 @@
       </v-col>
     </v-row>
 
-    <!-- <v-row>
-      <DivisionsCard :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()"
+    <v-row>
+      <DivisionsCard :division="this.div" :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()"
         :department="this.department.toLowerCase()" class="mt-6" />
-    </v-row> -->
-
-
-
+    </v-row>
+    
     <div class=" pl-6 pt-6 pb-n12 mt-10 d-flex flex-column align-start justify-center">
 
       <div class=" d-flex align-center justify-start">
