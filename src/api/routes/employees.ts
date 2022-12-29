@@ -296,7 +296,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
         paramDivision = (req.params.division.replace(reg, ' '))
     }
 
-
+    var notBranch =  paramBranch === 'not-branch' ;
     if (paramBranch === 'all-branches' || paramBranch === 'all branches') {
         paramBranch = ''
     } else {
@@ -366,7 +366,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let divLength = employeesByDivision.length
 
 
-            if (paramBranch !== '') {
+            if(notBranch){
+                employeesByDivision = employeesByDivision.filter(item => {return  _.isUndefined(item.branch) || _.isEmpty(item.branch)  })
+            }else if (paramBranch !== '') {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
 
