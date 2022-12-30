@@ -3,24 +3,25 @@
     <div class="full-width yellow-border white-bg ml-0 pl-0 pt-16 mt-n5">
 
         <v-container class="container-content ">
-            <h1 class="ml-5">Find a goverment Employee</h1>
+            <h1>Find a goverment Employee</h1>
 
-            <v-banner v-if="info" class="mb-6 mt-13">
-                <span>
+            <div v-if="info" class="mb-6 mt-6">
+                <p><strong>
                     You can use this service to find the contact information of a person who works for a Government of
                     Yukon
                     organization.
-                </span>
-                <br />
-                <br />
+                </strong></p>
+
+                <p>
                 Enter the person's first or last name, position title, email address or telephone number in the search
                 box to
                 get started. You can also enter the name of a department, division or branch to view all employees in
                 that
                 specific organization.
-            </v-banner>
+                </p >
+            </div>
 
-            <v-form @submit.prevent="updateSearch">
+            <v-form @submit.prevent="updateSearch" class="ml-4 pt-8">
 
             
             <v-row>

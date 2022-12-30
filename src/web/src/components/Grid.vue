@@ -61,9 +61,13 @@
               <td>
                 <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
                   :href="urlEmployee(item.department, item.full_name_url)">
-
-                  <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
-                  <IconLoader v-if="item.level > 1"  v-for='n in item.level'  :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
+                  <div v-if="item.level === 1">
+                     <IconLoader  :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
+                  </div>
+                  <div v-if="item.level > 1" >
+                    <IconLoader  v-for='n in item.level' :key="n" :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
+                  </div>
+                
                   <label class="full-name">{{ item.full_name }}</label>
                 </a>
               </td>
