@@ -59,12 +59,11 @@
             <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }" class="table-border"
               v-for='(item, index, id ) in items' :key="id">
               <td>
-                <a class="d-flex flex-wrap align-center" style="word-wrap: normal; { margin-left: {item.level*10}px}"
+                <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
                   :href="urlEmployee(item.department, item.full_name_url)">
 
-
-                  <IconLoader v-if="item.level === 1"  width="5" :color="'blue'" :image="1"></IconLoader> 
-                  <IconLoader v-if="item.level > 1"   v-for='n in item.level'  width="5" :color="'blue'" :image="1"></IconLoader>
+                  <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
+                  <IconLoader v-if="item.level > 1"  v-for='n in item.level'  :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
                   <label class="full-name">{{ item.full_name }}</label>
                 </a>
               </td>
@@ -72,7 +71,6 @@
               <td>{{ item.email }}</td>
               <td>{{ item.phone_office }}</td>
               <td>{{ item.manager }}</td>
-               <td>{{ item.branch }}</td>
             </tr>
           </tbody>
         </template>
@@ -355,5 +353,12 @@ export default {
 .overf {
   z-index: 1;
   overflow: hidden;
+}
+
+.angle-right{
+  width: 6px;
+}
+.angle-right-multiple{
+  width: 5px;
 }
 </style>

@@ -120,7 +120,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
 
             resultEmployees.forEach(function (element: any) {
-                var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
+                var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
 
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
@@ -320,7 +320,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             }
             
             resultEmployees.forEach(function (element: any) {
-                var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
+                var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
                     'title': element.title !== '' ? element.title : '-',
@@ -341,6 +341,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 employeesByDept.push(employee);
             });
 
+            
             //Filter by Division
             let employeesByDivision = employeesByDept
             employeesByDivision = _.filter(employeesByDivision, (employee: any) => employee.full_name !== employee.manager);
@@ -353,6 +354,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             }else if (paramBranch !== '') {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
+
             //Get all the Managers' name
             var managersNameByDivision = _.uniq(_.map(employeesByDivision, 'manager'));
             //Get all the employees' name
@@ -360,15 +362,23 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
             //Check if all managers exist in the consulted department/branch.
             var namesMissing = _.difference(managersNameByDivision, namesByDivision);
+           
             if(!_.isEmpty(namesMissing)){
                 managersMissing =  namesMissing.map(function(name:string) {
-                    return _.find(employeesByDept, {full_name:name})
+                    let managerMissing = _.find(employeesByDept, {full_name:name});
+                    if(!_.isUndefined(managerMissing)){
+                        managerMissing.manager = managerMissing.full_name;
+                        return managerMissing;
+                    }
                 });
             }
+            managersMissing = _.compact(managersMissing);
+
             //Add the managers missing in the array
             if(!_.isEmpty(employeesByDivision) && !_.isEmpty(managersMissing)){
-                 employeesByDivision = _.merge(employeesByDivision, managersMissing);
+                 employeesByDivision = _.union(employeesByDivision, managersMissing);
             }
+
             //Obtain all objects from managers
             let managersByDivision = employeesByDivision.filter(item => {
                 if( _.isEmpty(item.manager) || item.manager === '-' ||  item.manager === item.full_name){
