@@ -59,7 +59,7 @@
             <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }" class="table-border"
               v-for='(item, index, id ) in items' :key="id">
               <td>
-                <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                <a class="d-flex flex-wrap align-center" style="word-wrap: normal; { margin-left: {item.level*10}px}"
                   :href="urlEmployee(item.department, item.full_name_url)">
 
 
@@ -72,6 +72,7 @@
               <td>{{ item.email }}</td>
               <td>{{ item.phone_office }}</td>
               <td>{{ item.manager }}</td>
+               <td>{{ item.branch }}</td>
             </tr>
           </tbody>
         </template>
