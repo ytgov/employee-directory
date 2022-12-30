@@ -56,20 +56,22 @@
         </template>
         <template v-slot:body="{ items }">
           <tbody class="table-body">
-            <tr :class="{ 'table-body-managers': item.level === 0 || item.level === 1 }" class="table-border"
+            <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }" class="table-border"
               v-for='(item, index, id ) in items' :key="id">
               <td>
                 <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                   :href="urlEmployee(item.department, item.full_name_url)">
-                  <div style="width:10px" v-if="(item.level === 2)"></div>
-                  <IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
-                  {{ item.full_name }}
+
+
+                  <IconLoader v-if="item.level === 1"  width="5" :color="'blue'" :image="1"></IconLoader> 
+                  <IconLoader v-if="item.level > 1"   v-for='n in item.level'  width="5" :color="'blue'" :image="1"></IconLoader>
+                  <label class="full-name">{{ item.full_name }}</label>
                 </a>
               </td>
               <td>{{ item.title }}</td>
               <td>{{ item.email }}</td>
               <td>{{ item.phone_office }}</td>
-
+              <td>{{ item.manager }}</td>
             </tr>
           </tbody>
         </template>
@@ -326,6 +328,9 @@ export default {
 </script>
 
 <style scoped>
+.full-name{
+  margin-left:3px;
+}
 .table-header {
   height: 300px !important;
   background-color: green;
