@@ -141,7 +141,7 @@
           </template>
         </v-data-table>
       </div>
-    </div>›
+    </div>
   </div>
 </template>
 
@@ -306,8 +306,6 @@ export default {
           },
           url: `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=`
         })
-
-
         .then((resp) => {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
