@@ -101,7 +101,7 @@ a {
 #footer-bg{
     content: '';
     top: 0;
-    background: url(/Aurora-main.svg);
+    background: url(../../public/Aurora-main.svg);
     background-repeat: no-repeat;
     background-position: 200% 50%;
 }
@@ -113,7 +113,7 @@ a {
 }
 
 .v-main {
-    background: url(/Aurora-main.svg);
+    background: url(../../public/Aurora-main.svg);
     background-repeat: no-repeat;
     background-position: 20% 35%;
 }
@@ -204,7 +204,7 @@ a {
     #footer-bg{
         content: '';
         top: 0;
-        background: url(/Aurora-small-mobile.svg);
+        background: url(../../public/Aurora-small-mobile.svg);
         background-repeat: no-repeat;
         background-position: 200% 0%;
     }
@@ -212,7 +212,7 @@ a {
     #container-main{
         content: '';
         top: 0;
-        /* background: url(/Aurora-small-mobile.svg); */
+        /* background: url(../../public/Aurora-small-mobile.svg); */
         background-repeat: no-repeat;
         background-position: 200% 0%;
     }

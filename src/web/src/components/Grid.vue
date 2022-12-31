@@ -1,4 +1,3 @@
-<template>
   <div class="books">
 
     <SearchBarHeader />
@@ -61,13 +60,9 @@
               <td>
                 <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
                   :href="urlEmployee(item.department, item.full_name_url)">
-                  <div v-if="item.level === 1">
-                     <IconLoader  :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
-                  </div>
-                  <div v-if="item.level > 1" >
-                    <IconLoader  v-for='n in item.level' :key="n" :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
-                  </div>
-                
+
+                  <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
+                  <IconLoader v-if="item.level > 1"  v-for='n in item.level'  :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
                   <label class="full-name">{{ item.full_name }}</label>
                 </a>
               </td>
@@ -145,7 +140,7 @@
           </template>
         </v-data-table>
       </div>
-    </div>
+    </div>›
   </div>
 </template>
 
@@ -310,6 +305,8 @@ export default {
           },
           url: `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=`
         })
+
+
         .then((resp) => {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
@@ -338,7 +335,7 @@ export default {
 }
 
 .bg-img {
-  background-image: url(/Aurora-main.svg);
+  background-image: url(../../public//Aurora-main.svg);
   background-repeat: no-repeat;
   background-position-x: 300px;
   background-position-y: center;
