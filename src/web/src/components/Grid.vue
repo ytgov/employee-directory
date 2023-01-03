@@ -1,3 +1,4 @@
+<template>
   <div class="books">
 
     <SearchBarHeader />
@@ -60,7 +61,6 @@
               <td>
                 <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
                   :href="urlEmployee(item.department, item.full_name_url)">
-
                   <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
                   <IconLoader v-if="item.level > 1"  v-for='n in item.level'  :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
                   <label class="full-name">{{ item.full_name }}</label>
@@ -97,7 +97,7 @@
                 <td>
                   <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                     :href="urlEmployee(item.department, item.full_name_url)">
-                    {{ item.full_name }}
+                    {{ item.full_name }}   
                   </a>
                 </td>
                 <td>{{ item.title }}</td>
@@ -150,7 +150,6 @@ import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import DivisionsCard from "./UI/DivisionsCard.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
-
 export default {
   name: "Grid",
   components: {
@@ -179,7 +178,6 @@ export default {
       { text: "Position", value: "title" },
       { text: "E-Mail Address", value: "email" },
       { text: "Phone Number", value: "phone_office" },
-
     ],
     page: 1,
     pageCount: 0,
@@ -189,7 +187,6 @@ export default {
     '$route'() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
-
     options: {
       handler() {
         this.getDataFromApi();
@@ -214,18 +211,13 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
-
     cleanParam(param) {
-
       if (param === '-') {
         param = 'N/A'
       }
-
       return param;
     },
-
     cleanLocation(location) {
-
       if (location[0] === ',') {
         let link = location.slice(1);
         return link.replace(/['"']+/g, '')
@@ -243,44 +235,35 @@ export default {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     updateBreadCrumbs() {
-
       var find = ' ';
       var reg = new RegExp(find, 'g');
       let arr = this.$route.meta.breadcrumb;
-
       const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-
       dynamicBreadcrumb.forEach((element => {
         if (element.name == 'Department') {
           element.name = this.department;
           element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
         } else if (element.name == 'Division') {
-
           element.name = this.div;
           if (this.branch !== 'all-branches') {
             element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-').toLowerCase() + '/all-branches'
           } else {
             element.link = null
           }
-
         } else if (element.name == 'Branch') {
           if (this.branch === 'all-branches') {
             element.name = null
           } else {
             element.name = this.branch;
           }
-
         }
-
       }))
       this.breadcrumbsList = arr
     },
-
     getDataFromApi() {
       var find = '-';
       var reg = new RegExp(find, 'g');
       const { department, division, branch } = this.$route.params;
-
       this.loading = true;
       let formattedQueryParam = ''
       if (division == null) {
@@ -295,8 +278,6 @@ export default {
       this.div = this.capitalizeString(division.replace(reg, ' '))
       this.branch = this.capitalizeString(branch.replace(reg, ' '))
       const search = `${encodeURIComponent(`${this.search}`)}`;
-
-
       axios
         .request({
           method: 'POST',
@@ -305,8 +286,6 @@ export default {
           },
           url: `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=`
         })
-
-
         .then((resp) => {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
@@ -333,27 +312,22 @@ export default {
   height: 300px !important;
   background-color: green;
 }
-
 .bg-img {
-  background-image: url(../../public//Aurora-main.svg);
+  background-image: url(../../public/Aurora-main.svg);
   background-repeat: no-repeat;
   background-position-x: 300px;
   background-position-y: center;
 }
-
 @media (min-width: 1180px) {
   .bg-img {
     background-position-x: 2878px;
     background-position-y: center;
-
   }
 }
-
 .overf {
   z-index: 1;
   overflow: hidden;
 }
-
 .angle-right{
   width: 6px;
 }
