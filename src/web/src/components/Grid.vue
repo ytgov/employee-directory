@@ -140,7 +140,7 @@
           </template>
         </v-data-table>
       </div>
-    </div>›
+    </div>
   </div>
 </template>
 
