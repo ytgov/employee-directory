@@ -85,7 +85,7 @@
                             </h3>
                         </v-col>
                         <v-col>
-
+                            
                         </v-col>
                     </v-row>
                 </v-card>
@@ -96,15 +96,15 @@
 </template>
   
 <script>
-
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
+
 
 const axios = require("axios");
 export default {
     components: {
         DepartmentHeader,
-        SearchBarHeader,
+        SearchBarHeader
     },
     name: "EmployeeDetail",
     data: () => ({
@@ -269,6 +269,8 @@ export default {
                     element.name = this.title
                 }
             }))
+            
+            arr = arr.filter(item =>   item.name !== null  )
 
             this.breadcrumbsList = arr
         },

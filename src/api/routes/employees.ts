@@ -265,6 +265,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
             let managerFilter = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
 
+            
             res.send({ data: employeeFiltered, meta: { manager: managerFilter } });
         })
         .catch((error: any) => {
@@ -341,9 +342,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 employeesByDept.push(employee);
             });
 
-            
-            //Filter by Division
             let employeesByDivision = employeesByDept
+            //Filter by Division
             employeesByDivision = _.filter(employeesByDivision, (employee: any) => employee.full_name !== employee.manager);
             if (paramDivision !== '') {
                 employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })

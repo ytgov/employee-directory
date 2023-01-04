@@ -35,8 +35,7 @@
           </v-card-actions>
 
           <v-card outlined color="transparent" class="flex-column py-10">
-
-            <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" v-bind:key="item" class="px-8">
+            <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" :key="item.full_name" class="px-8">
               <v-card outlined color="transparent">
                 <li>
                   <a @click="activateBranches(parent_item)" :key="id" class="division">{{
@@ -45,7 +44,7 @@
                 </li>
                 <v-expand-transition>
                   <ul v-if="check === parent_item.toLowerCase()">
-                    <li v-for="(item, index, id) in item" v-bind:key="item" class="py-2">
+                    <li v-for="(item, index, id) in item" :key="item.full_name" class="py-2">
                       <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
                       }}</a>
                     </li>

@@ -258,6 +258,7 @@ export default {
           }
         }
       }))
+      arr = arr.filter(item =>   item.name !== null  )
       this.breadcrumbsList = arr
     },
     getDataFromApi() {
