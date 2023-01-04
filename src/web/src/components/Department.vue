@@ -66,6 +66,7 @@
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
+import * as urls from "../urls";
 
 const axios = require("axios");
 export default {
@@ -196,7 +197,7 @@ export default {
       this.title = this.capitalizeString(department.replace(reg, ' '))
       axios
         .post(
-          `http://localhost:3000/api/employees/Find-Employee/${department}`,
+          `${urls.FIND_EMPLOYEE_URL}${department}`,
           this.options
         )
         .then((resp) => {

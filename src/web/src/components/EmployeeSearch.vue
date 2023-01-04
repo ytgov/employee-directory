@@ -174,8 +174,8 @@
 const axios = require("axios");
 import SearchBarHeader from './UI/SearchBarHeader.vue'
 import DepartmentHeader from './UI/DepartmentHeader.vue';
-import IconLoader from "./icons/IconLoader.vue"
-
+import IconLoader from "./icons/IconLoader.vue";
+import * as urls from "../urls";
 
 export default {
     components: {
@@ -273,6 +273,7 @@ export default {
             this.breadcrumbsList = arr
         },
         getDataFromApi() {
+
             var find = '-';
             
             var reg = new RegExp(find, 'g');
@@ -295,7 +296,7 @@ export default {
                         groupBy: this.selection,
                         itemsperPage: this.itemsPerPage,
                     },
-                    url: `http://localhost:3000/api/employees/find-employee/search/keyword=${full_name}&department=${department}`
+                    url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${full_name}&department=${department}`
                 }
 
                 )

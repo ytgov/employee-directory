@@ -98,6 +98,7 @@
 <script>
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
+import * as urls from "../urls";
 
 
 const axios = require("axios");
@@ -220,7 +221,7 @@ export default {
             this.loading = true;
             axios
                 .post(
-                    `http://localhost:3000/api/employees/find-employee/employee-detail/${department}/${full_name}`
+                    `${urls.FIND_EMPLOYEE_URL}employee-detail/${department}/${full_name}`
                 )
                 .then((resp) => {
 
