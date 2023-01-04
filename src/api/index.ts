@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { employeesRouter } from "./routes";
 import * as config from './config';
+import { configureAuthentication } from "./routes/auth"
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.use(cors({
   optionsSuccessStatus: 200,
   credentials: true
 }));
+
+configureAuthentication(app);
 
 app.use("/api/employees", employeesRouter);
 
