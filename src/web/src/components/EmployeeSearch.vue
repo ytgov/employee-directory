@@ -274,10 +274,11 @@ export default {
         },
         getDataFromApi() {
             var find = '-';
+            
             var reg = new RegExp(find, 'g');
             let { full_name, department } = this.$route.params;
 
-            this.searchTitle = full_name
+            this.searchTitle = full_name.replace(/\./g,' ')
 
             let departmentFormatted = department.replace(reg, ' ')
 

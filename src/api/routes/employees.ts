@@ -265,6 +265,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
             let managerFilter = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
 
+            
             res.send({ data: employeeFiltered, meta: { manager: managerFilter } });
         })
         .catch((error: any) => {
@@ -349,11 +350,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
 
             });
-
             let compare = employeesByDept
 
             employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
-
 
             let employeesByDivision = employeesByDept
 
