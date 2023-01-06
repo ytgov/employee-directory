@@ -56,6 +56,7 @@
 <script>
 
 const axios = require("axios");
+import * as urls from "../../urls";
 
 export default {
     watch:{
@@ -112,7 +113,7 @@ export default {
 
             axios
                 .post(
-                    "http://localhost:3000/api/employees/searchBar",
+                    `${urls.EMPLOYEES_URL}searchBar`,
                     this.options
                 )
                 .then((resp) => {

@@ -215,8 +215,8 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 po_box: String
                 community: String
                 postal_code: String
-                latitude: String
-                longitude: String
+                latitude: number
+                longitude: number
                 manager: string
                 division_url: string
                 full_name_url: string

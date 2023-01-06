@@ -150,6 +150,8 @@ import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import DivisionsCard from "./UI/DivisionsCard.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
+import * as urls from "../urls";
+
 export default {
   name: "Grid",
   components: {
@@ -285,7 +287,7 @@ export default {
           data: {
             groupBy: this.selection,
           },
-          url: `http://localhost:3000/api/employees/Find-Employee/${department}/${division}/${branch}?search=`
+          url: `${urls.FIND_EMPLOYEE_URL}${department}/${division}/${branch}?search=`
         })
         .then((resp) => {
           this.items = resp.data.data;

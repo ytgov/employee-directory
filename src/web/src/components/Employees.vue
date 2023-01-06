@@ -44,11 +44,11 @@
 <script>
 import IconLoader from './icons/IconLoader.vue'
 import SearchBarHeader from './UI/SearchBarHeader.vue'
+import * as urls from "../urls";
 
 const axios = require("axios");
 export default {
   components: {
-
     IconLoader,
     SearchBarHeader,
   },
@@ -98,7 +98,7 @@ export default {
 
       axios
         .post(
-          "http://localhost:3000/api/employees",
+          urls.EMPLOYEES_URL,
           this.options
         )
         .then((resp) => {

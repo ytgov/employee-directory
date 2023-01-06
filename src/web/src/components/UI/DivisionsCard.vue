@@ -35,6 +35,8 @@
 
 <script>
 const axios = require("axios");
+import * as urls from "../../urls";
+
 export default {
 
     props: ['department', 'division', 'branch', 'checkHover', 'checkClass'],
@@ -106,7 +108,7 @@ export default {
                 data: {
                     department: this.$props.department
                 },
-                url: `http://localhost:3000/api/employees/DivisionsCard`
+                url: `${urls.EMPLOYEES_URL}DivisionsCard`
             }
 
             )
