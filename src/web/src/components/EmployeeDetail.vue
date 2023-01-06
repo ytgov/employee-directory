@@ -1,100 +1,163 @@
 <template>
-    <div class="books">
+  <div class="books">
+    <SearchBarHeader />
 
-        <SearchBarHeader />
+    <DepartmentHeader
+      :title="this.department"
+      :image="this.department.toLowerCase()"
+    />
 
-        <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
+    <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
+      <template v-slot:item="{ item }">
+        <v-breadcrumbs-item :href="item.link">
+          {{ item.name }}
+        </v-breadcrumbs-item>
+      </template>
+    </v-breadcrumbs>
 
-        <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
-            <template v-slot:item="{ item }">
-                <v-breadcrumbs-item :href="item.link">
-                    {{ item.name }}
-                </v-breadcrumbs-item>
-            </template>
-        </v-breadcrumbs>
-
-        <div class="text-center loading" v-show="loading">
-            <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-        </div>
-        <v-row class=" mt-16"></v-row>
-        <v-row>
-            <v-col v-for="item in employee">
-                <h2 class="mb-1" style="color: #DC4405 !important;font-size: 34px !important;">{{ item.full_name }}</h2>
-                <h3 v-if="checkStatus(item.title)" class="mb-8"
-                    style="color: #512A44 !important; font-size: 24px !important; ">{{ item.title }}</h3>
-
-                <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-                    <h2 class="mt-4 mb-2">Organization</h2>
-                    <v-row>
-                        <v-col cols="6" class="mb-1">
-                            <h3 v-if="checkStatus(item.department)" class="mb-0">Department: <a
-                                    :href="generateUrl('department', 'n/a', 'n/a')">{{ item.department
-                                    }}</a></h3>
-                            <h3 v-if="checkStatus(item.division)" class="mb-0">Division: {{ item.division }}</h3>
-                        </v-col>
-                        <v-col cols="6">
-                            <h3 v-if="checkStatus(item.branch)" class="mb-0">Branch: <a
-                                    :href="generateUrl('branch', item.branch, item.division)">{{ item.branch }}</a></h3>
-                            <h3 v-if="checkStatus(item.unit)" class="mb-0">Unit: <span>{{ item.unit }}</span></h3>
-                        </v-col>
-                    </v-row>
-                </v-card>
-                <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-                    <h2 class="mt-4 mb-2">Contact:</h2>
-                    <v-row>
-                        <v-col class="mb-1">
-                            <h3 v-if="checkStatus(item.phone_office)" class="mb-0">Phone Office: <a
-                                    :href="getPhone(item.phone_office)">{{ item.phone_office
-                                    }}</a></h3>
-                            <h3 v-if="checkStatus(item.mobile)" class="mb-0">Mobile: <a :href="getPhone(item.mobile)">{{
-                                    item.mobile
-                            }}</a></h3>
-                        </v-col>
-                        <v-col>
-                            <h3 v-if="checkStatus(item.email)" class="mb-0">E-mail Address: <a
-                                    :href="getMail(item.email)">{{ item.email }}</a></h3>
-                            <h3 v-if="checkStatus(item.fax_office)" class="mb-0">Fax Office: <span>{{ item.fax_office
-                            }}</span></h3>
-                        </v-col>
-                    </v-row>
-                </v-card>
-                <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-                    <h2 class="mt-4 mb-2">Position Information</h2>
-                    <v-row>
-                        <v-col class="mb-1">
-                            <h3 class="mb-0">Manager: <a :href="generateUrl('manager', item.manager, 'n/a')">{{
-                                    item.manager
-                            }}</a></h3>
-                        </v-col>
-                    </v-row>
-                </v-card>
-                <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-                    <h2 class="mt-4 mb-2">Location</h2>
-                    <v-row>
-                        <v-col class="mb-1">
-                            <h3 v-if="checkStatus(item.office)" class="mb-0">Office: <span>{{ item.office }}</span></h3>
-                            <h3 v-if="checkStatus(item.suite)" class="mb-0">Suite: <span>{{ item.suite }}</span></h3>
-                            <h3 v-if="checkStatus(item.address)" class="mb-0">Address: <a>{{ item.address }}</a></h3>
-                            <h3 v-if="checkStatus(item.community)" class="mb-0">Community: <span>{{ item.community
-                            }}</span></h3>
-                            <h3 v-if="checkStatus(item.postal_code)" class="mb-0">Postal Code: <span>{{ item.postal_code
-                            }}</span></h3>
-                            <h3 v-if="checkStatus(item.mailcode)" class="mb-0">Mail Code: <span>{{ item.mailcode
-                            }}</span></h3>
-                            <h3 v-if="checkStatus(item.po_box)" class="mb-0">P.O. Box: <span>{{ item.po_box }}</span>
-                            </h3>
-                        </v-col>
-                        <v-col>
-                            
-                        </v-col>
-                    </v-row>
-                </v-card>
-            </v-col>
-        </v-row>
-
+    <div class="text-center loading" v-show="loading">
+      <v-progress-circular
+        :size="50"
+        color="primary"
+        indeterminate
+      ></v-progress-circular>
     </div>
+    <v-row class="mt-16"></v-row>
+    <v-row>
+      <v-col v-for="item in employee">
+        <h2
+          class="mb-1"
+          style="color: #dc4405 !important; font-size: 34px !important"
+        >
+          {{ item.full_name }}
+        </h2>
+        <h3
+          v-if="checkStatus(item.title)"
+          class="mb-8"
+          style="color: #512a44 !important; font-size: 24px !important"
+        >
+          {{ item.title }}
+        </h3>
+
+        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+          <h2 class="mt-4 mb-2">Organization</h2>
+          <v-row>
+            <v-col cols="12" sm="6" class="mb-1" >
+              <h3 v-if="checkStatus(item.department)" class="mb-0">
+                Department:
+                <a :href="generateUrl('department', 'n/a', 'n/a')">{{
+                  item.department
+                }}</a>
+              </h3>
+              <h3 v-if="checkStatus(item.division)" class="mb-0">
+                Division: {{ item.division }}
+              </h3>
+            </v-col>
+            <v-col cols="12" sm="6" class="mb-1">
+              <h3 v-if="checkStatus(item.branch)" class="mb-0">
+                Branch:
+                <a :href="generateUrl('branch', item.branch, item.division)">{{
+                  item.branch
+                }}</a>
+              </h3>
+              <h3 v-if="checkStatus(item.unit)" class="mb-0">
+                Unit: <span>{{ item.unit }}</span>
+              </h3>
+            </v-col>
+          </v-row>
+        </v-card>
+        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+          <h2 class="mt-4 mb-2">Contact:</h2>
+          <v-row>
+            <v-col class="mb-1" cols="12" sm="6" >
+              <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
+                Phone Office:
+                <a :href="getPhone(item.phone_office)">{{
+                  item.phone_office
+                }}</a>
+              </h3>
+              <h3 v-if="checkStatus(item.mobile)" class="mb-0">
+                Mobile: <a :href="getPhone(item.mobile)">{{ item.mobile }}</a>
+              </h3>
+            </v-col>
+            <v-col cols="12" sm="6" class="mb-1">
+              <h3 v-if="checkStatus(item.email)" class="mb-0">
+                E-mail Address:
+                <a :href="getMail(item.email)">{{ item.email }}</a>
+              </h3>
+              <h3 v-if="checkStatus(item.fax_office)" class="mb-0">
+                Fax Office: <span>{{ item.fax_office }}</span>
+              </h3>
+            </v-col>
+          </v-row>
+        </v-card>
+        <v-card
+          v-if="checkStatus(item.manager)"
+          class="my-5 py-1 pb-3 px-5 employee-detail"
+          elevation="1"
+        >
+          <h2 class="mt-4 mb-2">Position Information</h2>
+          <v-row>
+            <v-col class="mb-1">
+              <h3 class="mb-0">
+                Manager:
+                <a :href="generateUrl('manager', item.manager, 'n/a')">{{
+                  item.manager
+                }}</a>
+              </h3>
+            </v-col>
+          </v-row>
+        </v-card>
+        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+          <h2 class="mt-4 mb-2">Location</h2>
+          <v-row>
+            <v-col class="mb-1" cols="12" md="6">
+              <h3 v-if="checkStatus(item.office)" class="mb-0">
+                Office: <span>{{ item.office }}</span>
+              </h3>
+              <h3 v-if="checkStatus(item.suite)" class="mb-0">
+                Suite: <span>{{ item.suite }}</span>
+              </h3>
+              <h3 v-if="checkStatus(item.address)" class="mb-0">
+                Address: <a>{{ item.address }}</a>
+              </h3>
+              <h3 v-if="checkStatus(item.community)" class="mb-0">
+                Community: <span>{{ item.community }}</span>
+              </h3>
+              <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
+                Postal Code: <span>{{ item.postal_code }}</span>
+              </h3>
+              <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
+                Mail Code: <span>{{ item.mailcode }}</span>
+              </h3>
+              <h3 v-if="checkStatus(item.po_box)" class="mb-0">
+                P.O. Box: <span>{{ item.po_box }}</span>
+              </h3>
+            </v-col>
+            <v-col cols="12" md="6">
+              <GmapMap class="mb-2"
+                :center="position"
+                :zoom="14"
+                map-type-id="terrain"
+                style="width: 100%; min-height: 300px;"
+              >
+                <GmapMarker
+                  :key="index"
+                  v-for="(m, index) in items"
+                  :position="m.position"
+                  :clickable="true"
+                  :draggable="true"
+                  @click="center = m.position"
+                />
+              </GmapMap>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
-  
+
 <script>
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
@@ -103,203 +166,267 @@ import * as urls from "../urls";
 
 const axios = require("axios");
 export default {
-    components: {
-        DepartmentHeader,
-        SearchBarHeader
-    },
-    name: "EmployeeDetail",
-    data: () => ({
-        department: '',
-        managerDepartment: [],
-        breadcrumbsList: [],
-        employee: [],
-        show: 90,
-        loading: false,
-        items: [],
-        search: "",
-        title: '',
-        options: {},
-    }),
-    watch: {
-        '$route'() {
-            this.breadcrumbsList = this.$route.meta.breadcrumb
-        },
-        options: {
-            handler() {
-                this.getDataFromApi();
-            },
-            deep: true,
-        },
-        search: {
-            handler() {
-                this.getDataFromApi();
-            },
-            deep: true,
-        },
-    },
-    computed: {
+  components: {
+    DepartmentHeader,
+    SearchBarHeader,
 
+  },
+  name: "EmployeeDetail",
+  data: () => ({
+    department: "",
+    managerDepartment: [],
+    position: {
+                  "lat" : 60.7170045,
+                  "lng" : -135.0492597
+               },
+    breadcrumbsList: [],
+    employee: [],
+    show: 90,
+    loading: false,
+    items: [],
+    search: "",
+    title: "",
+    options: {},
+    office: "",
+    address: "",
+    community: "",
+  }),
+  watch: {
+    $route() {
+      this.breadcrumbsList = this.$route.meta.breadcrumb;
     },
-    mounted() {
+    options: {
+      handler() {
         this.getDataFromApi();
-
+      },
+      deep: true,
     },
-    methods: {
-        getMail(mail) {
-            const link = 'mailto:' + mail
-            return String(link)
-        },
-        getPhone(number) {
-            const find = '-';
-            const reg = new RegExp(find, 'g');
-            const numberFormatted = number.replace(reg, '')
-            const link = 'tel:' + numberFormatted
-            return String(link)
-        },
-        checkStatus(param) {
-            if (param == null || param == "" || param == "-") {
-                return false
-            } else if (param.length > 0) {
-                return true
-            }
-        },
+    search: {
+      handler() {
+        this.getDataFromApi();
+      },
+      deep: true,
+    },
+  },
+  computed: {},
+  mounted() {
+    this.getDataFromApi();
+  },
+  methods: {
+    getGeoCodingData() {
+      const find = " ";
+      const reg = new RegExp(find, "g");
 
-        generateUrl(type, param, index) {
+      const address = this.address.replace(reg, "-");
+      const office = this.office.replace(reg, "-");
+      const community = this.community.replace(reg, "-");
+      axios
+        .request({
+          method: "GET",
+          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${office},+${community}&key=AIzaSyCqpcmysOABHsnAgAaWfFMhRUfNyi3hLSc`,
+        })
+        .then((resp) => {
+          this.position = resp.results.location;
+          console.log(this.position);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getMail(mail) {
+      const link = "mailto:" + mail;
+      return String(link);
+    },
+    getPhone(number) {
+      const find = "-";
+      const reg = new RegExp(find, "g");
+      const numberFormatted = number.replace(reg, "");
+      const link = "tel:" + numberFormatted;
+      return String(link);
+    },
+    checkStatus(param) {
+      if (param == null || param == "" || param == "-") {
+        return false;
+      } else if (param.length > 0) {
+        return true;
+      }
+    },
 
-            const urlLocation = String(window.location.href)
-            let url = urlLocation.split(window.location.pathname)
+    generateUrl(type, param, index) {
+      const urlLocation = String(window.location.href);
+      let url = urlLocation.split(window.location.pathname);
 
-            url = url.filter(element => {
-                return element !== ''
-            })
-            url = url[0]
-            let find = ' ';
+      url = url.filter((element) => {
+        return element !== "";
+      });
+      url = url[0];
+      let find = " ";
 
-            let reg = new RegExp(find, 'g');
-            let department = this.department.replace(reg, '-').toLowerCase()
-            let indexFormatted = index.replace(reg, '-')
-            let paramFormatted = param.replace(reg, '-')
+      let reg = new RegExp(find, "g");
+      let department = this.department.replace(reg, "-").toLowerCase();
+      let indexFormatted = index.replace(reg, "-");
+      let paramFormatted = param.replace(reg, "-");
 
-            if (type === 'manager') {
-                return url + '/find-employee/employee-detail/' + this.managerDepartment + '/' + param.replace(reg, '.').toLowerCase()
-            }
+      if (type === "manager") {
+        return (
+          url +
+          "/find-employee/employee-detail/" +
+          this.managerDepartment +
+          "/" +
+          param.replace(reg, ".").toLowerCase()
+        );
+      }
 
-            if (indexFormatted === 'N/A') {
-                indexFormatted = 'not-division'
-            }
-            if (type === 'department') {
-                return url + '/find-employee/' + department
-            }
-            if (type === 'division') {
+      if (indexFormatted === "N/A") {
+        indexFormatted = "not-division";
+      }
+      if (type === "department") {
+        return url + "/find-employee/" + department;
+      }
+      if (type === "division") {
+        if (indexFormatted === "N/A") {
+          return (
+            url + "/find-employee/" + department + "/not-division/all-branches"
+          );
+        }
+        return (
+          url +
+          "/find-employee/" +
+          department +
+          "/" +
+          indexFormatted.toLowerCase() +
+          "/all-branches"
+        );
+      } else if (type === "branch") {
+        if (param === "N/A") {
+          return (
+            url +
+            "/find-employee/" +
+            department +
+            "/" +
+            indexFormatted.toLowerCase() +
+            "/not-branch"
+          );
+        }
+        return (
+          url +
+          "/find-employee/" +
+          department +
+          "/" +
+          indexFormatted.toLowerCase() +
+          "/" +
+          paramFormatted.toLowerCase()
+        );
+      }
+    },
+    toggleBranches(param) {
+      if (this.show === param) {
+        this.show = null;
+      } else this.show = param;
+    },
+    getDataFromApi() {
+      var find = "-";
+      var reg = new RegExp(find, "g");
+      const { department, full_name } = this.$route.params;
+      this.department = department.replace(reg, " ");
+      this.loading = true;
+      axios
+        .post(
+          `${urls.FIND_EMPLOYEE_URL}employee-detail/${department}/${full_name}`
+        )
+        .then((resp) => {
+          this.employee = resp.data.data;
 
+          this.division = resp.data.data[0].division;
+          this.branch = resp.data.data[0].branch;
+          this.title = resp.data.data[0].full_name;
+          this.managerDepartment = resp.data.meta.manager[0].department
+            .toLowerCase()
+            .replace(/\s+/g, "-");
 
-                if (indexFormatted === 'N/A') {
-                    return url + '/find-employee/' + department + '/not-division/all-branches'
-                }
-                return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
+          this.department = resp.data.data[0].department;
+          this.loading = false;
 
-            } else if (type === 'branch') {
-                if (param === 'N/A') {
-                    return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/not-branch'
-                }
-                return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
-            }
+          this.office = resp.data.data[0].office;
+          this.address = resp.data.data[0].address;
+          this.community = resp.data.data[0].community;
+          this.getGeoCodingData();
+          this.updateBreadCrumbs();
+        })
 
+        .catch((err) => console.error(err))
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    updateBreadCrumbs() {
+      var find = " ";
+      var reg = new RegExp(find, "g");
+      let arr = this.$route.meta.breadcrumb;
 
-        },
-        toggleBranches(param) {
-            if (this.show === param) {
-                this.show = null
-            } else
-                this.show = param;
-        },
-        getDataFromApi() {
-            var find = '-';
-            var reg = new RegExp(find, 'g');
-            const { department, full_name } = this.$route.params;
-            this.department = department.replace(reg, ' ')
-            this.loading = true;
-            axios
-                .post(
-                    `${urls.FIND_EMPLOYEE_URL}employee-detail/${department}/${full_name}`
-                )
-                .then((resp) => {
+      const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
 
-                    this.employee = resp.data.data;
+      dynamicBreadcrumb.forEach((element) => {
+        if (element.name == "Department") {
+          element.name = this.department;
+          element.link =
+            "/find-employee/" + this.department.replace(reg, "-").toLowerCase();
+        } else if (element.name == "Division") {
+          element.name = this.division;
+          element.link =
+            ("/find-employee/" + this.department + "/" + this.division)
+              .replace(reg, "-")
+              .toLowerCase() + "/all-branches";
+        } else if (element.name == "Branch") {
+          if (this.branch === null) {
+            element.name = null;
+            element.link = null;
+          }
+          element.name = this.branch;
+          element.link = (
+            "/find-employee/" +
+            this.department +
+            "/" +
+            this.division +
+            "/" +
+            this.branch
+          )
+            .replace(reg, "-")
+            .toLowerCase();
+        } else if (element.name == "Username") {
+          element.name = this.title;
+        }
+      });
 
-                    this.division = resp.data.data[0].division
-                    this.branch = resp.data.data[0].branch
-                    this.title = resp.data.data[0].full_name
-                    this.managerDepartment = resp.data.meta.manager[0].department.toLowerCase().replace(/\s+/g, '-')
+      arr = arr.filter((item) => item.name !== null);
 
-                    this.department = resp.data.data[0].department
-                    this.loading = false;
-                    this.updateBreadCrumbs();
-                })
-
-                .catch((err) => console.error(err))
-                .finally(() => {
-                    this.loading = false;
-                });
-
-
-        },
-        updateBreadCrumbs() {
-
-            var find = ' ';
-            var reg = new RegExp(find, 'g');
-            let arr = this.$route.meta.breadcrumb;
-
-            const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-
-            dynamicBreadcrumb.forEach((element => {
-                if (element.name == 'Department') {
-                    element.name = this.department;
-                    element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
-                } else if (element.name == 'Division') {
-                    element.name = this.division;
-                    element.link = ('/find-employee/' + this.department + '/' + this.division).replace(reg, '-').toLowerCase() + '/all-branches'
-                } else if (element.name == 'Branch') {
-                    if (this.branch === null) {
-                        element.name = null
-                        element.link = null
-                    }
-                    element.name = this.branch;
-                    element.link = ('/find-employee/' + this.department + '/' + this.division + '/' + this.branch).replace(reg, '-').toLowerCase()
-                } else if (element.name == 'Username') {
-                    element.name = this.title
-                }
-            }))
-            
-            arr = arr.filter(item =>   item.name !== null  )
-
-            this.breadcrumbsList = arr
-        },
-    }
+      this.breadcrumbsList = arr;
+    },
+  },
 };
 </script>
-  
+
 <style>
 .v-main {
-    background: white !important;
+  background: white !important;
 }
 
 .employee-detail a {
-    font-size: 22px;
-    font-weight: 400;
-    text-decoration: underline;
+  font-size: 22px;
+  font-weight: 400;
+  text-decoration: underline;
 }
 
 .employee-detail h2,
 .employee-detail h3 {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .employee-detail h2 {
-    font-size: 30px;
+  font-size: 30px;
 }
 
 .employee-detail h3 {
-    font-size: 22px;
+  font-size: 22px;
 }
 </style>
