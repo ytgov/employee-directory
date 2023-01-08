@@ -24,7 +24,7 @@
     </div>
     <v-row class="mt-16"></v-row>
     <v-row>
-      <v-col v-for="item in employee">
+      <v-col v-for="item in employee" :key="item.full_name">
         <h2
           class="mb-1"
           style="color: #dc4405 !important; font-size: 34px !important"
@@ -162,6 +162,9 @@
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
+import * as config from "../config"
+
+export const GMAPS_KEY = process.env.GMAPS_KEY
 
 
 const axios = require("axios");
@@ -223,7 +226,7 @@ export default {
       axios
         .request({
           method: "GET",
-          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${office},+${community}&key=AIzaSyCqpcmysOABHsnAgAaWfFMhRUfNyi3hLSc`,
+          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${office},+${community}&key=${config.gmapsKey}`,
         })
         .then((resp) => {
           this.position = resp.results.location;

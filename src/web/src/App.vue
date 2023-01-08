@@ -3,7 +3,7 @@
     <v-app-bar elevation="2" app color="#fff" flat height="70">
       <div class="header-container">
         <v-row align-content="space-between">
-          <img  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
+          <img class="ml-5"  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
@@ -196,22 +196,6 @@ export default {
 .width-100 {
   width: 100%;
 }
-
-.bg-img {
-  background-image: url(../public/Aurora-main.svg);
-  background-repeat: no-repeat;
-  background-position-x: 300px;
-  background-position-y: center;
-}
-
-@media (min-width: 1180px) {
-  .bg-img {
-    background-position-x: 130% !important;
-    background-position-y: center;
-
-  }
-}
-
 
 .data-header {
   background-color: #DC4405;
