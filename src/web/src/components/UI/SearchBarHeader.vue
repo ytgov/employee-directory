@@ -88,12 +88,15 @@ export default {
 
     methods: {
 
+        
+
         updateSearch() {
             const find = ' ';
             const reg = new RegExp(find, 'g');
             let name = this.nameSearch.replace(/\s+/g, '.').trim()
-            let department = this.departmentSearch.replace(reg, '-')
-
+            
+            let department = this.departmentSearch.replace(reg, '-').replace(/\//g,'')
+            
             if (name === '') {
                 this.nameError =true
                 return

@@ -44,7 +44,7 @@
                 </li>
                 <v-expand-transition>
                   <ul v-if="check === parent_item.toLowerCase()">
-                    <li v-for="(item, index, id) in item" :key="item.full_name" class="py-2">
+                    <li v-for="(item, index, id) in item" :key="id" class="py-2">
                       <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
                       }}</a>
                     </li>

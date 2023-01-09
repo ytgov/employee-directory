@@ -84,7 +84,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     var reg = new RegExp(find, 'g');
 
 
-    let paramDepartment = (req.params.department)
+    let paramDepartment = (req.params.department).replace(/\--/g,'-/-')
 
     if (paramDepartment === 'any-department') {
         paramDepartment = ''
@@ -189,7 +189,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     var find = '-';
     var reg = new RegExp(find, 'g');
 
-    let paramDepartment = (req.params.department).replace(reg, ' ')
+    let paramDepartment = (req.params.department).replace(/\--/g,'-/-').replace(reg, ' ')
     let paramFullName = (req.params.full_name)
 
 
@@ -283,7 +283,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     var find = '-';
     var reg = new RegExp(find, 'g');
 
-    let paramDepartment = (req.params.department.replace(reg, ' '))
+    let paramDepartment = (req.params.department.replace(/\--/g,'-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
     var notDivision =  paramDivision === 'not-division' ;
@@ -462,7 +462,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var find = '-';
     var reg = new RegExp(find, 'g');
     var _ = require("lodash");
-    let paramDepartment = (req.params.department.replace(reg, ' '))
+    let paramDepartment = (req.params.department.replace(reg, ' ').replace(/\--/g,'-/-'))
     var employeesByDept = Object();
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
@@ -509,7 +509,7 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
 
     var find = '-';
     var reg = new RegExp(find, 'g');
-    const paramDepartment = req.body.department
+    const paramDepartment = req.body.department.replace(/\--/g,'-/-')
 
     var employeesByDept = Object();
 
