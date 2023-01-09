@@ -176,6 +176,7 @@ export default {
   },
   name: "EmployeeDetail",
   data: () => ({
+    noBgImg: true,
     department: "",
     managerDepartment: [],
     position: {
@@ -211,9 +212,13 @@ export default {
       deep: true,
     },
   },
+  emits:['changeBg'],
   computed: {},
   mounted() {
     this.getDataFromApi();
+    this.$emit('changeBg');
+  },
+  created(){
   },
   methods: {
     getGeoCodingData() {
@@ -410,9 +415,6 @@ export default {
 </script>
 
 <style>
-.v-main {
-  background: white !important;
-}
 
 .employee-detail a {
   font-size: 22px;

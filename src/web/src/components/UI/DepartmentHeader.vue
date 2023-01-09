@@ -1,6 +1,6 @@
 <template>
   <div class="full-width py-6 gray-bg bg-img">
-    <v-container>
+    <v-container class="small-container">
       <v-row>
         <v-col cols="12" sm="2" class="d-flex algin-center justify-center">
           <div
@@ -81,6 +81,12 @@ export default {
   .text-responsive {
   text-align: left;
 }
+}
+
+@media (min-width: 1904px) {
+  .small-container{
+    max-width: 1185px;
+  }
 }
 
 </style>
