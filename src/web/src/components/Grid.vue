@@ -335,20 +335,6 @@ export default {
   background-color: green;
 }
 
-.bg-img {
-  background-image: url(/Aurora-main.svg);
-  background-repeat: no-repeat;
-  background-position-x: 300px;
-  background-position-y: center;
-}
-
-@media (min-width: 1180px) {
-  .bg-img {
-    background-position-x: 2878px;
-    background-position-y: center;
-
-  }
-}
 
 .overf {
   z-index: 1;
