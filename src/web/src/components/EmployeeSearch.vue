@@ -202,9 +202,11 @@ export default {
         }
 
     },
+    emits:['changeBg'],
     mounted() {
         this.getDataFromApi();
         this.updateBreadCrumbs();
+        this.$emit('changeBg');
     },
     data() {
         return {

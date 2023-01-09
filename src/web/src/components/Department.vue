@@ -89,6 +89,7 @@ export default {
     options: {},
 
   }),
+  emits:['changeBg'],
   created() {
 
   },
@@ -112,6 +113,7 @@ export default {
   mounted() {
     this.getDataFromApi();
     this.updateBreadCrumbs();
+    this.$emit('changeBg');
   },
   methods: {
     activateBranches(item) {

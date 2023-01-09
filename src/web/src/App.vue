@@ -15,12 +15,12 @@
       </div>
     </v-app-bar>
 
-    <v-main :class="{ active: isActive }" v-bind:style="{ 'padding-left: 33px !important': !hasSidebar }">
+    <v-main :class="{ 'no-bg-img': noBgImg === true }">
       <!-- Provides the application the proper gutter -->
       <v-container fluid id="container-main">
         <v-row id="container-row">
           <v-col>
-            <router-view></router-view>
+            <router-view @changeBg="changeBackground"></router-view>
           </v-col>
         </v-row>
       </v-container>
@@ -46,7 +46,6 @@
             </v-card-text>
           </div>
         </v-card>
-
       </v-card>
     </v-footer>
 
@@ -62,10 +61,8 @@ import { mapState } from "vuex";
 
 export default {
   name: "App",
-  components: {},
-  props: ['isActive'],
   data: () => ({
-
+    noBgImg:false,
     dialog: false,
     drawer: null,
     drawerRight: null,
@@ -75,8 +72,6 @@ export default {
     applicationName: config.applicationName,
     applicationIcon: config.applicationIcon,
     sections: config.sections,
-    hasSidebar: false, //config.hasSidebar,
-    hasSidebarClosable: config.hasSidebarClosable
   }),
   created: async function () {
 
@@ -85,6 +80,9 @@ export default {
 
   },
   methods: {
+    changeBackground(){
+      this.noBgImg = true
+    },
     nav: function (location) {
       router.push(location);
       console.log(location);
@@ -101,8 +99,7 @@ export default {
 
 <style>
 
-
-.active {
+.no-bg-img {
   background: white !important;
 }
 

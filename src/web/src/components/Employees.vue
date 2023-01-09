@@ -55,6 +55,7 @@ export default {
   },
   name: "Employees",
   data: () => ({
+    noBgImg: true,
     breadcrumbsList: [],
     show: false,
     loading: false,
