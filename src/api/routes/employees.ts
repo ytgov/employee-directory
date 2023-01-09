@@ -286,7 +286,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     let paramDepartment = (req.params.department.replace(reg, ' '))
     let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
-
+    var notDivision =  paramDivision === 'not-division' ;
+     
     if (paramDivision === 'not-division') {
         paramDivision = ''
     } else {
@@ -341,16 +342,25 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
                 employeesByDept.push(employee);
             });
-
+            
+            employeesByDept = employeesByDept.filter(item => { 
+              return item.department.toLowerCase().indexOf(paramDepartment) >= 0                
+            }) 
+            console.log(employeesByDept.length)
             let employeesByDivision = employeesByDept
-            //Filter by Division
-            employeesByDivision = _.filter(employeesByDivision, (employee: any) => employee.full_name !== employee.manager);
-            if (paramDivision !== '') {
-                employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+            //Filter by Division  
+            if (notDivision) {
+              employeesByDivision = employeesByDivision.filter(item => {return item.division === '-'|| _.isUndefined(item.division) || _.isEmpty(item.division)  })
+              
+            }else{
+              employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
             }
+                        //Get the number of the employees display in the grid.
+            let divLength = employeesByDivision.length
+            
             //Filter by Branch
             if(notBranch){
-                employeesByDivision = employeesByDivision.filter(item => {return  _.isUndefined(item.branch) || _.isEmpty(item.branch)  })
+                employeesByDivision = employeesByDivision.filter(item => {return item.branch === '-'||  _.isUndefined(item.branch) || _.isEmpty(item.branch)  })
             }else if (paramBranch !== '') {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
@@ -428,8 +438,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             finalResult = finalResult.filter(function (elem: any, index: any, self: any) {
                 return index == self.indexOf(elem);
             });
-            //Get the number of the employees display in the grid.
-            let divLength = finalResult.length
+
 
             let endResult: any
             //Return the grouped array 

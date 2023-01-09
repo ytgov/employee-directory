@@ -320,6 +320,8 @@ export default {
   background-repeat: no-repeat;
   background-position-x: 300px;
   background-position-y: center;
+  transition: all .4s ease;
+  background-size: contain;
 }
 @media (min-width: 1180px) {
   .bg-img {

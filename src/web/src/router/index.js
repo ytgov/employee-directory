@@ -6,32 +6,11 @@ import Employees from "../components/Employees";
 import Department from "../components/Department";
 import EmployeeDetail from "../components/EmployeeDetail";
 import EmployeeSearch from "../components/EmployeeSearch";
-import Login from "../components/Login";
-import LoginComplete from "../components/LoginComplete";
-import Profile from "../components/Profile";
 
 
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: "/sign-in",
-    name: "Login",
-    component: Login
-  },
-  {
-    path: "/login-complete",
-    name: "LoginComplete",
-    component: LoginComplete
-  },
-  {
-    path: "/profile",
-    name: "Profile",
-    component: Profile,
-    meta: {
-      requiresAuth: true
-    }
-  },
   {
     path: "/",
     name: "Home",
