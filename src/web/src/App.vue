@@ -27,8 +27,10 @@
     </v-main>
     <v-footer class="mt-16" flat style="z-index: 10" padless height="70">
       <v-card class="flex " flat tile>
-        <v-card-title class="py-16 header-container" id="footer-bg">
-          <img src="/logo-white.svg" style="margin: -8px 155px 0 0" height="44" />
+        <v-card-title class="py-16 header-container full-width" id="footer-bg">
+          <v-container class="small-container">
+            <img src="/logo-white.svg" style="margin: -8px 155px 0 0" height="44" />
+          </v-container>
         </v-card-title>
         <v-divider></v-divider>
         <v-card class="footer-details">
@@ -222,5 +224,11 @@ export default {
 
 .table-body tr:nth-child(odd) {
   background-color: #EDEDED;
+}
+
+@media (min-width: 1904px) {
+  .small-container{
+    max-width: 1185px !important;
+  }
 }
 </style>

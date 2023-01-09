@@ -215,8 +215,8 @@ export default {
   emits:['changeBg'],
   computed: {},
   mounted() {
-    this.getDataFromApi();
     this.$emit('changeBg');
+    this.getDataFromApi();
   },
   created(){
   },
