@@ -164,9 +164,7 @@ import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
 import * as config from "../config"
 
-export const GMAPS_KEY = process.env.GMAPS_KEY
-
-
+console.log(config)
 const axios = require("axios");
 export default {
   components: {
@@ -231,7 +229,7 @@ export default {
       axios
         .request({
           method: "GET",
-          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${office},+${community}&key=${config.gmapsKey}`,
+          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${office},+${community}&key=${config.GMAPS_KEY}`,
         })
         .then((resp) => {
           this.position = resp.results.location;
