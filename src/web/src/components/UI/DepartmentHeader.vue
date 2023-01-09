@@ -83,10 +83,4 @@ export default {
 }
 }
 
-@media (min-width: 1904px) {
-  .small-container{
-    max-width: 1185px;
-  }
-}
-
 </style>
