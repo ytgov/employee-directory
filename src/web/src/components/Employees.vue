@@ -14,8 +14,9 @@
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <v-row class="mb-6 mt-6">
-      <v-col cols="12" md="4" sm="6" xs="12" v-for='(items, index, id) in item'>
+    <v-row class="py-10 mt-16"></v-row>
+    <v-row class="mb-6 mt-16">
+      <v-col cols="12" md="4" sm="6" xs="12" v-for='(items, index, id) in item' :key="id">
         <v-hover v-slot="{ hover }">
           <v-card :href="indexUrl(index, items)" class="mx-auto employee-division-card" max-width="344" outlined>
             <v-card class="d-flex">
@@ -23,7 +24,7 @@
                 <v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
                   :style="{ 'background-color': hover ? '#DC4001' : '#512A44' }">
                   <v-avatar tile>
-                    <IconLoader :image="index.toLowerCase()" :color="'white'" />
+                    <IconLoader :image="index.toLowerCase().replace(/\//g,'')" :color="'white'" />
                   </v-avatar>
                 </v-list-item-avatar>
                 <v-list-item-content>
@@ -44,16 +45,17 @@
 <script>
 import IconLoader from './icons/IconLoader.vue'
 import SearchBarHeader from './UI/SearchBarHeader.vue'
+import * as urls from "../urls";
 
 const axios = require("axios");
 export default {
   components: {
-
     IconLoader,
     SearchBarHeader,
   },
   name: "Employees",
   data: () => ({
+    noBgImg: true,
     breadcrumbsList: [],
     show: false,
     loading: false,
@@ -84,7 +86,7 @@ export default {
 
     indexUrl(field, value) {
 
-      let department = "/find-employee/" + field
+      let department = "/find-employee/" + field.replace(/\//g,'')
       let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
       if (value.length === 0) {
         return "" + noSpaces + '/not-division/all-branches'
@@ -98,7 +100,7 @@ export default {
 
       axios
         .post(
-          "http://localhost:3000/api/employees",
+          urls.EMPLOYEES_URL,
           this.options
         )
         .then((resp) => {

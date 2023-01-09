@@ -3,7 +3,7 @@
     <v-app-bar elevation="2" app color="#fff" flat height="70">
       <div class="header-container">
         <v-row align-content="space-between">
-          <img  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
+          <img class="ml-5"  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
@@ -15,20 +15,22 @@
       </div>
     </v-app-bar>
 
-    <v-main :class="{ active: isActive }" v-bind:style="{ 'padding-left: 33px !important': !hasSidebar }">
+    <v-main :class="{ 'no-bg-img': noBgImg === true }">
       <!-- Provides the application the proper gutter -->
       <v-container fluid id="container-main">
         <v-row id="container-row">
           <v-col>
-            <router-view></router-view>
+            <router-view @changeBg="changeBackground"></router-view>
           </v-col>
         </v-row>
       </v-container>
     </v-main>
     <v-footer class="mt-16" flat style="z-index: 10" padless height="70">
       <v-card class="flex " flat tile>
-        <v-card-title class="py-16 header-container" id="footer-bg">
-          <img src="/logo-white.svg" style="margin: -8px 155px 0 0" height="44" />
+        <v-card-title class="py-16 header-container full-width" id="footer-bg">
+          <v-container class="small-container">
+            <img src="/logo-white.svg" style="margin: -8px 155px 0 0" height="44" />
+          </v-container>
         </v-card-title>
         <v-divider></v-divider>
         <v-card class="footer-details">
@@ -46,7 +48,6 @@
             </v-card-text>
           </div>
         </v-card>
-
       </v-card>
     </v-footer>
 
@@ -62,10 +63,8 @@ import { mapState } from "vuex";
 
 export default {
   name: "App",
-  components: {},
-  props: ['isActive'],
   data: () => ({
-
+    noBgImg:false,
     dialog: false,
     drawer: null,
     drawerRight: null,
@@ -75,8 +74,6 @@ export default {
     applicationName: config.applicationName,
     applicationIcon: config.applicationIcon,
     sections: config.sections,
-    hasSidebar: false, //config.hasSidebar,
-    hasSidebarClosable: config.hasSidebarClosable
   }),
   created: async function () {
 
@@ -85,6 +82,9 @@ export default {
 
   },
   methods: {
+    changeBackground(){
+      this.noBgImg = true
+    },
     nav: function (location) {
       router.push(location);
       console.log(location);
@@ -101,8 +101,7 @@ export default {
 
 <style>
 
-
-.active {
+.no-bg-img {
   background: white !important;
 }
 
@@ -197,22 +196,6 @@ export default {
   width: 100%;
 }
 
-.bg-img {
-  background-image: url(../public/Aurora-main.svg);
-  background-repeat: no-repeat;
-  background-position-x: 300px;
-  background-position-y: center;
-}
-
-@media (min-width: 1180px) {
-  .bg-img {
-    background-position-x: 130% !important;
-    background-position-y: center;
-
-  }
-}
-
-
 .data-header {
   background-color: #DC4405;
   text-align: left;
@@ -241,5 +224,11 @@ export default {
 
 .table-body tr:nth-child(odd) {
   background-color: #EDEDED;
+}
+
+@media (min-width: 1904px) {
+  .small-container{
+    max-width: 1185px !important;
+  }
 }
 </style>

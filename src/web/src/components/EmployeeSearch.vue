@@ -1,7 +1,7 @@
 <template>
     <div class="books">
         <SearchBarHeader />
-        <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
+        <DepartmentHeader :title="this.department" :image="this.department.toLowerCase().replace(/\//g,'')" />
 
         <v-breadcrumbs class="mt-6 mb-8 breadcrumbs" :items="breadcrumbsList">
             <template v-slot:item="{ item }">
@@ -37,12 +37,12 @@
                 :headers="headers" :loading="loading" hide-default-header :items-per-page="itemsPerPage"
                 mobile-breakpoint="0">
                 <template v-slot:header="{ props }">
-                    <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+                    <th class="data-header py-3 pl-3 " v-for="head in props.headers" :key="head.id">{{ head.text }}
                     </th>
                 </template>
                 <template v-slot:body="{ items }">
                     <tbody class="table-body">
-                        <tr class="table-border" v-for='item in items'>
+                        <tr class="table-border" v-for='item in items' :key="item.full_name">
                             <td>
                                 <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                                     :href="urlEmployee(item.department, item.full_name_url)">
@@ -62,7 +62,7 @@
         <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
             <h2 class="mt-8 ml-5 department-text">{{ cleanParam(parent_array) }}</h2>
             
-            <div v-for="(item, index) in value">
+            <div v-for="(item, index,id) in value" :key="id">
                 <div class="mt-8 ml-5 d-flex align-center">
                     <h3 class="division-text">{{ cleanParam(index) }}</h3>
                     <h3 class="ml-3 py-1 px-3 division-length" >{{ item.length }}</h3>
@@ -174,8 +174,8 @@
 const axios = require("axios");
 import SearchBarHeader from './UI/SearchBarHeader.vue'
 import DepartmentHeader from './UI/DepartmentHeader.vue';
-import IconLoader from "./icons/IconLoader.vue"
-
+import IconLoader from "./icons/IconLoader.vue";
+import * as urls from "../urls";
 
 export default {
     components: {
@@ -202,9 +202,11 @@ export default {
         }
 
     },
+    emits:['changeBg'],
     mounted() {
         this.getDataFromApi();
         this.updateBreadCrumbs();
+        this.$emit('changeBg');
     },
     data() {
         return {
@@ -273,6 +275,7 @@ export default {
             this.breadcrumbsList = arr
         },
         getDataFromApi() {
+
             var find = '-';
             
             var reg = new RegExp(find, 'g');
@@ -295,9 +298,8 @@ export default {
                         groupBy: this.selection,
                         itemsperPage: this.itemsPerPage,
                     },
-                    url: `http://localhost:3000/api/employees/find-employee/search/keyword=${full_name}&department=${department}`
+                    url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${full_name}&department=${department}`
                 }
-
                 )
                 .then((resp) => {
                     

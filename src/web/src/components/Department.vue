@@ -44,7 +44,7 @@
                 </li>
                 <v-expand-transition>
                   <ul v-if="check === parent_item.toLowerCase()">
-                    <li v-for="(item, index, id) in item" :key="item.full_name" class="py-2">
+                    <li v-for="(item, index, id) in item" :key="id" class="py-2">
                       <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
                       }}</a>
                     </li>
@@ -66,6 +66,7 @@
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
+import * as urls from "../urls";
 
 const axios = require("axios");
 export default {
@@ -88,6 +89,7 @@ export default {
     options: {},
 
   }),
+  emits:['changeBg'],
   created() {
 
   },
@@ -111,6 +113,7 @@ export default {
   mounted() {
     this.getDataFromApi();
     this.updateBreadCrumbs();
+    this.$emit('changeBg');
   },
   methods: {
     activateBranches(item) {
@@ -196,7 +199,7 @@ export default {
       this.title = this.capitalizeString(department.replace(reg, ' '))
       axios
         .post(
-          `http://localhost:3000/api/employees/Find-Employee/${department}`,
+          `${urls.FIND_EMPLOYEE_URL}${department}`,
           this.options
         )
         .then((resp) => {

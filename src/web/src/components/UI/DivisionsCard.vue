@@ -4,7 +4,7 @@
 
             <v-card elevation="1" max-width="1090" class="mx-auto flex-column py-10">
                 <v-row>
-                    <v-col cols="6" v-for="(item, parent_item, id) in items" class="px-8 py-1">
+                    <v-col cols="6" v-for="(item, parent_item, id) in items" :key="id" class="px-8 py-1">
 
                         <v-card outlined color="transparent">
                             <li>
@@ -16,7 +16,7 @@
                             <v-expand-transition>
                                 <ul
                                     v-if="checkHover === parent_item.toLowerCase() || check === parent_item.toLowerCase()">
-                                    <li class="py-1" v-for="(value, index, id) in item">
+                                    <li class="py-1" v-for="(value, index, id) in item" :key="id">
                                         <a :class="{ 'branch-pressed': checkClass === index.toLowerCase() }"
                                             :href="generateUrl('branch', index, parent_item)"
                                             class="branch my-2 px-0 py-3">{{ index }}</a>
@@ -35,6 +35,8 @@
 
 <script>
 const axios = require("axios");
+import * as urls from "../../urls";
+
 export default {
 
     props: ['department', 'division', 'branch', 'checkHover', 'checkClass'],
@@ -106,7 +108,7 @@ export default {
                 data: {
                     department: this.$props.department
                 },
-                url: `http://localhost:3000/api/employees/DivisionsCard`
+                url: `${urls.EMPLOYEES_URL}DivisionsCard`
             }
 
             )

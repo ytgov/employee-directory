@@ -56,6 +56,7 @@
 <script>
 
 const axios = require("axios");
+import * as urls from "../../urls";
 
 export default {
     watch:{
@@ -87,12 +88,15 @@ export default {
 
     methods: {
 
+        
+
         updateSearch() {
             const find = ' ';
             const reg = new RegExp(find, 'g');
             let name = this.nameSearch.replace(/\s+/g, '.').trim()
-            let department = this.departmentSearch.replace(reg, '-')
-
+            
+            let department = this.departmentSearch.replace(reg, '-').replace(/\//g,'')
+            
             if (name === '') {
                 this.nameError =true
                 return
@@ -112,7 +116,7 @@ export default {
 
             axios
                 .post(
-                    "http://localhost:3000/api/employees/searchBar",
+                    `${urls.EMPLOYEES_URL}searchBar`,
                     this.options
                 )
                 .then((resp) => {
