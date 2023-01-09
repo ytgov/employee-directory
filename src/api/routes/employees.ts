@@ -379,11 +379,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             managersNameByDivision = _.uniq(_.map(employeesByDivision, 'manager'));
             //Get all the employees' name
             namesByDivision = _.map(employeesByDivision, 'full_name');
-
             //Check if all managers exist in the consulted department/branch.
             namesMissing = _.difference(managersNameByDivision, namesByDivision);
             
-            //Change the manager's name if the manager is missing from the department
+            //Change the manager's name if the manager is not in the same department, remove from the hierarchy
             employeesByDivision = employeesByDivision.map(function(item:any) {
                 if( _.indexOf(namesMissing, item.manager) >= 0 ){
                     item.manager = item.full_name;
