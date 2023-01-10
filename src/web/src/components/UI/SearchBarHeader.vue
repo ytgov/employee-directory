@@ -1,11 +1,11 @@
 <template>
 
-    <div class="full-width yellow-border white-bg ml-0 pl-0 pt-5 find-employee">
+    <div class="full-width yellow-border white-bg pl-0 pt-5 find-employee">
 
-        <v-container class="container-content ">
-            <h1 class="ml-5">Find a goverment Employee</h1>
+        <v-container class="container-content">
+            <h1 >Find a goverment Employee</h1>
 
-            <v-banner v-if="info" class="mb-6 mt-8">
+            <v-banner v-if="info" class="mb-6 mt-8 info_find-employee">
                 <span>
                     You can use this service to find the contact information of a person who works for a Government of
                     Yukon
@@ -24,12 +24,12 @@
 
             
             <v-row>
-                <v-col class="mb-n9" sm="5" cols="12">
+                <v-col class="mb-n6" sm="5" cols="12">
                     <v-text-field :error-messages="this.nameError?  ['Please enter a valid name.'] : []" label="Search by Name" v-model="nameSearch" dense=""
                         background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
                     </v-text-field>
                 </v-col>
-                <v-col class="mb-n9" sm="5" cols="12">
+                <v-col class="mb-n6" sm="5" cols="12">
                     <v-select :error-messages="this.dptError?  ['Please select a department.'] : []" :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
                         outlined="outlined" flat="" label="Department" solo>
                     </v-select>
@@ -139,6 +139,11 @@ export default {
 
 <style scoped>
 
+.info_find-employee >>> .v-banner__wrapper{
+    padding-left: 0 !important;
+    padding-right: 0!important;
+    
+}
 
 @media (max-width:600px) {
     .find-employee {
