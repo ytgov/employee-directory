@@ -117,22 +117,22 @@ a {
   background: url(../../public/Aurora-main.svg);
   background-repeat: no-repeat;
   background-position: calc(100% + 230px) 0;
-  background-position-y: 900px;
+  background-position-y: 750px;
   background-size: 600px;
 }
 
 @media (min-width: 600px) {
   .v-main {
     background-position: calc(100% + 200px) 0;
-    background-position-y: 580px;
+    background-position-y: calc(10% - -243px);
     background-size: 80%;
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   .v-main {
     background-position: calc(100% + 400px) 0;
-    background-position-y: 480px;
+    background-position-y: 400px;
     background-size: 1200px;
   }
 }

@@ -1,11 +1,11 @@
 <template>
 
-    <div class="full-width yellow-border white-bg ml-0 pl-0 pt-16 mt-n5">
+    <div class="full-width yellow-border white-bg ml-0 pl-0 pt-5 find-employee">
 
         <v-container class="container-content ">
             <h1>Find a goverment Employee</h1>
 
-            <div v-if="info" class="mb-6 mt-6">
+            <v-banner v-if="info" class="mb-6 mt-8">
                 <p><strong>
                     You can use this service to find the contact information of a person who works for a Government of
                     Yukon
@@ -139,6 +139,14 @@ export default {
 
 
 <style scoped>
+
+
+@media (max-width:600px) {
+    .find-employee {
+    margin-top: -65px !important;
+}
+}
+
 .v-text-field>>>fieldset {
     border: 1.5px solid #F3A901;
 }
