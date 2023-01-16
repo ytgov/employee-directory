@@ -25,6 +25,6 @@ export const sections = [
         icon: "mdi-account-group"
     }
 ];
-export const GMAPS_KEY = 'AIzaSyCqpcmysOABHsnAgAaWfFMhRUfNyi3hLSc'; //process.env.GMAPS_KEY
+export const GMAPS_KEY = process.env.GMAPS_KEY || 'AIzaSyCqpcmysOABHsnAgAaWfFMhRUfNyi3hLSc'; //process.env.GMAPS_KEY
 export const environment = process.env.NODE_ENV;
 export const apiBaseUrl = process.env.NODE_ENV == "production" ? "" : "http://localhost:3000";

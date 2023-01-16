@@ -136,14 +136,14 @@
             </v-col>
             <v-col cols="12" md="6">
               <GmapMap class="mb-2"
-                :center="position"
+                :center="center"
                 :zoom="14"
                 map-type-id="terrain"
                 style="width: 100%; min-height: 300px;"
               >
                 <GmapMarker
                   :key="index"
-                  v-for="(m, index) in items"
+                  v-for="(m, index) in markers"
                   :position="m.position"
                   :clickable="true"
                   :draggable="true"
@@ -161,6 +161,7 @@
 <script>
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
+import { get } from 'lodash';
 import * as urls from "../urls";
 import * as config from "../config"
 
@@ -177,10 +178,11 @@ export default {
     noBgImg: true,
     department: "",
     managerDepartment: [],
-    position: {
-                  "lat" : 60.7170045,
-                  "lng" : -135.0492597
-               },
+    center: {
+      "lat" : 60.7170045,
+      "lng" : -135.0492597
+    },
+    markers: [],
     breadcrumbsList: [],
     employee: [],
     show: 90,
@@ -219,6 +221,10 @@ export default {
   created(){
   },
   methods: {
+    setCenter(marker) {
+      this.center = marker;
+      this.markers[0] = { position: marker }  
+    },
     getGeoCodingData() {
       const find = " ";
       const reg = new RegExp(find, "g");
@@ -229,11 +235,14 @@ export default {
       axios
         .request({
           method: "GET",
+          Headers: { "Access-Control-Allow-Origin": "http://localhost:8080" },
+          withCredentials: false,
           url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${office},+${community}&key=${config.GMAPS_KEY}`,
         })
         .then((resp) => {
-          this.position = resp.results.location;
-          console.log(this.position);
+          const newPosition = get(resp, 'data.results[0].geometry.location', this.center);
+          console.log("MARKER POSITION", this.center);
+          this.setCenter(newPosition);
         })
         .catch((error) => {
           console.log(error);
