@@ -75,32 +75,21 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
 employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:department?", [param("full_name", "department").notEmpty()], async (req: Request, res: Response) => {
 
     var employeesByDept: any[] = Array();
-
-
     let groupBy = (req.body.groupBy) || 0;
     const itemsPerPage = (req.body.itemsPerPage);
-
     var find = '-';
     var reg = new RegExp(find, 'g');
-
-
     let paramDepartment = (req.params.department).replace(/\--/g,'-/-')
+    let paramFullName = (req.params.full_name).replace(".", " ")
 
     if (paramDepartment === 'any-department') {
         paramDepartment = ''
     } else {
         paramDepartment = (req.params.department.replace(reg, ' '))
     }
-    let paramFullName = (req.params.full_name).replace(".", " ")
-
-
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, full_name: paramFullName } })
         .then((response: any) => {
-
             var resultEmployees = response.data.employees;
-
-
-
             interface EmployeeTable {
                 full_name: string
                 title: string
@@ -118,10 +107,8 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                 community: String
             }
 
-
             resultEmployees.forEach(function (element: any) {
-                var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
-
+                var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
                     'title': element.title !== '' ? element.title : '-',
@@ -139,7 +126,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                     'community': element.community,
                 };
 
-
                 employeesByDept.push(employee);
 
             });
@@ -151,7 +137,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
             let departments = _.groupBy(employeesByDept, item => `${item.department}`);
 
-
             for (const [key, value] of Object.entries(departments)) {
                 const groupByDivision: any = _.groupBy(departments[key], (department) => department.division);
 
@@ -160,19 +145,21 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             }
 
             let location = _.groupBy(employeesByDept, item => `${item.address}, ${item.community}`);
-
             let position = _.groupBy(employeesByDept, item => `${item.title}`);
-
             let finalResult: any
-
-            if (groupBy === 0) {
+            switch(groupBy){
+              case 0:
                 finalResult = employeesByDept
-            } else if (groupBy === 1) {
+                break;
+              case 1:
                 finalResult = departments
-            } else if (groupBy === 2) {
+                break;
+              case 2:
                 finalResult = location
-            } else if (groupBy === 3) {
-                finalResult = position
+                break;
+              case 3:
+                 finalResult = position
+                 break;
             }
 
             res.send({ data: finalResult, meta: { count: employeesByDept.length } });
@@ -274,12 +261,10 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 });
 
 employeesRouter.post("/find-employee/:department/:division/:branch?", [param("department", "division"), param('branch').notEmpty()], async (req: Request, res: Response) => {
-
-
     let groupBy = (req.body.groupBy) || 0;
 
     var employeesByDept: any[] = Array();
-
+    var managersMissing: any[] = Array();
     var _ = require("lodash");
 
     var find = '-';
@@ -288,9 +273,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     let paramDepartment = (req.params.department.replace(/\--/g,'-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
-
-
-
+    var notDivision =  paramDivision === 'not-division' ;
+     
     if (paramDivision === 'not-division') {
         paramDivision = ''
     } else {
@@ -304,12 +288,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
         paramBranch = req.params.branch.replace(reg, ' ')
     }
 
-
-    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, division: paramDivision, branch: paramBranch, } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
-
             interface EmployeeTable {
                 full_name: string
                 title: string
@@ -325,9 +307,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 address: string
                 community: string
             }
+            
             resultEmployees.forEach(function (element: any) {
-                var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
-
+                var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
                     'title': element.title !== '' ? element.title : '-',
@@ -346,132 +328,132 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 };
 
                 employeesByDept.push(employee);
-
-
-
             });
-            let compare = employeesByDept
-
-            employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
-
+            
+            employeesByDept = employeesByDept.filter(item => { 
+              return item.department.toLowerCase().indexOf(paramDepartment) >= 0                
+            }) 
             let employeesByDivision = employeesByDept
-
-            employeesByDivision = _.filter(employeesByDivision, (employee: any) => employee.full_name !== employee.manager);
-
-            if (paramDivision !== '') {
-                employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+            //Filter by Division  
+            if (notDivision) {
+              employeesByDivision = employeesByDivision.filter(item => {return item.division === '-'|| _.isUndefined(item.division) || _.isEmpty(item.division)  }) 
+            }else{
+              employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
             }
-
+            //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
-
-
+            
+            //Filter by Branch
             if(notBranch){
-                employeesByDivision = employeesByDivision.filter(item => {return  _.isUndefined(item.branch) || _.isEmpty(item.branch)  })
+              employeesByDivision = employeesByDivision.filter(item => {return item.branch === '-'||  _.isUndefined(item.branch) || _.isEmpty(item.branch)  })
             }else if (paramBranch !== '') {
-                employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
+              employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
 
+            //Get all the Managers' name
+            var managersNameByDivision = _.uniq(_.map(employeesByDivision, 'manager'));
+            //Get all the employees' name
+            var namesByDivision = _.map(employeesByDivision, 'full_name');
 
-            let managerArr = employeesByDivision.map(a => a.manager)
+            //Check if all managers exist in the consulted department/branch.
+            var namesMissing = _.difference(managersNameByDivision, namesByDivision);
 
-            managerArr = managerArr.filter(function (elem, index, self) {
-                return index === self.indexOf(elem);
+            if(!_.isEmpty(namesMissing)){
+                managersMissing = namesMissing.map(function(name:string) {
+                    let managerMissing = _.find(employeesByDept, {full_name:name});
+                    if(!_.isUndefined(managerMissing)){
+                        managerMissing.manager = managerMissing.full_name;
+                        return managerMissing;
+                    }
+                });
+            }
+
+            managersMissing = _.compact(managersMissing);
+
+            //Add the managers missing in the array
+            if(!_.isEmpty(employeesByDivision) && !_.isEmpty(managersMissing)){
+                 employeesByDivision = _.union(employeesByDivision, managersMissing);
+            }
+
+            //Get all the Managers' name
+            managersNameByDivision = _.uniq(_.map(employeesByDivision, 'manager'));
+            //Get all the employees' name
+            namesByDivision = _.map(employeesByDivision, 'full_name');
+            //Check if all managers exist in the consulted department/branch.
+            namesMissing = _.difference(managersNameByDivision, namesByDivision);
+            
+            //Change the manager's name if the manager is not in the same department, remove from the hierarchy
+            employeesByDivision = employeesByDivision.map(function(item:any) {
+                if( _.indexOf(namesMissing, item.manager) >= 0 ){
+                    item.manager = item.full_name;
+                }
+                return item;
             });
 
+            //Obtain all objects from managers
+            let managersByDivision = employeesByDivision.filter(item => {
+                if( _.isEmpty(item.manager) || item.manager === '-' ||  item.manager === item.full_name){
+                     item.level = 0;
+                     return true;
+                }
+            });
 
-            let managers = compare.filter(function (e) {
-                return managerArr.includes(e.full_name)
-            })
-
-
-            let employeesWithoutManager = employeesByDivision.filter(function (e) {
-                return e.manager === '-'
-            })
-
-            managers = managers.filter((value, index, self) =>
-                index === self.findIndex((t) => (
-                    t.full_name === value.full_name
-                ))
-            )
-
-
+            //Obtain all employee objects not in Manager's array.
             let employeesByManager = employeesByDivision.filter(function (e) {
-                return !managers.includes(e.full_name)
+                return !_.find(managersByDivision, {full_name:e.full_name})
             })
-            
-            employeesWithoutManager = employeesByDivision.filter(item => { return item.manager.indexOf('-') >= 0 })
-
-            
-
+          
             const getEmployeesByManager = (employeesArray: any, currentManager: any, level: any) => {
-                const currentEmployees = employeesArray.filter((employee: any) => employee.manager === currentManager.full_name);
-                Object.assign(currentManager, { level });
+                const currentEmployees = employeesArray.filter(
+                    (employee: any) => employee.manager === currentManager.full_name
+                );
                 if (!currentEmployees.length) {
-                    return currentManager;
+                    return [currentManager];
                 }
-
                 let employeesList: any = [];
-                const currentLevel = level += 1;
-                for (const manager of currentEmployees) {
-                    const employees = getEmployeesByManager(employeesArray, manager, currentLevel);
+                const currentLevel = level + 1;
+                employeesList = currentEmployees.map(function(item:any) {
+                    item.level = currentLevel;
+                    item.value += currentManager.value
+                    return item;
+                });
 
-                    employees.value += manager.value
+                for (const employee__ of employeesList) {
+                    const employees = getEmployeesByManager(employeesArray, employee__, currentLevel);
                     employeesList = [...employeesList, employees];
-
-                }
+                  }
                 return [currentManager, ...employeesList.flat()];
             }
 
             let result: any = [];
             let levelOfDepth: any = 0;
-
-            for (const manager of managers) {
-                result = [...result, ...getEmployeesByManager(employeesByManager, manager, levelOfDepth + 1)];
+            for (const manager of managersByDivision) {
+                levelOfDepth = _.isUndefined(manager.level) ?  0 : manager.level;
+                result = [...result, ...getEmployeesByManager(employeesByManager, manager, levelOfDepth)];
             }
 
-            employeesWithoutManager.forEach(function (element) {
-                element.level = 0
-            })
-
             let resultRev = result.slice().reverse();
-
-            let resultFilttered = resultRev.filter(function (elem: any, index: any, self: any) {
+             let resultFilttered = resultRev.filter(function (elem: any, index: any, self: any) {
                 return index == self.indexOf(elem);
             });
 
             let finalResult = resultFilttered.slice().reverse();
-
-            finalResult.push.apply(finalResult, employeesWithoutManager)
-
             finalResult = finalResult.filter(function (elem: any, index: any, self: any) {
                 return index == self.indexOf(elem);
             });
 
-            finalResult.forEach(function (element: any) {
-                if (element.manager === '-' || element.manager === 0) {
-                    element.level = 0
-                } else if (element.level > 2) {
-                    element.level = 2
-                }
-
-            })
-
-            if (finalResult.length > divLength) {
-                divLength = finalResult.length
-            }
-
-            let location = _.groupBy(finalResult, function (item: any) { return `${item.address}, ${item.community}` });
-
-            let position = _.groupBy(finalResult, function (item: any) { return `${item.title}` });
-
             let endResult: any
-
-            if (groupBy === 0) {
+            //Return the grouped array 
+             switch(groupBy){
+              case 0:
                 endResult = finalResult
-            } else if (groupBy === 1) {
-                endResult = location
-            } else if (groupBy === 2) {
-                endResult = position
+                break;
+              case 1:
+                endResult =  _.groupBy(finalResult, function (item: any) { return `${item.address}, ${item.community}` });
+                break;
+              case 2:
+                endResult = _.groupBy(finalResult, function (item: any) { return `${item.title}` });
+                break;
             }
 
             res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
@@ -575,7 +557,6 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
             console.log(error);
         });
 });
-
 
 employeesRouter.post("/SearchBar", async (req: Request, res: Response) => {
 

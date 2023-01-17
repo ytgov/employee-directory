@@ -56,20 +56,19 @@
         </template>
         <template v-slot:body="{ items }">
           <tbody class="table-body">
-            <tr :class="{ 'table-body-managers': item.level === 0 || item.level === 1 }" class="table-border"
+            <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }" class="table-border"
               v-for='(item, index, id ) in items' :key="id">
               <td>
-                <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
                   :href="urlEmployee(item.department, item.full_name_url)">
-                  <div style="width:10px" v-if="(item.level === 2)"></div>
-                  <IconLoader class="mr-2" width="8" :color="'blue'" :image="item.level"></IconLoader>
-                  {{ item.full_name }}
+                  <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
+                  <IconLoader v-if="item.level > 1"  v-for='n in item.level'  :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
+                  <label class="full-name">{{ item.full_name }}</label>
                 </a>
               </td>
               <td>{{ item.title }}</td>
               <td>{{ item.email }}</td>
               <td>{{ item.phone_office }}</td>
-
             </tr>
           </tbody>
         </template>
@@ -97,7 +96,7 @@
                 <td>
                   <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                     :href="urlEmployee(item.department, item.full_name_url)">
-                    {{ item.full_name }}
+                    {{ item.full_name }}   
                   </a>
                 </td>
                 <td>{{ item.title }}</td>
@@ -140,7 +139,7 @@
           </template>
         </v-data-table>
       </div>
-    </div>›
+    </div>
   </div>
 </template>
 
@@ -180,7 +179,6 @@ export default {
       { text: "Position", value: "title" },
       { text: "E-Mail Address", value: "email" },
       { text: "Phone Number", value: "phone_office" },
-
     ],
     page: 1,
     pageCount: 0,
@@ -190,7 +188,6 @@ export default {
     '$route'() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
-
     options: {
       handler() {
         this.getDataFromApi();
@@ -217,18 +214,13 @@ export default {
     this.$emit('changeBg');
   },
   methods: {
-
     cleanParam(param) {
-
       if (param === '-') {
         param = 'N/A'
       }
-
       return param;
     },
-
     cleanLocation(location) {
-
       if (location[0] === ',') {
         let link = location.slice(1);
         return link.replace(/['"']+/g, '')
@@ -246,45 +238,36 @@ export default {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     updateBreadCrumbs() {
-
       var find = ' ';
       var reg = new RegExp(find, 'g');
       let arr = this.$route.meta.breadcrumb;
-
       const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-
       dynamicBreadcrumb.forEach((element => {
         if (element.name == 'Department') {
           element.name = this.department;
           element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
         } else if (element.name == 'Division') {
-
           element.name = this.div;
           if (this.branch !== 'all-branches') {
             element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-').toLowerCase() + '/all-branches'
           } else {
             element.link = null
           }
-
         } else if (element.name == 'Branch') {
           if (this.branch === 'all-branches') {
             element.name = null
           } else {
             element.name = this.branch;
           }
-
         }
-
       }))
       arr = arr.filter(item =>   item.name !== null  )
       this.breadcrumbsList = arr
     },
-
     getDataFromApi() {
       var find = '-';
       var reg = new RegExp(find, 'g');
       const { department, division, branch } = this.$route.params;
-
       this.loading = true;
       let formattedQueryParam = ''
       if (division == null) {
@@ -299,8 +282,6 @@ export default {
       this.div = this.capitalizeString(division.replace(reg, ' '))
       this.branch = this.capitalizeString(branch.replace(reg, ' '))
       const search = `${encodeURIComponent(`${this.search}`)}`;
-
-
       axios
         .request({
           method: 'POST',
@@ -309,8 +290,6 @@ export default {
           },
           url: `${urls.FIND_EMPLOYEE_URL}${department}/${division}/${branch}?search=`
         })
-
-
         .then((resp) => {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
@@ -330,14 +309,22 @@ export default {
 </script>
 
 <style scoped>
+.full-name{
+  margin-left:3px;
+}
 .table-header {
   height: 300px !important;
   background-color: green;
 }
 
-
 .overf {
   z-index: 1;
   overflow: hidden;
+}
+.angle-right{
+  width: 6px;
+}
+.angle-right-multiple{
+  width: 5px;
 }
 </style>

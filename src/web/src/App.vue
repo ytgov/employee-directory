@@ -3,7 +3,7 @@
     <v-app-bar elevation="2" app color="#fff" flat height="70">
       <div class="header-container">
         <v-row align-content="space-between">
-          <img class="ml-5"  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
+          <a  href="/"><img class="ml-5"  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
@@ -38,10 +38,10 @@
           <div class="header-container d-flex justify-space-between">
 
             <div class="d-flex flex-column pa-2 width-100">
-              <a href="#">Government of Yukon</a>
-              <a href="#">Copyright</a>
-              <a href="#">Disclaimer</a>
-              <a href="#">Privacy statement</a>
+              <a target ="_blank" href="https://yukon.ca/">Government of Yukon</a>
+              <a target ="_blank" href="https://yukon.ca/en/copyright">Copyright</a>
+              <a target ="_blank" href="https://yukon.ca/en/disclaimer">Disclaimer</a>
+              <a target ="_blank" href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
             </div>
             <v-card-text class="white--text text-right with-100">
               <span>© {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
