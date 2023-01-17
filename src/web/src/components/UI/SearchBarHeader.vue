@@ -1,6 +1,5 @@
 <template>
     <div class="full-width yellow-border white-bg pl-0 pt-5 find-employee">
-
         <v-container class="container-content">
             <h1 >Find a goverment Employee</h1>
 
@@ -10,7 +9,8 @@
                     Yukon
                     organization.
                 </span>
-
+                <br />
+                <br />
                 <p>
                 Enter the person's first or last name, position title, email address or telephone number in the search
                 box to
@@ -19,7 +19,8 @@
                 specific organization.
                 </p >
             </v-banner>
-            <v-form @submit.prevent="updateSearch" class="ml-4 pt-8">
+
+            <v-form @submit.prevent="updateSearch">
 
             
                 <v-row>
@@ -38,6 +39,7 @@
                     </v-col>
                 </v-row>
             </v-form>
+
         </v-container>
     </div>
 </template>
@@ -127,9 +129,7 @@ export default {
 
 </script>
 
-
 <style scoped>
-
 .info_find-employee >>> .v-banner__wrapper{
     padding-left: 0 !important;
     padding-right: 0!important;
@@ -138,9 +138,10 @@ export default {
 
 @media (max-width:600px) {
     .find-employee {
-    margin-top: -65px !important;
+        margin-top: -65px !important;
+    }
 }
-}
+
 
 .v-text-field>>>fieldset {
     border: 1.5px solid #F3A901;

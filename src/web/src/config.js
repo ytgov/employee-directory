@@ -1,9 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-export const applicationName = "Template App";
+export const applicationName = "Find a government employee | Government of Yukon eServices";
 export const applicationIcon = "mdi-cash-register";
-export const hasSidebar = true;
-export const hasSidebarClosable = false;
 
 export const sections = [
     {
