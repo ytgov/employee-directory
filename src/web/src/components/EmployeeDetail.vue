@@ -280,7 +280,7 @@ export default {
       let indexFormatted = index.replace(reg, "-");
       let paramFormatted = param.replace(reg, "-");
 
-      if (type === "manager") {
+      if (type === 'manager' && this.managerDepartment !== '') {
         return (
           url +
           "/find-employee/employee-detail/" +
@@ -353,6 +353,8 @@ export default {
           this.division = resp.data.data[0].division;
           this.branch = resp.data.data[0].branch;
           this.title = resp.data.data[0].full_name;
+          this.managerDepartment = resp.data.meta.manager && resp.data.meta.manager[0] ? resp.data.meta.manager[0].department.toLowerCase().replace(/\s+/g, '-') : '';
+
           this.managerDepartment = resp.data.meta.manager[0].department
             .toLowerCase()
             .replace(/\s+/g, "-");
