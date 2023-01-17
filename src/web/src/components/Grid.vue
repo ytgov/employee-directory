@@ -69,7 +69,6 @@
               <td>{{ item.title }}</td>
               <td>{{ item.email }}</td>
               <td>{{ item.phone_office }}</td>
-              <td>{{ item.manager }}</td>
             </tr>
           </tbody>
         </template>

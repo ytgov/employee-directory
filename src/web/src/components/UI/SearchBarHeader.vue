@@ -1,36 +1,35 @@
 <template>
 
-    <div class="full-width yellow-border white-bg ml-0 pl-0 pt-5 find-employee">
+    <div class="full-width yellow-border white-bg pl-0 pt-5 find-employee">
 
-        <v-container class="container-content ">
-            <h1>Find a goverment Employee</h1>
+        <v-container class="container-content">
+            <h1 >Find a goverment Employee</h1>
 
-            <v-banner v-if="info" class="mb-6 mt-8">
-                <p><strong>
+            <v-banner v-if="info" class="mb-6 mt-8 info_find-employee">
+                <span>
                     You can use this service to find the contact information of a person who works for a Government of
                     Yukon
                     organization.
-                </strong></p>
-
-                <p>
+                </span>
+                <br />
+                <br />
                 Enter the person's first or last name, position title, email address or telephone number in the search
                 box to
                 get started. You can also enter the name of a department, division or branch to view all employees in
                 that
                 specific organization.
-                </p >
-            </div>
+            </v-banner>
 
-            <v-form @submit.prevent="updateSearch" class="ml-4 pt-8">
+            <v-form @submit.prevent="updateSearch">
 
             
             <v-row>
-                <v-col class="mb-n9" sm="5" cols="12">
+                <v-col class="mb-n6" sm="5" cols="12">
                     <v-text-field :error-messages="this.nameError?  ['Please enter a valid name.'] : []" label="Search by Name" v-model="nameSearch" dense=""
                         background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
                     </v-text-field>
                 </v-col>
-                <v-col class="mb-n9" sm="5" cols="12">
+                <v-col class="mb-n6" sm="5" cols="12">
                     <v-select :error-messages="this.dptError?  ['Please select a department.'] : []" :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
                         outlined="outlined" flat="" label="Department" solo>
                     </v-select>
@@ -137,14 +136,16 @@ export default {
 
 </script>
 
-
 <style scoped>
-
-
-@media (max-width:600px) {
-    .find-employee {
-    margin-top: -65px !important;
+.info_find-employee >>> .v-banner__wrapper{
+    padding-left: 0 !important;
+    padding-right: 0!important;
+    
 }
+@media (max-width:600px) {
+  .find-employee {
+    margin-top: -65px !important;
+  }
 }
 
 .v-text-field>>>fieldset {

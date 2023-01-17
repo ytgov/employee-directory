@@ -117,8 +117,8 @@ a {
   background: url(../../public/Aurora-main.svg);
   background-repeat: no-repeat;
   background-position: calc(100% + 230px) 0;
-  background-position-y: 750px;
-  background-size: 600px;
+  background-position-y: calc(100% + 400px);
+  background-size: 500px;
 }
 
 @media (min-width: 600px) {
