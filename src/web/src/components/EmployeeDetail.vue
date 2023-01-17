@@ -165,7 +165,6 @@ import { get } from 'lodash';
 import * as urls from "../urls";
 import * as config from "../config"
 
-console.log(config)
 const axios = require("axios");
 export default {
   components: {
@@ -241,7 +240,6 @@ export default {
         })
         .then((resp) => {
           const newPosition = get(resp, 'data.results[0].geometry.location', this.center);
-          console.log("MARKER POSITION", this.center);
           this.setCenter(newPosition);
         })
         .catch((error) => {
