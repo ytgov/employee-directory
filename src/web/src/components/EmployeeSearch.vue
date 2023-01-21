@@ -1,7 +1,7 @@
 <template>
     <div class="books">
         <SearchBarHeader />
-        <DepartmentHeader :title="this.department" :image="this.department.toLowerCase().replace(/\//g,'')" />
+        <DepartmentHeader v-if="department !== 'Any department'" :title="this.department" :image="this.department.toLowerCase().replace(/\//g,'')" />
 
         <v-breadcrumbs class="mt-6 mb-8 breadcrumbs" :items="breadcrumbsList">
             <template v-slot:item="{ item }">
@@ -265,7 +265,12 @@ export default {
             dynamicBreadcrumb.forEach((element => {
                 if (element.name == 'Department') {
                     element.name = this.department;
-                    element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
+                    if(element.name !== 'Any department'){
+                        element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
+                    } else {
+                        element.link = undefined
+                    }
+                    
                 } else if (element.name == 'Search') {
 
                     element.name = 'Employee Search';
