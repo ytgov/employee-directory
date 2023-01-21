@@ -277,6 +277,9 @@ export default {
 
                 }
             }))
+
+            arr = arr.filter(item =>   item.name !== 'Any department'  )
+            
             this.breadcrumbsList = arr
         },
         getDataFromApi() {
