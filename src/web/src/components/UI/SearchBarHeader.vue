@@ -92,14 +92,16 @@ export default {
             if (name === '') {
                 this.nameError =true
                 return
-            } else if(department === '') {
-                this.dptError = true
-                return
+            }
+
+            if(department === '') {
+                department = '&department=any-department'
+            } else if( department !==''){
+                department = '&department=' + department.toLowerCase()
             }
 
             name = 'keyword=' + name.trim()
 
-            department = '&department=' + department.toLowerCase()
             
             window.location.href = '/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase()
         },
