@@ -74,6 +74,8 @@ export default {
             departmentSearch: '',
             nameError: false,
             dptError: false,
+            userInput: '',
+            results: [],
         }
     },
     props: ['info',],
@@ -102,8 +104,7 @@ export default {
 
             name = 'keyword=' + name.trim()
 
-            
-            window.location.href = '/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase()
+            this.$router.push('/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase());
         },
         getEmployeesData() {
             this.loading = true;
