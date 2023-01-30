@@ -104,7 +104,8 @@ export default {
 
             name = 'keyword=' + name.trim()
 
-            this.$router.push('/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase());
+            // this.$router.push('/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase());
+            window.location.href = '/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase();
         },
         getEmployeesData() {
             this.loading = true;

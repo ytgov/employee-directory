@@ -1,0 +1,20 @@
+FROM oraclelinux:7-slim
+
+RUN yum upgrade -y && yum install yum-utils
+
+RUN yum-config-manager --enable *addons
+RUN yum install -y gcc-c++ make libaio
+
+RUN curl -sL https://rpm.nodesource.com/setup_13.x | bash -
+RUN yum install -y nodejs
+RUN npm install -g pm2@latest
+
+WORKDIR /usr/src/app
+COPY package.json /usr/src/app/package.json
+RUN npm install
+
+RUN npm install -g nodemon
+COPY ./ ./
+EXPOSE 8080
+
+CMD npm run start
