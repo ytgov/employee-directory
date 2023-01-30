@@ -74,8 +74,6 @@ export default {
             departmentSearch: '',
             nameError: false,
             dptError: false,
-            userInput: '',
-            results: [],
         }
     },
     props: ['info',],
@@ -91,20 +89,22 @@ export default {
             
             let department = this.departmentSearch.replace(reg, '-').replace(/\//g,'')
             
-            if (name === '') {
-                this.nameError =true
-                return
-            }
 
-            if(department === '') {
+            if (name === '' && department !=='') {
+              let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
+              window.location.href =  "/find-employee/" +  noSpaces;
+            }else{
+              if(department === '') {
                 department = '&department=any-department'
-            } else if( department !==''){
-                department = '&department=' + department.toLowerCase()
+              } else if( department !==''){
+                  department = '&department=' + department.toLowerCase()
+              }
+
+              name = 'keyword=' + name.trim()
+  
+              
+              window.location.href = '/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase()
             }
-
-            name = 'keyword=' + name.trim()
-
-            this.$router.push('/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase());
         },
         getEmployeesData() {
             this.loading = true;
