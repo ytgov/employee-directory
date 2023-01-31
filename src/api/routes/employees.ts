@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import axios from "axios";
 import { body, param } from "express-validator";
 import _ from 'lodash';
-
 import * as dotenv from "dotenv";
 
 let path;
@@ -12,11 +11,22 @@ switch (process.env.NODE_ENV) {
 }
 dotenv.config({ path: path });
 
+import employee_json from '../json/employees.json';
+import division_json from '../json/division.json';
+
 export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
 export const DIVISIONSJSON = process.env.DIVISIONSJSON;
 
 
 export const employeesRouter = express.Router();
+
+employeesRouter.get("/json/:file", async (req: Request, res: Response) => {
+    const filename = req.params.file;
+    const file = `../json/${filename}`;
+
+    if (filename == 'employees.json') res.send(employee_json);
+    if (filename == 'division.json') res.send(division_json);
+});
 
 employeesRouter.post("/", async (req: Request, res: Response) => {
 

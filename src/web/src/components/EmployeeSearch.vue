@@ -59,7 +59,7 @@
 
             </v-data-table>
         </div>
-        <div v-else-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+        <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
             <h2 class="mt-8 ml-5 department-text">{{ cleanParam(parent_array) }}</h2>
             
             <div v-for="(item, index,id) in value" :key="id">
@@ -97,7 +97,7 @@
 
         </div>
 
-        <div v-else-if="itemsValue === 2" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+        <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
             <v-row>
                 <div class="mt-8 ml-12 d-flex align-center">
                     <h3 class="division-text ">{{ cleanLocation(parent_array) }}</h3>
@@ -132,7 +132,7 @@
 
         </div>
 
-        <div v-else-if="itemsValue === 3" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+        <div v-if="itemsValue === 3" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
             <v-row>
                 <div class="mt-8 ml-12 d-flex align-center">
                     <h3 class="division-text ">{{ cleanParam(parent_array) }}</h3>

@@ -101,7 +101,7 @@ export default {
       axios
         .post(
           urls.EMPLOYEES_URL,
-          this.options
+          // this.options
         )
         .then((resp) => {
           this.item = resp.data.data;

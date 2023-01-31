@@ -30,7 +30,7 @@ app.use(
 app.use(cors({
   origin: config.FRONTEND_URL,
   optionsSuccessStatus: 200,
-  credentials: true
+  credentials: false
 }));
 
 app.use("/api/employees", employeesRouter);

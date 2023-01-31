@@ -234,7 +234,7 @@ export default {
       axios
         .request({
           method: "GET",
-          Headers: { "Access-Control-Allow-Origin": "http://localhost:8080" },
+          // Headers: { "Access-Control-Allow-Origin": "*" },
           withCredentials: false,
           url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${office},+${community}&key=${config.GMAPS_KEY}`,
         })
