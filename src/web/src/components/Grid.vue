@@ -309,7 +309,9 @@ export default {
 </script>
 
 <style scoped>
+
 .full-name{
+  cursor: pointer;
   margin-left:3px;
 }
 .table-header {
