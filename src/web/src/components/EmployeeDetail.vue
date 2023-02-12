@@ -19,7 +19,7 @@
     <v-row>
       <v-col v-for="item in employee" :key="item.full_name">
         <h2 class="mb-1" style="color: #dc4405 !important; font-size: 34px !important">
-          {{ item.full_name }}
+          {{ item.formatted_name }}
         </h2>
         <h3 v-if="checkStatus(item.title)" class="mb-8" style="color: #512a44 !important; font-size: 24px !important">
           {{ item.title }}

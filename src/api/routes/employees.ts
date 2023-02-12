@@ -102,6 +102,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
                 full_name: string
+                formatted_name: string
                 title: string
                 division: string
                 branch: string
@@ -121,6 +122,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                 var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
+                    'formatted_name': element.first_name + ' ' + element.last_name,
                     'title': element.title !== '' ? element.title : '-',
                     'division': element.division !== null ? element.division : '-',
                     'branch': element.branch !== null ? element.branch : '',
@@ -199,6 +201,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
                 full_name: string
+                formatted_name: string
                 organization: String
                 department: string
                 division: string
@@ -227,6 +230,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
+                    'formatted_name': element.first_name + ' ' + element.last_name,
                     'organization': element.organization,
                     'department': element.department,
                     'division': element.division,
@@ -270,7 +274,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
             })
 
             let managerFilter: any[] = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
-            
+
             res.send({ data: employeeFiltered, meta: { manager: managerFilter, pageError } });
         })
         .catch((error: any) => {
@@ -287,8 +291,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
     var find = '-';
     var reg = new RegExp(find, 'g');
-
-    let error = false
 
     let paramDepartment = (req.params.department.replace(/\--/g,'-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
@@ -314,6 +316,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
                 full_name: string
+                formatted_name: string
                 title: string
                 division: string
                 branch: string
@@ -332,6 +335,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
+                    'formatted_name': element.first_name + ' ' + element.last_name,
                     'title': element.title !== '' ? element.title : '-',
                     'division': element.division !== null ? element.division : '-',
                     'branch': element.branch !== null ? element.branch : '',

@@ -47,7 +47,7 @@
                                 <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                                     :href="urlEmployee(item.department, item.full_name_url)">
 
-                                    {{ item.full_name }}
+                                    {{ item.formatted_name }}
                                 </a>
                             </td>
                             <td>{{ item.title }}</td>
@@ -81,7 +81,7 @@
                                     <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                                         :href="urlEmployee(item.department, item.full_name_url)">
 
-                                        {{ item.full_name }}
+                                        {{ item.formatted_name }}
                                     </a>
                                 </td>
                                 <td>{{ item.title }}</td>
@@ -117,7 +117,7 @@
                                     <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                                         :href="urlEmployee(item.department, item.full_name_url)">
 
-                                        {{ item.full_name }}
+                                        {{ item.formatted_name }}
                                     </a>
                                 </td>
                                 <td>{{ item.title }}</td>
@@ -151,7 +151,7 @@
                                 <td>
                                     <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                                         :href="urlEmployee(item.department, item.full_name_url)">
-                                        {{ item.full_name }}
+                                        {{ item.formatted_name }}
                                     </a>
                                 </td>
                                 <td>{{ item.title }}</td>
@@ -221,7 +221,7 @@ export default {
             items: [],
             itemsLength: null,
             headers: [
-                { text: "Name", value: "full_name" },
+                { text: "Name", value: "formatted_name" },
                 { text: "Position", value: "title" },
                 { text: "E-Mail Address", value: "email" },
                 { text: "Phone Number", value: "phone_office" },

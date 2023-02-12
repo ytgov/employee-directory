@@ -63,7 +63,7 @@
                   :href="urlEmployee(item.department, item.full_name_url)">
                   <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
                   <IconLoader v-if="item.level > 1"  v-for='n in item.level'  :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
-                  <label class="full-name">{{ item.full_name }}</label>
+                  <label class="full-name">{{ item.formatted_name }}</label>
                 </a>
               </td>
               <td>{{ item.title }}</td>
@@ -96,7 +96,7 @@
                 <td>
                   <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                     :href="urlEmployee(item.department, item.full_name_url)">
-                    {{ item.full_name }}   
+                    {{ item.formatted_name }}   
                   </a>
                 </td>
                 <td>{{ item.title }}</td>
@@ -128,7 +128,7 @@
                 <td>
                   <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                     :href="urlEmployee(item.department, item.full_name_url)">
-                    {{ item.full_name }}
+                    {{ item.formatted_name }}
                   </a>
                 </td>
                 <td>{{ item.title }}</td>
@@ -175,7 +175,7 @@ export default {
     totalLength: 0,
     divisionLength: 0,
     headers: [
-      { text: "Name", value: "full_name" },
+      { text: "Name", value: "formatted_name" },
       { text: "Position", value: "title" },
       { text: "E-Mail Address", value: "email" },
       { text: "Phone Number", value: "phone_office" },

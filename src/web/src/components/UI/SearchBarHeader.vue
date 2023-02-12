@@ -25,12 +25,12 @@
             
                 <v-row>
                     <v-col class="mb-n6" sm="5" cols="12">
-                        <v-text-field :error-messages="this.nameError?  ['Please enter a valid name.'] : []" label="Keywords" v-model="nameSearch" dense=""
+                        <v-text-field :error-messages="this.nameError?  ['Enter a valid name.'] : []" label="Keywords" v-model="nameSearch" dense=""
                             background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
                         </v-text-field>
                     </v-col>
                     <v-col class="mb-n6" sm="5" cols="12">
-                        <v-select :error-messages="this.dptError?  ['Please select a department.'] : []" :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
+                        <v-select :error-messages="this.dptError?  ['Select a department.'] : []" :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
                             outlined="outlined" flat="" label="Department" solo>
                         </v-select>
                     </v-col>
