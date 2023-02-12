@@ -514,10 +514,10 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             employeesByDept.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'N/A'
+                    element.division = 'Not Division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'N/A'
+                    element.branch = 'Not Branch'
                 }
             })
             
@@ -562,10 +562,10 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
 
             employeesByDept.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'N/A'
+                    element.division = 'Not Division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'N/A'
+                    element.branch = 'Not Branch'
                 }
             })
 

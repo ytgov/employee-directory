@@ -6,7 +6,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -webkit-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -moz-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     
-    "  color="#fff" flat height="86" class="shadow">
+    "  color="#fff" flat app height="86" class="shadow">
       <div class="header-container">
         <v-row align-content="space-between">
           <a href="/"><img src="/yukon.svg" style="margin-top:10px;"  height="63" /></a>

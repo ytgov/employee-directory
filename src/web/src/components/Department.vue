@@ -131,7 +131,7 @@ export default {
       let department = this.department.toLowerCase().replace(reg, '-')
       let division = item.toLowerCase()
       if (this.check === item.toLowerCase()) {
-        window.location.href = '/find-employee/' + this.department + '/' + item.toLowerCase().replace(reg, '-') + '/all-branches'
+        window.location.href = '/find-employee/' + department + '/' + item.toLowerCase().replace(reg, '-') + '/all-branches'
       }
       this.check = division
     },
@@ -164,7 +164,7 @@ export default {
       if (type === 'division') {
 
 
-        if (indexFormatted === 'N/A') {
+        if (indexFormatted === 'not-division') {
           return url + '/find-employee/' + department + '/not-division/all-branches'
         }
         return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
