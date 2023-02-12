@@ -218,6 +218,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 latitude: number
                 longitude: number
                 manager: string
+                mailcode: string
                 division_url: string
                 full_name_url: string
             }
@@ -244,6 +245,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                     'postal_code': element.postal_code,
                     'latitude': element.latitude,
                     'longitude': element.longitude,
+                    'mailcode': element.mailcode,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
                     'division_url': division_url,
                     'full_name_url': element.full_name,
