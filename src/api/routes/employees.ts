@@ -261,9 +261,8 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 managerName = element.manager
             })
 
-            let managerFilter = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
-
-            
+            let managerFilter: any[] = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
+ 
             res.send({ data: employeeFiltered, meta: { manager: managerFilter } });
         })
         .catch((error: any) => {

@@ -2,10 +2,7 @@
   <div class="books">
     <SearchBarHeader />
 
-    <DepartmentHeader
-      :title="this.department"
-      :image="this.department.toLowerCase()"
-    />
+    <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
 
     <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
@@ -16,33 +13,22 @@
     </v-breadcrumbs>
 
     <div class="text-center loading" v-show="loading">
-      <v-progress-circular
-        :size="50"
-        color="primary"
-        indeterminate
-      ></v-progress-circular>
+      <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
     <v-row class="mt-16"></v-row>
     <v-row>
       <v-col v-for="item in employee" :key="item.full_name">
-        <h2
-          class="mb-1"
-          style="color: #dc4405 !important; font-size: 34px !important"
-        >
+        <h2 class="mb-1" style="color: #dc4405 !important; font-size: 34px !important">
           {{ item.full_name }}
         </h2>
-        <h3
-          v-if="checkStatus(item.title)"
-          class="mb-8"
-          style="color: #512a44 !important; font-size: 24px !important"
-        >
+        <h3 v-if="checkStatus(item.title)" class="mb-8" style="color: #512a44 !important; font-size: 24px !important">
           {{ item.title }}
         </h3>
 
         <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
           <h2 class="mt-4 mb-2">Organization</h2>
           <v-row>
-            <v-col cols="12" sm="6" class="mb-1" >
+            <v-col cols="12" sm="6" class="mb-1">
               <h3 v-if="checkStatus(item.department)" class="mb-0">
                 Department:
                 <a :href="generateUrl('department', 'n/a', 'n/a')">{{
@@ -69,7 +55,7 @@
         <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
           <h2 class="mt-4 mb-2">Contact:</h2>
           <v-row>
-            <v-col class="mb-1" cols="12" sm="6" >
+            <v-col class="mb-1" cols="12" sm="6">
               <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
                 Phone Office:
                 <a :href="getPhone(item.phone_office)">{{
@@ -91,11 +77,7 @@
             </v-col>
           </v-row>
         </v-card>
-        <v-card
-          v-if="checkStatus(item.manager)"
-          class="my-5 py-1 pb-3 px-5 employee-detail"
-          elevation="1"
-        >
+        <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
           <h2 class="mt-4 mb-2">Position Information</h2>
           <v-row>
             <v-col class="mb-1">
@@ -135,20 +117,10 @@
               </h3>
             </v-col>
             <v-col cols="12" md="6">
-              <GmapMap class="mb-2"
-                :center="center"
-                :zoom="14"
-                map-type-id="terrain"
-                style="width: 100%; min-height: 300px;"
-              >
-                <GmapMarker
-                  :key="index"
-                  v-for="(m, index) in markers"
-                  :position="m.position"
-                  :clickable="true"
-                  :draggable="true"
-                  @click="center = m.position"
-                />
+              <GmapMap class="mb-2" :center="center" :zoom="14" map-type-id="terrain"
+                style="width: 100%; min-height: 300px;">
+                <GmapMarker :key="index" v-for="(m, index) in markers" :position="m.position" :clickable="true"
+                  :draggable="true" @click="center = m.position" />
               </GmapMap>
             </v-col>
           </v-row>
@@ -176,10 +148,11 @@ export default {
   data: () => ({
     noBgImg: true,
     department: "",
+    managerAvailability: true,
     managerDepartment: [],
     center: {
-      "lat" : 60.7170045,
-      "lng" : -135.0492597
+      "lat": 60.7170045,
+      "lng": -135.0492597
     },
     markers: [],
     breadcrumbsList: [],
@@ -211,18 +184,18 @@ export default {
       deep: true,
     },
   },
-  emits:['changeBg'],
+  emits: ['changeBg'],
   computed: {},
   mounted() {
     this.$emit('changeBg');
     this.getDataFromApi();
   },
-  created(){
+  created() {
   },
   methods: {
     setCenter(marker) {
       this.center = marker;
-      this.markers[0] = { position: marker }  
+      this.markers[0] = { position: marker }
     },
     getGeoCodingData() {
       const find = " ";
@@ -280,14 +253,16 @@ export default {
       let indexFormatted = index.replace(reg, "-");
       let paramFormatted = param.replace(reg, "-");
 
-      if (type === 'manager' && this.managerDepartment !== '') {
-        return (
-          url +
-          "/find-employee/employee-detail/" +
-          this.managerDepartment +
-          "/" +
-          param.replace(reg, ".").toLowerCase()
-        );
+      if (type === 'manager') {
+        if (this.managerAvailability !== true) {
+          return url + '/employee-not-found/' + param.replace(reg, ".").toLowerCase()
+        } else {
+          return url +
+            "/find-employee/employee-detail/" +
+            this.managerDepartment +
+            "/" +
+            param.replace(reg, ".").toLowerCase()
+        }
       }
 
       if (indexFormatted === "N/A") {
@@ -353,11 +328,12 @@ export default {
           this.division = resp.data.data[0].division;
           this.branch = resp.data.data[0].branch;
           this.title = resp.data.data[0].full_name;
-          this.managerDepartment = resp.data.meta.manager && resp.data.meta.manager[0] ? resp.data.meta.manager[0].department.toLowerCase().replace(/\s+/g, '-') : '';
-
-          this.managerDepartment = resp.data.meta.manager[0].department
-            .toLowerCase()
-            .replace(/\s+/g, "-");
+          if (resp.data.meta.manager.length === 0) {
+            this.managerAvailability = false
+          } else {
+            this.managerDepartment = resp.data.meta.manager && resp.data.meta.manager[0] ? resp.data.meta.manager[0].department.toLowerCase().replace(/\s+/g, '-') : '';
+            this.managerAvailability = true
+          }
 
           this.department = resp.data.data[0].department;
           this.loading = false;
@@ -422,7 +398,6 @@ export default {
 </script>
 
 <style>
-
 .employee-detail a {
   font-size: 22px;
   font-weight: 400;
