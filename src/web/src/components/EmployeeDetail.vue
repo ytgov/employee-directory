@@ -166,6 +166,9 @@ export default {
     office: "",
     address: "",
     community: "",
+    error: false,
+    name: '',
+    url: '',
   }),
   watch: {
     $route() {
@@ -191,8 +194,24 @@ export default {
     this.getDataFromApi();
   },
   created() {
+    this.getUrl();
   },
   methods: {
+    getUrl() {
+      const urlLocation = String(window.location.href);
+      let url = urlLocation.split(window.location.pathname);
+
+      url = url.filter((element) => {
+        return element !== "";
+      });
+
+      this.url = url[0]
+    },
+    checkError(){
+      if(this.error === true){
+        window.location.href = this.url + '/employee-not-found/' + this.name;
+      }
+    },
     setCenter(marker) {
       this.center = marker;
       this.markers[0] = { position: marker }
@@ -239,13 +258,8 @@ export default {
     },
 
     generateUrl(type, param, index) {
-      const urlLocation = String(window.location.href);
-      let url = urlLocation.split(window.location.pathname);
-
-      url = url.filter((element) => {
-        return element !== "";
-      });
-      url = url[0];
+      let url = this.url
+      
       let find = " ";
 
       let reg = new RegExp(find, "g");
@@ -316,6 +330,7 @@ export default {
       var find = "-";
       var reg = new RegExp(find, "g");
       const { department, full_name } = this.$route.params;
+      this.name = full_name;
       this.department = department.replace(reg, " ");
       this.loading = true;
       axios
@@ -323,8 +338,9 @@ export default {
           `${urls.FIND_EMPLOYEE_URL}employee-detail/${department}/${full_name}`
         )
         .then((resp) => {
+          this.error = resp.data.meta.pageError;
+          this.checkError();
           this.employee = resp.data.data;
-
           this.division = resp.data.data[0].division;
           this.branch = resp.data.data[0].branch;
           this.title = resp.data.data[0].full_name;

@@ -191,6 +191,8 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     let paramFullName = (req.params.full_name)
 
 
+    let pageError = false
+
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, full_name: paramFullName } })
         .then((response: any) => {
@@ -255,6 +257,10 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
             let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.toLowerCase().indexOf(paramFullName) >= 0 })
 
+            if(employeeFiltered.length === 0) {
+                pageError = true
+            }
+
             let managerName: any
 
             employeeFiltered.forEach((element) => {
@@ -262,8 +268,8 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
             })
 
             let managerFilter: any[] = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
- 
-            res.send({ data: employeeFiltered, meta: { manager: managerFilter } });
+            
+            res.send({ data: employeeFiltered, meta: { manager: managerFilter, pageError } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -279,6 +285,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
     var find = '-';
     var reg = new RegExp(find, 'g');
+
+    let error = false
 
     let paramDepartment = (req.params.department.replace(/\--/g,'-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
@@ -343,6 +351,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             employeesByDept = employeesByDept.filter(item => { 
               return item.department.toLowerCase().indexOf(paramDepartment) >= 0                
             }) 
+
             let employeesByDivision = employeesByDept
             //Filter by Division  
             if (notDivision) {
@@ -480,17 +489,20 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var _ = require("lodash");
     let paramDepartment = (req.params.department.replace(reg, ' ').replace(/\--/g,'-/-'))
     var employeesByDept = Object();
+    let error = false
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
 
-
-
             employeesByDept = resultEmployees.filter(function (e: any) {
                 return e.department.toLowerCase().indexOf(paramDepartment) >= 0
             })
+
+            if(employeesByDept.length == 0) {
+                error = true
+            }
 
             let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
 
@@ -502,6 +514,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                     element.branch = 'N/A'
                 }
             })
+            
 
             let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
 
@@ -513,7 +526,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division, meta: { count: 0 } });
+            res.send({ data: division, meta: { count: 0, error } });
 
         })
         .catch((error: any) => {
