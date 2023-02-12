@@ -25,7 +25,7 @@
             
                 <v-row>
                     <v-col class="mb-n6" sm="5" cols="12">
-                        <v-text-field :error-messages="this.nameError?  ['Please enter a valid name.'] : []" label="Search by Name" v-model="nameSearch" dense=""
+                        <v-text-field :error-messages="this.nameError?  ['Please enter a valid name.'] : []" label="Keywords" v-model="nameSearch" dense=""
                             background-color="#F1F1F1" outlined="outlined" flat="" color="" solo>
                         </v-text-field>
                     </v-col>

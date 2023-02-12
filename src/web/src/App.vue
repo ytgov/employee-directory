@@ -1,9 +1,15 @@
 <template>
   <v-app>
-    <v-app-bar elevation="2" app color="#fff" flat height="70">
+    <v-app-bar style="
+
+box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
+-webkit-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
+-moz-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
+    
+    "  color="#fff" flat height="86" class="shadow">
       <div class="header-container">
         <v-row align-content="space-between">
-          <a  href="/"><img class="ml-5"  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" /></a>
+          <a href="/"><img src="/yukon.svg" style="margin-top:10px;"  height="63" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
@@ -38,10 +44,10 @@
           <div class="header-container d-flex justify-space-between">
 
             <div class="d-flex flex-column pa-2 width-100">
-              <a target ="_blank" href="https://yukon.ca/">Government of Yukon</a>
-              <a target ="_blank" href="https://yukon.ca/en/copyright">Copyright</a>
-              <a target ="_blank" href="https://yukon.ca/en/disclaimer">Disclaimer</a>
-              <a target ="_blank" href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
+              <a target="_blank" href="https://yukon.ca/">Government of Yukon</a>
+              <a target="_blank" href="https://yukon.ca/en/copyright">Copyright</a>
+              <a target="_blank" href="https://yukon.ca/en/disclaimer">Disclaimer</a>
+              <a target="_blank" href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
             </div>
             <v-card-text class="white--text text-right with-100">
               <span>© {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
@@ -64,7 +70,7 @@ import { mapState } from "vuex";
 export default {
   name: "App",
   data: () => ({
-    noBgImg:false,
+    noBgImg: false,
     dialog: false,
     drawer: null,
     drawerRight: null,
@@ -82,7 +88,7 @@ export default {
 
   },
   methods: {
-    changeBackground(){
+    changeBackground() {
       this.noBgImg = true
     },
     nav: function (location) {
@@ -100,15 +106,8 @@ export default {
 </script>
 
 <style>
-
 .no-bg-img {
   background: white !important;
-}
-
-.v-toolbar--flat {
-  box-shadow: 1px 0px 7px 4px rgba(0, 0, 0, 0.24) !important;
-  -webkit-box-shadow: 1px 0px 7px 4px rgba(0, 0, 0, 0.24) !important;
-  -moz-box-shadow: 1px 0px 7px 4px rgba(0, 0, 0, 0.24) !important;
 }
 
 .header-container {
@@ -132,6 +131,13 @@ export default {
 
 .v-text-field>>>fieldset {
   border: 1.5px solid #F3A901;
+}
+
+.v-app-bar,
+.shadow {
+  box-shadow: 1px 3px 16px 0px rgba(163, 163, 163, 1) !important;
+  -webkit-box-shadow: 1px 3px 16px 0px rgba(163, 163, 163, 1) !important;
+  -moz-box-shadow: 1px 3px 16px 0px rgba(163, 163, 163, 1) !important;
 }
 
 .index-text {
@@ -227,7 +233,7 @@ export default {
 }
 
 @media (min-width: 1904px) {
-  .small-container{
+  .small-container {
     max-width: 1185px !important;
   }
 }
