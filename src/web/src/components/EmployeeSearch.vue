@@ -50,9 +50,9 @@
                                     {{ item.formatted_name }}
                                 </a>
                             </td>
-                            <td>{{ item.title }}</td>
-                            <td>{{ item.email }}</td>
-                            <td>{{ item.phone_office }}</td>
+                            <td class="default-cursor">{{ item.title }}</td>
+                            <td class="default-cursor">{{ item.email }}</td>
+                            <td class="default-cursor">{{ item.phone_office }}</td>
                         </tr>
                     </tbody>
                 </template>
@@ -84,9 +84,9 @@
                                         {{ item.formatted_name }}
                                     </a>
                                 </td>
-                                <td>{{ item.title }}</td>
-                                <td>{{ item.email }}</td>
-                                <td>{{ item.phone_office }}</td>
+                                <td class="default-cursor">{{ item.title }}</td>
+                                <td class="default-cursor">{{ item.email }}</td>
+                                <td class="default-cursor">{{ item.phone_office }}</td>
                             </tr>
                         </tbody>
                     </template>
@@ -120,9 +120,9 @@
                                         {{ item.formatted_name }}
                                     </a>
                                 </td>
-                                <td>{{ item.title }}</td>
-                                <td>{{ item.email }}</td>
-                                <td>{{ item.phone_office }}</td>
+                                <td class="default-cursor">{{ item.title }}</td>
+                                <td class="default-cursor">{{ item.email }}</td>
+                                <td class="default-cursor">{{ item.phone_office }}</td>
                             </tr>
                         </tbody>
                     </template>
@@ -154,9 +154,9 @@
                                         {{ item.formatted_name }}
                                     </a>
                                 </td>
-                                <td>{{ item.title }}</td>
-                                <td>{{ item.email }}</td>
-                                <td>{{ item.phone_office }}</td>
+                                <td class="default-cursor">{{ item.title }}</td>
+                                <td class="default-cursor">{{ item.email }}</td>
+                                <td class="default-cursor">{{ item.phone_office }}</td>
                             </tr>
                         </tbody>
                     </template>

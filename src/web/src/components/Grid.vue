@@ -66,9 +66,9 @@
                   <label class="full-name">{{ item.formatted_name }}</label>
                 </a>
               </td>
-              <td>{{ item.title }}</td>
-              <td>{{ item.email }}</td>
-              <td>{{ item.phone_office }}</td>
+              <td class="default-cursor"> {{ item.title }} </td>
+              <td class="default-cursor"> {{ item.email }}</td>
+              <td class="default-cursor">{{ item.phone_office }}</td>
             </tr>
           </tbody>
         </template>
@@ -94,14 +94,14 @@
             <tbody class="table-body">
               <tr class="table-border" v-for='item in value'>
                 <td>
-                  <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                  <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
                     :href="urlEmployee(item.department, item.full_name_url)">
                     {{ item.formatted_name }}   
                   </a>
                 </td>
-                <td>{{ item.title }}</td>
-                <td>{{ item.email }}</td>
-                <td>{{ item.phone_office }}</td>
+                <td class="default-cursor">{{ item.title }}</td>
+                <td class="default-cursor">{{ item.email }}</td>
+                <td class="default-cursor">{{ item.phone_office }}</td>
               </tr>
             </tbody>
           </template>
@@ -126,14 +126,14 @@
             <tbody class="table-body">
               <tr class="table-border" v-for='item in value'>
                 <td>
-                  <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                  <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
                     :href="urlEmployee(item.department, item.full_name_url)">
                     {{ item.formatted_name }}
                   </a>
                 </td>
-                <td>{{ item.title }}</td>
-                <td>{{ item.email }}</td>
-                <td>{{ item.phone_office }}</td>
+                <td class="default-cursor">{{ item.title }}</td>
+                <td class="default-cursor">{{ item.email }}</td>
+                <td class="default-cursor">{{ item.phone_office }}</td>
               </tr>
             </tbody>
           </template>

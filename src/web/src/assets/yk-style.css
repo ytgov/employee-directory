@@ -238,3 +238,7 @@ a {
     margin-left: 0%;
   }
 }
+
+.default-cursor {
+  cursor: default;
+}
