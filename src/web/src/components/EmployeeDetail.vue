@@ -343,7 +343,7 @@ export default {
           this.employee = resp.data.data;
           this.division = resp.data.data[0].division;
           this.branch = resp.data.data[0].branch;
-          this.title = resp.data.data[0].full_name;
+          this.title = resp.data.data[0].formatted_name;
           if (resp.data.meta.manager.length === 0) {
             this.managerAvailability = false
           } else {
