@@ -92,6 +92,12 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     let paramDepartment = (req.params.department).replace(/\--/g,'-/-')
     let paramFullName = (req.params.full_name).replace(".", " ")
 
+    if (paramFullName === 'any-employee') {
+        paramFullName = ''
+    }
+
+    console.log(paramFullName)
+
     if (paramDepartment === 'any-department') {
         paramDepartment = ''
     } else {
@@ -142,7 +148,10 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
             });
 
-            employeesByDept = employeesByDept.filter(item => { return item.full_name.toLowerCase().indexOf(paramFullName) >= 0 })
+
+            if(paramFullName !== '') {
+                employeesByDept = employeesByDept.filter(item => { return item.full_name.toLowerCase().indexOf(paramFullName) >= 0 })
+            }
 
             if(paramDepartment !== ''){
                 employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })

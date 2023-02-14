@@ -85,25 +85,21 @@ export default {
         updateSearch() {
             const find = ' ';
             const reg = new RegExp(find, 'g');
+
             let name = this.nameSearch.replace(/\s+/g, '.').trim()
-            
-            let department = this.departmentSearch.replace(reg, '-').replace(/\//g,'')
+            let department = this.departmentSearch.replace(reg, '-').replace(/\//g,'').toLowerCase()
             
 
-            if (name === '' && department !=='') {
-              let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
-              window.location.href =  "/find-employee/" +  noSpaces;
+            if (name === '' && department ==='') {
+              window.location.href = '/find-employee/search/keyword=any-employee&department=any-department'
             }else{
               if(department === '') {
-                department = '&department=any-department'
-              } else if( department !==''){
-                  department = '&department=' + department.toLowerCase()
+                window.location.href = '/find-employee/search/keyword=' + name + '&department=any-department'
+              } else if( name === ''){
+                window.location.href = '/find-employee/search/keyword=any-employee&department=' + department
+              } else {
+                window.location.href = '/find-employee/search/keyword='+ name + '&department=' + department
               }
-
-              name = 'keyword=' + name.trim()
-
-              // this.$router.push('/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase());
-              window.location.href = '/find-employee/search/' + name.toLowerCase().trim() + department.toLowerCase();
             }
         },
         getEmployeesData() {
