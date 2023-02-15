@@ -1,38 +1,54 @@
 <template>
+  
   <div class="home">
-    <h1>Not Found</h1>
-    <div v-if="employee === true">
-      <h2>This Employee is not available.</h2>
-    </div>
-    <div v-else-if="department === true">
-      <h2>This department does not exist.</h2>
-    </div>
-    <v-btn @click="$router.go(-1)" height="40px" color="#00616D">Go back</v-btn>
+    <SearchBarHeader :title="null"/>
+    <h1 class="my-16" style="font-weight:600 !important; font-size: 34px;">Page not found</h1>
+    <v-card class="not-found-card mb-6" color="transparent" outlined>
+      <h2>Sorry, that page isn’t here.</h2>
+      <p>You didn’t do anything wrong. We may have moved the page you're looking for somewhere else.</p>
+    </v-card>
+    <v-card class="not-found-card mb-6" color="transparent" outlined>
+      <h2>Did you follow a link from here.</h2>
+      <p>If you reached this page from another part of Yukon.ca, <a href="https://yukon.ca/en/your-government/contact-and-follow-government/contact-government">let us know</a> so we can correct our mistake.</p>
+    </v-card>
+    <v-card class="not-found-card mb-6" color="transparent" outlined>
+      <h2>Did you follow a link from another site?</h2>
+      <p>Links from other sites can sometimes be old or misspelled. <a href="https://yukon.ca/en/your-government/contact-and-follow-government/contact-government">Let us know</a> where you came from and we can try to contact the other site to fix the problem.</p>
+    </v-card>
+    <v-card class="not-found-card mb-6" color="transparent" outlined>
+      <h2>Did you type the URL?</h2>
+      <p>You may have typed the address (URL) wrong. Check to make sure you’ve got the exact right spelling or capitalization.</p>
+    </v-card>
+    <v-btn class="my-8" @click="$router.push('/')" height="40px" color="#00616D">Home</v-btn>
   </div>
 </template>
 
 <script>
+import SearchBarHeader from '../components/UI/SearchBarHeader.vue'
+
 export default {
-  data(){
+  components: {
+    SearchBarHeader,
+  },
+  data() {
     return {
-      department: false,
-      employee: false,
+      noBgImg: false,
     }
   },
-  created() {
-    this.checkError();
+  emits:['changeBg'],
+  mounted() {
+    this.$emit('changeBg');
   },
-
-  methods : {
-    checkError() {
-      if(window.location.href.includes('/employee-not-found/')){
-        this.employee = true;
-      } else if(window.location.href.includes('/department-not-found/')) {
-        this.department= true;
-      }
-
-    }
-  }
 }
 
 </script>
+
+<style scoped>
+.not-found-card h2 {
+  font-size: 26px;
+}
+
+a {
+  text-decoration: underline;
+}
+</style>

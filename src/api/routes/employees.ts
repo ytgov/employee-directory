@@ -96,8 +96,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
         paramFullName = ''
     }
 
-    console.log(paramFullName)
-
     if (paramDepartment === 'any-department') {
         paramDepartment = ''
     } else {
