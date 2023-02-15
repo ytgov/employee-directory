@@ -88,7 +88,13 @@ const routes = [
   {
     path: "*",
     name: "Not Found",
-    component: NotFound
+    component: NotFound,
+    meta: {
+      breadcrumb: [
+        {name: 'Home', link: '/'},
+        {name: 'Page not found'},
+      ]
+    }
   },
   {
     path: "/find-employee/",

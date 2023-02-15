@@ -6,7 +6,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -webkit-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -moz-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     
-    " color="#fff" flat app height="86" class="shadow">
+    " color="#fff" flat height="86" class="shadow">
       <div class="header-container">
         <v-row align-content="space-between" align="center">
           <a href="/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
@@ -150,6 +150,14 @@ export default {
   -moz-box-shadow: 1px 3px 16px 0px rgba(163, 163, 163, 1) !important;
 }
 
+.v-app-bar {
+  z-index: 10000;
+}
+
+.search-header {
+  z-index: 2;
+}
+
 .index-text {
   text-decoration: underline;
   color: #000000 !important;
@@ -246,84 +254,5 @@ export default {
   .small-container {
     max-width: 1185px !important;
   }
-}
-
-body .aurora-town {
-  position: relative;
-  z-index: -1;
-  margin-top: -6px
-}
-
-body .aurora--main {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  width: 100%;
-  height: 50px;
-  -webkit-transition: all .4s ease;
-  -o-transition: all .4s ease;
-  transition: all .4s ease
-}
-
-@media (min-width:767px) {
-  body .aurora--main {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 200px;
-    -webkit-transition: all .4s ease;
-    -o-transition: all .4s ease;
-    transition: all .4s ease
-  }
-}
-
-body .aurora--main:before {
-  position: absolute;
-  top: 0;
-  right: -100px;
-  display: block;
-  overflow: hidden;
-  width: 300px;
-  height: 50px;
-  content: "";
-  -webkit-transition: all .4s ease;
-  -o-transition: all .4s ease;
-  transition: all .4s ease;
-  background-image: url(../public/Aurora-small-mobile.svg);
-  background-repeat: no-repeat
-}
-
-@media (min-width:767px) {
-  body .aurora--main:before {
-    position: absolute;
-    top: -30px;
-    right: -60%;
-    width: 100%;
-    height: 185px;
-    -webkit-transition: all .4s ease;
-    -o-transition: all .4s ease;
-    transition: all .4s ease;
-    background-image: url(../public/Aurora-main.svg);
-    background-size: contain
-  }
-}
-
-body .aurora--mini {
-  display: inline-block;
-  overflow: hidden;
-  width: 100%;
-  padding: 50px 0
-}
-
-body .aurora--mini:before {
-  position: relative;
-  display: block;
-  width: 260px;
-  height: 45px;
-  margin: 0 auto;
-  content: "";
-  background-image: url(../public/Aurora-main.svg);
-  background-repeat: no-repeat
 }
 </style>
