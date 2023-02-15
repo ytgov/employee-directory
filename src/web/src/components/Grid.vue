@@ -14,17 +14,21 @@
     </v-breadcrumbs>
 
     <v-row>
-      <v-col xs="12" md="2" class="d-flex align-center justify-start">
-        <h4 class="">Group by their: </h4>
-      </v-col>
-      <v-col xs="12" md="10">
-        <v-chip-group v-model="selection" center-active mandatory active-class="chips--active">
-          <v-chip label outlined color="#00616D">All Employees</v-chip>
-          <v-chip label outlined color="#00616D">By Location</v-chip>
-          <v-chip label outlined color="#00616D">By Position</v-chip>
-        </v-chip-group>
-      </v-col>
-    </v-row>
+            <v-col cols="12" md="2" class="d-flex align-center justify-start">
+                <h4 class="">Group by: </h4>
+            </v-col>
+            <v-col cols="12" md="8">
+                <v-chip-group v-model="selection" center-active mandatory>
+                    <v-row>
+                        <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
+                            <v-chip label outlined color="#00616D">See all government employees</v-chip>
+                            <v-chip label outlined color="#00616D">Department</v-chip>
+                            <v-chip label outlined color="#00616D">Position</v-chip>
+                        </v-col>
+                    </v-row>
+                </v-chip-group>
+            </v-col>
+        </v-row>
 
     <v-row>
       <DivisionsCard :division="this.div" :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()"

@@ -17,7 +17,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
           <v-spacer></v-spacer>
           <v-card class="d-flex align-center" color="transparent" outlined>
             <a class="mb-0 pr-7 menu-button" style="cursor:pointer;">Français</a>
-            <IconLoader class="pl-7 pr-5" height="30px" :image="'menu'" :color="black" style="cursor:pointer; border-radius: 0; border-left: 1px solid #f1f1f1;"/>
+            <IconLoader class="pl-7 pr-5" height="30px" :image="'menu'" :color="'black'" style="cursor:pointer; border-radius: 0; border-left: 1px solid #f1f1f1;"/>
             <a style="cursor:pointer;" class="mb-0 menu-button">Menu</a>
           </v-card>
           
@@ -27,7 +27,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
       </div>
     </v-app-bar>
 
-    <v-main :class="{ 'no-bg-img': noBgImg === true }">
+    <v-main :class="{ 'no-bg-img': noBgImg === false }">
       <!-- Provides the application the proper gutter -->
       <v-container fluid id="container-main">
         <v-row id="container-row">
@@ -93,11 +93,10 @@ export default {
     watch: {},
     methods: {
         changeBackground() {
-            this.noBgImg = true;
+            this.noBgImg = false;
         },
         nav: function (location) {
             router.push(location);
-            console.log(location);
         },
         toggleHeader: function () {
             this.headerShow = !this.headerShow;

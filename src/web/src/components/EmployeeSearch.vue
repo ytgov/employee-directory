@@ -1,7 +1,8 @@
 <template>
     <div class="books">
         <SearchBarHeader />
-        <DepartmentHeader v-if="department !== 'Any department'" :title="this.department" :image="this.department.toLowerCase().replace(/\//g,'')" />
+        <DepartmentHeader v-if="department !== 'Any department'" :title="this.department"
+            :image="this.department.toLowerCase().replace(/\//g, '')" />
 
         <v-breadcrumbs class="mt-6 mb-8 breadcrumbs" :items="breadcrumbsList">
             <template v-slot:item="{ item }">
@@ -12,17 +13,22 @@
         </v-breadcrumbs>
 
 
-        <h2 class="mt-8">Your search for {{ this.searchTitle }} found {{ this.itemsLength }} results.</h2>
+        <h2 class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
+        </h2>
         <v-row>
-            <v-col xs="12" md="2" class="d-flex align-center justify-start">
-                <h4 class="">Group by their: </h4>
+            <v-col cols="12" md="2" class="d-flex align-center justify-start">
+                <h4 class="">Group by: </h4>
             </v-col>
-            <v-col xs="12" md="10">
-                <v-chip-group v-model="selection" center-active mandatory active-class="chips--active">
-                    <v-chip label outlined color="#00616D">All Employees</v-chip>
-                    <v-chip label outlined color="#00616D">By Department</v-chip>
-                    <v-chip label outlined color="#00616D">By Location</v-chip>
-                    <v-chip label outlined color="#00616D">By Position</v-chip>
+            <v-col cols="12" md="8">
+                <v-chip-group v-model="selection" center-active mandatory>
+                    <v-row>
+                        <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
+                            <v-chip label outlined color="#00616D">See all government employees</v-chip>
+                            <v-chip label outlined color="#00616D">Department</v-chip>
+                            <v-chip label outlined color="#00616D">Location</v-chip>
+                            <v-chip label outlined color="#00616D">Position</v-chip>
+                        </v-col>
+                    </v-row>
                 </v-chip-group>
             </v-col>
         </v-row>
@@ -61,11 +67,11 @@
         </div>
         <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
             <h2 class="mt-8 ml-5 department-text">{{ cleanParam(parent_array) }}</h2>
-            
-            <div v-for="(item, index,id) in value" :key="id">
+
+            <div v-for="(item, index, id) in value" :key="id">
                 <div class="mt-8 ml-5 d-flex align-center">
                     <h3 class="division-text">{{ cleanParam(index) }}</h3>
-                    <h3 class="ml-3 py-1 px-3 division-length" >{{ item.length }}</h3>
+                    <h3 class="ml-3 py-1 px-3 division-length">{{ item.length }}</h3>
                 </div>
 
                 <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="item"
@@ -116,7 +122,6 @@
                                 <td>
                                     <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                                         :href="urlEmployee(item.department, item.full_name_url)">
-
                                         {{ item.formatted_name }}
                                     </a>
                                 </td>
@@ -202,7 +207,7 @@ export default {
         }
 
     },
-    emits:['changeBg'],
+    emits: ['changeBg'],
     mounted() {
         this.getDataFromApi();
         this.updateBreadCrumbs();
@@ -210,7 +215,7 @@ export default {
     },
     data() {
         return {
-            
+
             itemsPerPage: null,
             selection: 0,
             itemsValue: null,
@@ -265,12 +270,12 @@ export default {
             dynamicBreadcrumb.forEach((element => {
                 if (element.name == 'Department') {
                     element.name = this.department;
-                    if(element.name !== 'Any department'){
+                    if (element.name !== 'Any department') {
                         element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
                     } else {
                         element.link = undefined
                     }
-                    
+
                 } else if (element.name == 'Search') {
 
                     element.name = 'Employee Search';
@@ -278,48 +283,48 @@ export default {
                 }
             }))
 
-            arr = arr.filter(item =>   item.name !== 'Any department'  )
-            
+            arr = arr.filter(item => item.name !== 'Any department')
+
             this.breadcrumbsList = arr
         },
         getDataFromApi() {
-          var find = '-';
-          
-          var reg = new RegExp(find, 'g');
-          let { full_name, department } = this.$route.params;
+            var find = '-';
 
-          this.searchTitle = full_name.replace(/\./g,' ')
+            var reg = new RegExp(find, 'g');
+            let { full_name, department } = this.$route.params;
 
-          let departmentFormatted = department.replace(reg, ' ')
+            this.searchTitle = full_name.replace(/\./g, ' ')
 
-          departmentFormatted = departmentFormatted.charAt(0).toUpperCase() + departmentFormatted.slice(1);
-          this.department = departmentFormatted
+            let departmentFormatted = department.replace(reg, ' ')
 
-          this.loading = true;
+            departmentFormatted = departmentFormatted.charAt(0).toUpperCase() + departmentFormatted.slice(1);
+            this.department = departmentFormatted
 
-          axios
-            .request({
-                method: 'POST',
-                data: {
-                    groupBy: this.selection,
-                    itemsperPage: this.itemsPerPage,
-                },
-                url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${full_name}&department=${department}`
-            }
-            )
-            .then((resp) => {
-                
-                this.items = resp.data.data;
-                this.itemsLength = resp.data.meta.count
-                this.itemsPerPage = resp.data.meta.count
-                
-                this.itemsValue = this.selection
-                this.loading = false;
-            })
-            .catch((err) => console.error(err))
-            .finally(() => {
-                this.loading = false;
-            });
+            this.loading = true;
+
+            axios
+                .request({
+                    method: 'POST',
+                    data: {
+                        groupBy: this.selection,
+                        itemsperPage: this.itemsPerPage,
+                    },
+                    url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${full_name}&department=${department}`
+                }
+                )
+                .then((resp) => {
+
+                    this.items = resp.data.data;
+                    this.itemsLength = resp.data.meta.count
+                    this.itemsPerPage = resp.data.meta.count
+
+                    this.itemsValue = this.selection
+                    this.loading = false;
+                })
+                .catch((err) => console.error(err))
+                .finally(() => {
+                    this.loading = false;
+                });
         },
     },
 

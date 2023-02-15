@@ -122,7 +122,7 @@ export default {
 
     checkError(){
       if(this.error === true){
-        window.location.href = this.url + '/department-not-found/' + this.department;
+        window.location.href = this.url + '/page-not-found'
       }
     },
     activateBranches(item) {

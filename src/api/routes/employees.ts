@@ -94,6 +94,8 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
     if (paramFullName === 'any-employee') {
         paramFullName = ''
+    } else {
+        paramFullName = 'keyword=' + paramFullName
     }
 
     if (paramDepartment === 'any-department') {
@@ -146,11 +148,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
             });
 
-
-            if(paramFullName !== '') {
-                employeesByDept = employeesByDept.filter(item => { return item.full_name.toLowerCase().indexOf(paramFullName) >= 0 })
-            }
-
             if(paramDepartment !== ''){
                 employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
             }
@@ -182,7 +179,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                  break;
             }
 
-            res.send({ data: finalResult, meta: { count: employeesByDept.length } });
+            res.send({ data: 'hola', meta: { count: employeesByDept.length } });
         })
         .catch((error: any) => {
             console.log(error);
