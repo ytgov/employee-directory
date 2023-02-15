@@ -8,7 +8,7 @@
       <p>You didn’t do anything wrong. We may have moved the page you're looking for somewhere else.</p>
     </v-card>
     <v-card class="not-found-card mb-6" color="transparent" outlined>
-      <h2>Did you follow a link from here.</h2>
+      <h2>Did you follow a link from here?</h2>
       <p>If you reached this page from another part of Yukon.ca, <a href="https://yukon.ca/en/your-government/contact-and-follow-government/contact-government">let us know</a> so we can correct our mistake.</p>
     </v-card>
     <v-card class="not-found-card mb-6" color="transparent" outlined>
