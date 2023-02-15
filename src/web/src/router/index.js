@@ -14,8 +14,21 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    redirect: {name: "Find a government employee"}
-
+    redirect: {name: "Find a government employee"},
+    // validate: (to, from, next) => {
+    //   const pattern = /^[-a-zA-Z0-9@:%._\+~#=]{2,256}$/
+    //   if (pattern.test(to.params.url)) {
+    //     try {
+    //       console.log('TEST!!!')
+    //       to.params.url = decodeURIComponent(to.params.url.replace(/%/g, '%25'))
+    //       next()
+    //     } catch (error) {
+    //       next({ name: 'Not Found' })
+    //     }
+    //   } else {
+    //     next({ name: 'Not Found' })
+    //   }
+    // }
   },
   {
     path: "/find-Employee/employee-detail/:department/:full_name",
@@ -60,7 +73,7 @@ const routes = [
     }
   },
   {
-    path: "/find-Employee/:department",
+    path: "/find-employee/:department",
     name: "Department",
     component: Department,
     
@@ -93,10 +106,17 @@ const routes = [
   },
 ];
 
+
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
+  
 });
+
+// router.beforeEach((to, from, next) => {
+//   console.log('test')
+//   return next();
+// });
 
 export default router;
