@@ -6,15 +6,21 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -webkit-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -moz-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     
-    "  color="#fff" flat app height="86" class="shadow">
+    " color="#fff" flat app height="86" class="shadow">
       <div class="header-container">
-        <v-row align-content="space-between">
-          <a href="/"><img src="/yukon.svg" style="margin-top:10px;"  height="63" /></a>
+        <v-row align-content="space-between" align="center">
+          <a href="/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
           </v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-card class="d-flex align-center" color="transparent" outlined>
+            <a class="mb-0 pr-7 menu-button" style="cursor:pointer;">Français</a>
+            <IconLoader class="pl-7 pr-5" height="30px" :image="'menu'" :color="black" style="cursor:pointer; border-radius: 0; border-left: 1px solid #f1f1f1;"/>
+            <a style="cursor:pointer;" class="mb-0 menu-button">Menu</a>
+          </v-card>
+          
           <div>
           </div>
         </v-row>
@@ -66,46 +72,50 @@ import router from "./router";
 import store from "./store";
 import * as config from "./config";
 import { mapState } from "vuex";
+import IconLoader from "./components/icons/IconLoader.vue";
 
 export default {
-  name: "App",
-  data: () => ({
-    noBgImg: false,
-    dialog: false,
-    drawer: null,
-    drawerRight: null,
-    headerShow: false,
-    menuShow: false,
-    loadingClass: "d-none",
-    applicationName: config.applicationName,
-    applicationIcon: config.applicationIcon,
-    sections: config.sections,
-  }),
-  created: async function () {
-
-  },
-  watch: {
-
-  },
-  methods: {
-    changeBackground() {
-      this.noBgImg = true
+    name: "App",
+    data: () => ({
+        noBgImg: false,
+        dialog: false,
+        drawer: null,
+        drawerRight: null,
+        headerShow: false,
+        menuShow: false,
+        loadingClass: "d-none",
+        applicationName: config.applicationName,
+        applicationIcon: config.applicationIcon,
+        sections: config.sections,
+    }),
+    created: async function () {
     },
-    nav: function (location) {
-      router.push(location);
-      console.log(location);
+    watch: {},
+    methods: {
+        changeBackground() {
+            this.noBgImg = true;
+        },
+        nav: function (location) {
+            router.push(location);
+            console.log(location);
+        },
+        toggleHeader: function () {
+            this.headerShow = !this.headerShow;
+        },
+        toggleMenu: function () {
+            this.menuShow = !this.menuShow;
+        },
     },
-    toggleHeader: function () {
-      this.headerShow = !this.headerShow;
-    },
-    toggleMenu: function () {
-      this.menuShow = !this.menuShow;
-    },
-  }
+    components: { IconLoader }
 };
 </script>
 
 <style>
+.menu-button {
+  color: black !important;
+  font-weight: 500;
+}
+
 .no-bg-img {
   background: white !important;
 }
@@ -164,7 +174,7 @@ export default {
 
 
 .yellow-border {
-  border-bottom: 3px #f3b228 solid;
+  border-bottom: 3px #ffcd57 solid;
 }
 
 .white-bg {
@@ -236,5 +246,84 @@ export default {
   .small-container {
     max-width: 1185px !important;
   }
+}
+
+body .aurora-town {
+  position: relative;
+  z-index: -1;
+  margin-top: -6px
+}
+
+body .aurora--main {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  width: 100%;
+  height: 50px;
+  -webkit-transition: all .4s ease;
+  -o-transition: all .4s ease;
+  transition: all .4s ease
+}
+
+@media (min-width:767px) {
+  body .aurora--main {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 200px;
+    -webkit-transition: all .4s ease;
+    -o-transition: all .4s ease;
+    transition: all .4s ease
+  }
+}
+
+body .aurora--main:before {
+  position: absolute;
+  top: 0;
+  right: -100px;
+  display: block;
+  overflow: hidden;
+  width: 300px;
+  height: 50px;
+  content: "";
+  -webkit-transition: all .4s ease;
+  -o-transition: all .4s ease;
+  transition: all .4s ease;
+  background-image: url(../public/Aurora-small-mobile.svg);
+  background-repeat: no-repeat
+}
+
+@media (min-width:767px) {
+  body .aurora--main:before {
+    position: absolute;
+    top: -30px;
+    right: -60%;
+    width: 100%;
+    height: 185px;
+    -webkit-transition: all .4s ease;
+    -o-transition: all .4s ease;
+    transition: all .4s ease;
+    background-image: url(../public/Aurora-main.svg);
+    background-size: contain
+  }
+}
+
+body .aurora--mini {
+  display: inline-block;
+  overflow: hidden;
+  width: 100%;
+  padding: 50px 0
+}
+
+body .aurora--mini:before {
+  position: relative;
+  display: block;
+  width: 260px;
+  height: 45px;
+  margin: 0 auto;
+  content: "";
+  background-image: url(../public/Aurora-main.svg);
+  background-repeat: no-repeat
 }
 </style>
