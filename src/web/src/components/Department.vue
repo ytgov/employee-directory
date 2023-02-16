@@ -1,6 +1,10 @@
 <template>
+  
   <div class="books">
 
+    <div class="text-center loading" v-show="loading">
+      <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+    </div>
     <SearchBarHeader />
 
     <DepartmentHeader :title="title" :image="department" />
@@ -13,10 +17,6 @@
         </v-breadcrumbs-item>
       </template>
     </v-breadcrumbs>
-
-    <div class="text-center loading" v-show="loading">
-      <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-    </div>
     <v-row class="mt-16"></v-row>
     <v-row>
       <v-col col="6">
@@ -77,6 +77,7 @@ export default {
   },
   name: "Department",
   data: () => ({
+    error: false,
     check: '',
     department: '',
     breadcrumbsList: [],
@@ -87,6 +88,8 @@ export default {
     search: "",
     title: '',
     options: {},
+    url: '',
+    loading: true,
 
   }),
   emits:['changeBg'],
@@ -116,6 +119,12 @@ export default {
     this.$emit('changeBg');
   },
   methods: {
+
+    checkError(){
+      if(this.error === true){
+        window.location.href = this.url + '/page-not-found'
+      }
+    },
     activateBranches(item) {
       let find = ' ';
       let reg = new RegExp(find, 'g');
@@ -139,6 +148,8 @@ export default {
         return element !== ''
       })
       url = url[0]
+
+      this.url = url[0]
       let find = ' ';
 
       let reg = new RegExp(find, 'g');
@@ -153,7 +164,7 @@ export default {
       if (type === 'division') {
 
 
-        if (indexFormatted === 'N/A') {
+        if (indexFormatted === 'not-division') {
           return url + '/find-employee/' + department + '/not-division/all-branches'
         }
         return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
@@ -203,6 +214,8 @@ export default {
           this.options
         )
         .then((resp) => {
+          this.error = resp.data.meta.error;
+          this.checkError();
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
           this.loading = false;

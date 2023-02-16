@@ -2,10 +2,7 @@
   <div class="books">
     <SearchBarHeader />
 
-    <DepartmentHeader
-      :title="this.department"
-      :image="this.department.toLowerCase()"
-    />
+    <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
 
     <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
@@ -16,33 +13,22 @@
     </v-breadcrumbs>
 
     <div class="text-center loading" v-show="loading">
-      <v-progress-circular
-        :size="50"
-        color="primary"
-        indeterminate
-      ></v-progress-circular>
+      <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
     <v-row class="mt-16"></v-row>
     <v-row>
       <v-col v-for="item in employee" :key="item.full_name">
-        <h2
-          class="mb-1"
-          style="color: #dc4405 !important; font-size: 34px !important"
-        >
-          {{ item.full_name }}
+        <h2 class="mb-1" style="color: #dc4405 !important; font-size: 34px !important">
+          {{ item.formatted_name }}
         </h2>
-        <h3
-          v-if="checkStatus(item.title)"
-          class="mb-8"
-          style="color: #512a44 !important; font-size: 24px !important"
-        >
+        <h3 v-if="checkStatus(item.title)" class="mb-8" style="color: #512a44 !important; font-size: 24px !important">
           {{ item.title }}
         </h3>
 
         <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
           <h2 class="mt-4 mb-2">Organization</h2>
           <v-row>
-            <v-col cols="12" sm="6" class="mb-1" >
+            <v-col class="mb-1 detail-columns">
               <h3 v-if="checkStatus(item.department)" class="mb-0">
                 Department:
                 <a :href="generateUrl('department', 'n/a', 'n/a')">{{
@@ -52,8 +38,7 @@
               <h3 v-if="checkStatus(item.division)" class="mb-0">
                 Division: {{ item.division }}
               </h3>
-            </v-col>
-            <v-col cols="12" sm="6" class="mb-1">
+
               <h3 v-if="checkStatus(item.branch)" class="mb-0">
                 Branch:
                 <a :href="generateUrl('branch', item.branch, item.division)">{{
@@ -69,7 +54,7 @@
         <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
           <h2 class="mt-4 mb-2">Contact:</h2>
           <v-row>
-            <v-col class="mb-1" cols="12" sm="6" >
+            <v-col class="mb-1 detail-columns">
               <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
                 Phone Office:
                 <a :href="getPhone(item.phone_office)">{{
@@ -79,8 +64,7 @@
               <h3 v-if="checkStatus(item.mobile)" class="mb-0">
                 Mobile: <a :href="getPhone(item.mobile)">{{ item.mobile }}</a>
               </h3>
-            </v-col>
-            <v-col cols="12" sm="6" class="mb-1">
+            
               <h3 v-if="checkStatus(item.email)" class="mb-0">
                 E-mail Address:
                 <a :href="getMail(item.email)">{{ item.email }}</a>
@@ -91,11 +75,7 @@
             </v-col>
           </v-row>
         </v-card>
-        <v-card
-          v-if="checkStatus(item.manager)"
-          class="my-5 py-1 pb-3 px-5 employee-detail"
-          elevation="1"
-        >
+        <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
           <h2 class="mt-4 mb-2">Position Information</h2>
           <v-row>
             <v-col class="mb-1">
@@ -135,20 +115,10 @@
               </h3>
             </v-col>
             <v-col cols="12" md="6">
-              <GmapMap class="mb-2"
-                :center="center"
-                :zoom="14"
-                map-type-id="terrain"
-                style="width: 100%; min-height: 300px;"
-              >
-                <GmapMarker
-                  :key="index"
-                  v-for="(m, index) in markers"
-                  :position="m.position"
-                  :clickable="true"
-                  :draggable="true"
-                  @click="center = m.position"
-                />
+              <GmapMap class="mb-2" :center="center" :zoom="14" map-type-id="terrain"
+                style="width: 100%; min-height: 300px;">
+                <GmapMarker :key="index" v-for="(m, index) in markers" :position="m.position" :clickable="true"
+                  :draggable="true" @click="center = m.position" />
               </GmapMap>
             </v-col>
           </v-row>
@@ -176,10 +146,11 @@ export default {
   data: () => ({
     noBgImg: true,
     department: "",
+    managerAvailability: true,
     managerDepartment: [],
     center: {
-      "lat" : 60.7170045,
-      "lng" : -135.0492597
+      "lat": 60.7170045,
+      "lng": -135.0492597
     },
     markers: [],
     breadcrumbsList: [],
@@ -193,6 +164,9 @@ export default {
     office: "",
     address: "",
     community: "",
+    error: false,
+    name: '',
+    url: '',
   }),
   watch: {
     $route() {
@@ -211,18 +185,34 @@ export default {
       deep: true,
     },
   },
-  emits:['changeBg'],
+  emits: ['changeBg'],
   computed: {},
   mounted() {
     this.$emit('changeBg');
     this.getDataFromApi();
   },
-  created(){
+  created() {
+    this.getUrl();
   },
   methods: {
+    getUrl() {
+      const urlLocation = String(window.location.href);
+      let url = urlLocation.split(window.location.pathname);
+
+      url = url.filter((element) => {
+        return element !== "";
+      });
+
+      this.url = url[0]
+    },
+    checkError(){
+      if(this.error === true){
+        window.location.href = this.url + '/page-not-found/';
+      }
+    },
     setCenter(marker) {
       this.center = marker;
-      this.markers[0] = { position: marker }  
+      this.markers[0] = { position: marker }
     },
     getGeoCodingData() {
       const find = " ";
@@ -266,13 +256,8 @@ export default {
     },
 
     generateUrl(type, param, index) {
-      const urlLocation = String(window.location.href);
-      let url = urlLocation.split(window.location.pathname);
-
-      url = url.filter((element) => {
-        return element !== "";
-      });
-      url = url[0];
+      let url = this.url
+      
       let find = " ";
 
       let reg = new RegExp(find, "g");
@@ -280,14 +265,16 @@ export default {
       let indexFormatted = index.replace(reg, "-");
       let paramFormatted = param.replace(reg, "-");
 
-      if (type === 'manager' && this.managerDepartment !== '') {
-        return (
-          url +
-          "/find-employee/employee-detail/" +
-          this.managerDepartment +
-          "/" +
-          param.replace(reg, ".").toLowerCase()
-        );
+      if (type === 'manager') {
+        if (this.managerAvailability !== true) {
+          return url + '/employee-not-found/' + param.replace(reg, ".").toLowerCase()
+        } else {
+          return url +
+            "/find-employee/employee-detail/" +
+            this.managerDepartment +
+            "/" +
+            param.replace(reg, ".").toLowerCase()
+        }
       }
 
       if (indexFormatted === "N/A") {
@@ -341,6 +328,7 @@ export default {
       var find = "-";
       var reg = new RegExp(find, "g");
       const { department, full_name } = this.$route.params;
+      this.name = full_name;
       this.department = department.replace(reg, " ");
       this.loading = true;
       axios
@@ -348,16 +336,20 @@ export default {
           `${urls.FIND_EMPLOYEE_URL}employee-detail/${department}/${full_name}`
         )
         .then((resp) => {
-          this.employee = resp.data.data;
 
+          this.error = resp.data.data;
+
+          this.checkError();
+          this.employee = resp.data.data;
           this.division = resp.data.data[0].division;
           this.branch = resp.data.data[0].branch;
-          this.title = resp.data.data[0].full_name;
-          this.managerDepartment = resp.data.meta.manager && resp.data.meta.manager[0] ? resp.data.meta.manager[0].department.toLowerCase().replace(/\s+/g, '-') : '';
-
-          this.managerDepartment = resp.data.meta.manager[0].department
-            .toLowerCase()
-            .replace(/\s+/g, "-");
+          this.title = resp.data.data[0].formatted_name;
+          if (resp.data.meta.manager.length === 0) {
+            this.managerAvailability = false
+          } else {
+            this.managerDepartment = resp.data.meta.manager && resp.data.meta.manager[0] ? resp.data.meta.manager[0].department.toLowerCase().replace(/\s+/g, '-') : '';
+            this.managerAvailability = true
+          }
 
           this.department = resp.data.data[0].department;
           this.loading = false;
@@ -369,7 +361,9 @@ export default {
           this.updateBreadCrumbs();
         })
 
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err)
+        } )
         .finally(() => {
           this.loading = false;
         });
@@ -422,7 +416,6 @@ export default {
 </script>
 
 <style>
-
 .employee-detail a {
   font-size: 22px;
   font-weight: 400;
@@ -440,5 +433,17 @@ export default {
 
 .employee-detail h3 {
   font-size: 22px;
+}
+
+.detail-columns {
+  overflow-wrap: break-word;
+  columns: 1;
+}
+
+
+@media (min-width:800px) {
+  .detail-columns {
+    columns:2;
+  }
 }
 </style>

@@ -92,16 +92,23 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     let paramDepartment = (req.params.department).replace(/\--/g,'-/-')
     let paramFullName = (req.params.full_name).replace(".", " ")
 
+    if (paramFullName === 'any-employee') {
+        paramFullName = ''
+    } else {
+        paramFullName = paramFullName
+    }
+
     if (paramDepartment === 'any-department') {
         paramDepartment = ''
     } else {
         paramDepartment = (req.params.department.replace(reg, ' '))
     }
-    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, full_name: paramFullName } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
         .then((response: any) => {
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
                 full_name: string
+                formatted_name: string
                 title: string
                 division: string
                 branch: string
@@ -121,6 +128,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                 var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
+                    'formatted_name': element.first_name + ' ' + element.last_name,
                     'title': element.title !== '' ? element.title : '-',
                     'division': element.division !== null ? element.division : '-',
                     'branch': element.branch !== null ? element.branch : '',
@@ -139,8 +147,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                 employeesByDept.push(employee);
 
             });
-
-            employeesByDept = employeesByDept.filter(item => { return item.full_name.toLowerCase().indexOf(paramFullName) >= 0 })
 
             if(paramDepartment !== ''){
                 employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
@@ -190,13 +196,12 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     let paramDepartment = (req.params.department).replace(/\--/g,'-/-').replace(reg, ' ')
     let paramFullName = (req.params.full_name)
 
-
-
-    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, full_name: paramFullName } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
         .then((response: any) => {
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
                 full_name: string
+                formatted_name: string
                 organization: String
                 department: string
                 division: string
@@ -216,6 +221,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 latitude: number
                 longitude: number
                 manager: string
+                mailcode: string
                 division_url: string
                 full_name_url: string
             }
@@ -224,6 +230,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
+                    'formatted_name': element.first_name + ' ' + element.last_name,
                     'organization': element.organization,
                     'department': element.department,
                     'division': element.division,
@@ -242,6 +249,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                     'postal_code': element.postal_code,
                     'latitude': element.latitude,
                     'longitude': element.longitude,
+                    'mailcode': element.mailcode,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
                     'division_url': division_url,
                     'full_name_url': element.full_name,
@@ -255,15 +263,20 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
             let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.toLowerCase().indexOf(paramFullName) >= 0 })
 
+            
+            if(employeeFiltered.length === 0) {
+                return res.send( {data: true})
+            }
+
+            
             let managerName: any
 
             employeeFiltered.forEach((element) => {
                 managerName = element.manager
             })
 
-            let managerFilter = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
+            let managerFilter: any[] = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
 
-            
             res.send({ data: employeeFiltered, meta: { manager: managerFilter } });
         })
         .catch((error: any) => {
@@ -305,6 +318,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
                 full_name: string
+                formatted_name: string
                 title: string
                 division: string
                 branch: string
@@ -323,6 +337,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
                 var employee: EmployeeTable = {
                     'full_name': element.full_name.replace(".", " "),
+                    'formatted_name': element.first_name + ' ' + element.last_name,
                     'title': element.title !== '' ? element.title : '-',
                     'division': element.division !== null ? element.division : '-',
                     'branch': element.branch !== null ? element.branch : '',
@@ -344,6 +359,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             employeesByDept = employeesByDept.filter(item => { 
               return item.department.toLowerCase().indexOf(paramDepartment) >= 0                
             }) 
+
             let employeesByDivision = employeesByDept
             //Filter by Division  
             if (notDivision) {
@@ -481,28 +497,32 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var _ = require("lodash");
     let paramDepartment = (req.params.department.replace(reg, ' ').replace(/\--/g,'-/-'))
     var employeesByDept = Object();
+    let error = false
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
 
-
-
             employeesByDept = resultEmployees.filter(function (e: any) {
                 return e.department.toLowerCase().indexOf(paramDepartment) >= 0
             })
+
+            if(employeesByDept.length == 0) {
+                error = true
+            }
 
             let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
 
             employeesByDept.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'N/A'
+                    element.division = 'Not Division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'N/A'
+                    element.branch = 'Not Branch'
                 }
             })
+            
 
             let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
 
@@ -514,7 +534,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division, meta: { count: 0 } });
+            res.send({ data: division, meta: { count: 0, error } });
 
         })
         .catch((error: any) => {
@@ -544,10 +564,10 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
 
             employeesByDept.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'N/A'
+                    element.division = 'Not Division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'N/A'
+                    element.branch = 'Not Branch'
                 }
             })
 

@@ -1,21 +1,27 @@
 <template>
   <v-app>
-    <v-app-bar elevation="2" app color="#fff" flat height="70">
+    <v-app-bar style="
+
+box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
+-webkit-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
+-moz-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
+    
+    " color="#fff" flat height="77" max-height="77" class="shadow">
       <div class="header-container">
-        <v-row align-content="space-between">
-          <a  href="/"><img class="ml-5"  src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" /></a>
+        <v-row align-content="space-between" align="center">
+          <a href="https://yukon.ca/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
           </v-toolbar-title>
-          <v-spacer></v-spacer>
+          
           <div>
           </div>
         </v-row>
       </div>
     </v-app-bar>
 
-    <v-main :class="{ 'no-bg-img': noBgImg === true }">
+    <v-main :class="{ 'no-bg-img': noBgImg === false }">
       <!-- Provides the application the proper gutter -->
       <v-container fluid id="container-main">
         <v-row id="container-row">
@@ -38,10 +44,10 @@
           <div class="header-container d-flex justify-space-between">
 
             <div class="d-flex flex-column pa-2 width-100">
-              <a target ="_blank" href="https://yukon.ca/">Government of Yukon</a>
-              <a target ="_blank" href="https://yukon.ca/en/copyright">Copyright</a>
-              <a target ="_blank" href="https://yukon.ca/en/disclaimer">Disclaimer</a>
-              <a target ="_blank" href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
+              <a target="_blank" href="https://yukon.ca/">Government of Yukon</a>
+              <a target="_blank" href="https://yukon.ca/en/copyright">Copyright</a>
+              <a target="_blank" href="https://yukon.ca/en/disclaimer">Disclaimer</a>
+              <a target="_blank" href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
             </div>
             <v-card-text class="white--text text-right with-100">
               <span>© {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
@@ -60,55 +66,51 @@ import router from "./router";
 import store from "./store";
 import * as config from "./config";
 import { mapState } from "vuex";
+import IconLoader from "./components/icons/IconLoader.vue";
 
 export default {
-  name: "App",
-  data: () => ({
-    noBgImg:false,
-    dialog: false,
-    drawer: null,
-    drawerRight: null,
-    headerShow: false,
-    menuShow: false,
-    loadingClass: "d-none",
-    applicationName: config.applicationName,
-    applicationIcon: config.applicationIcon,
-    sections: config.sections,
-  }),
-  created: async function () {
-
-  },
-  watch: {
-
-  },
-  methods: {
-    changeBackground(){
-      this.noBgImg = true
+    name: "App",
+    data: () => ({
+        noBgImg: false,
+        dialog: false,
+        drawer: null,
+        drawerRight: null,
+        headerShow: false,
+        menuShow: false,
+        loadingClass: "d-none",
+        applicationName: config.applicationName,
+        applicationIcon: config.applicationIcon,
+        sections: config.sections,
+    }),
+    created: async function () {
     },
-    nav: function (location) {
-      router.push(location);
-      console.log(location);
+    watch: {},
+    methods: {
+        changeBackground() {
+            this.noBgImg = false;
+        },
+        nav: function (location) {
+            router.push(location);
+        },
+        toggleHeader: function () {
+            this.headerShow = !this.headerShow;
+        },
+        toggleMenu: function () {
+            this.menuShow = !this.menuShow;
+        },
     },
-    toggleHeader: function () {
-      this.headerShow = !this.headerShow;
-    },
-    toggleMenu: function () {
-      this.menuShow = !this.menuShow;
-    },
-  }
+    components: { IconLoader }
 };
 </script>
 
 <style>
+.menu-button {
+  color: black !important;
+  font-weight: 500;
+}
 
 .no-bg-img {
   background: white !important;
-}
-
-.v-toolbar--flat {
-  box-shadow: 1px 0px 7px 4px rgba(0, 0, 0, 0.24) !important;
-  -webkit-box-shadow: 1px 0px 7px 4px rgba(0, 0, 0, 0.24) !important;
-  -moz-box-shadow: 1px 0px 7px 4px rgba(0, 0, 0, 0.24) !important;
 }
 
 .header-container {
@@ -117,9 +119,9 @@ export default {
   padding: 12px 24px;
 }
 
-@media (min-width:1180px) {
+@media (min-width:1070px) {
   .header-container {
-    width: 1180px;
+    width: 1170px;
   }
 }
 
@@ -132,6 +134,21 @@ export default {
 
 .v-text-field>>>fieldset {
   border: 1.5px solid #F3A901;
+}
+
+.v-app-bar,
+.shadow {
+  box-shadow: 1px 3px 16px 0px rgba(163, 163, 163, 1) !important;
+  -webkit-box-shadow: 1px 3px 16px 0px rgba(163, 163, 163, 1) !important;
+  -moz-box-shadow: 1px 3px 16px 0px rgba(163, 163, 163, 1) !important;
+}
+
+.v-app-bar {
+  z-index: 10000;
+}
+
+.search-header {
+  z-index: 2;
 }
 
 .index-text {
@@ -158,7 +175,7 @@ export default {
 
 
 .yellow-border {
-  border-bottom: 3px #f3b228 solid;
+  border-bottom: 3px #ffcd57 solid;
 }
 
 .white-bg {
@@ -169,9 +186,9 @@ export default {
   background-color: #EDEDED;
 }
 
-@media (min-width: 1180px) {
+@media (min-width: 1170px) {
   .container-content {
-    width: 1180px !important;
+    width: 1170px !important;
   }
 }
 
@@ -227,7 +244,7 @@ export default {
 }
 
 @media (min-width: 1904px) {
-  .small-container{
+  .small-container {
     max-width: 1185px !important;
   }
 }
