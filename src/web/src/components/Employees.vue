@@ -1,7 +1,7 @@
 <template>
   <div class="books">
-    <SearchBarHeader :info="this.findEmployeeHeaderInfo" />
-    <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
+    <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
+    <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-16 mb-n8" :items="breadcrumbsList">
 
       <template v-slot:item="{ item }">
 
@@ -11,6 +11,11 @@
 
       </template>
     </v-breadcrumbs>
+
+    <div class="aurora-town">
+      <span class="aurora--main"></span>
+    </div>
+
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
@@ -117,6 +122,22 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
+body .aurora--main:before {
+  top: 590px !important;
+  
+}
+@media(min-width:600px) {
+  body .aurora--main:before {
+    top: 430px!important;
+  }
+}
+
+@media(min-width:767px) {
+  body .aurora--main:before {
+    right: -53%;
+    top: 380px!important;
+  }
+}
 </style>

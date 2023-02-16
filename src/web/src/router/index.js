@@ -14,8 +14,21 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    redirect: {name: "Find a government employee"}
-
+    redirect: {name: "Find a government employee"},
+    // validate: (to, from, next) => {
+    //   const pattern = /^[-a-zA-Z0-9@:%._\+~#=]{2,256}$/
+    //   if (pattern.test(to.params.url)) {
+    //     try {
+    //       console.log('TEST!!!')
+    //       to.params.url = decodeURIComponent(to.params.url.replace(/%/g, '%25'))
+    //       next()
+    //     } catch (error) {
+    //       next({ name: 'Not Found' })
+    //     }
+    //   } else {
+    //     next({ name: 'Not Found' })
+    //   }
+    // }
   },
   {
     path: "/find-Employee/employee-detail/:department/:full_name",
@@ -23,7 +36,7 @@ const routes = [
     component: EmployeeDetail,
     meta: {
       breadcrumb: [
-        {name: 'Home', link: '/'},
+        {name: 'Home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee', link: '/Find-Employee'},
         {name: 'Department', link: '/find-employee/Department' , dynamic: true},
         {name: 'Division', link: '/find-employee/Department/Division' , dynamic: true},
@@ -38,7 +51,7 @@ const routes = [
     component: EmployeeSearch,
     meta: {
       breadcrumb: [
-        {name: 'Home', link: '/'},
+        {name: 'Home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee', link: '/Find-Employee'},
         {name: 'Department', link: '/find-employee/Department' , dynamic: true},
         {name: 'Search', dynamic: true},
@@ -51,7 +64,7 @@ const routes = [
     component: Grid,
     meta: {
       breadcrumb: [
-        {name: 'Home', link: '/'},
+        {name: 'Home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee', link: '/find-employee'},
         {name: 'Department', link: '/find-employee/Department', dynamic: true},
         {name: 'Division', link: '/find-employee/Department/Division', dynamic: true},
@@ -60,13 +73,13 @@ const routes = [
     }
   },
   {
-    path: "/find-Employee/:department",
+    path: "/find-employee/:department",
     name: "Department",
     component: Department,
     
     meta: {
       breadcrumb: [
-        {name: 'Home', link: '/'},
+        {name: 'Home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee', link: '/find-employee'},
         {name: 'Department', dynamic: true}
       ]
@@ -75,7 +88,13 @@ const routes = [
   {
     path: "*",
     name: "Not Found",
-    component: NotFound
+    component: NotFound,
+    meta: {
+      breadcrumb: [
+        {name: 'Home', link: 'https://yukon.ca/'},
+        {name: 'Page not found'},
+      ]
+    }
   },
   {
     path: "/find-employee/",
@@ -86,17 +105,24 @@ const routes = [
     ],
     meta: {
       breadcrumb: [
-        {name: 'Home', link: '/'},
+        {name: 'Home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee'},
       ]
     }
   },
 ];
 
+
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
+  
 });
+
+// router.beforeEach((to, from, next) => {
+//   console.log('test')
+//   return next();
+// });
 
 export default router;

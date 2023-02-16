@@ -14,17 +14,21 @@
     </v-breadcrumbs>
 
     <v-row>
-      <v-col xs="12" md="2" class="d-flex align-center justify-start">
-        <h4 class="">Group by their: </h4>
-      </v-col>
-      <v-col xs="12" md="10">
-        <v-chip-group v-model="selection" center-active mandatory active-class="chips--active">
-          <v-chip label outlined color="#00616D">All Employees</v-chip>
-          <v-chip label outlined color="#00616D">By Location</v-chip>
-          <v-chip label outlined color="#00616D">By Position</v-chip>
-        </v-chip-group>
-      </v-col>
-    </v-row>
+            <v-col cols="12" md="2" class="d-flex align-center justify-start">
+                <h4 class="">Group by: </h4>
+            </v-col>
+            <v-col cols="12" md="8">
+                <v-chip-group v-model="selection" center-active mandatory>
+                    <v-row>
+                        <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
+                            <v-chip label outlined color="#00616D">See all government employees</v-chip>
+                            <v-chip label outlined color="#00616D">Department</v-chip>
+                            <v-chip label outlined color="#00616D">Position</v-chip>
+                        </v-col>
+                    </v-row>
+                </v-chip-group>
+            </v-col>
+        </v-row>
 
     <v-row>
       <DivisionsCard :division="this.div" :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()"
@@ -63,12 +67,12 @@
                   :href="urlEmployee(item.department, item.full_name_url)">
                   <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right"></IconLoader> 
                   <IconLoader v-if="item.level > 1"  v-for='n in item.level'  :color="'blue'" image="1" class="angle-right-multiple"></IconLoader>
-                  <label class="full-name">{{ item.full_name }}</label>
+                  <label class="full-name">{{ item.formatted_name }}</label>
                 </a>
               </td>
-              <td>{{ item.title }}</td>
-              <td>{{ item.email }}</td>
-              <td>{{ item.phone_office }}</td>
+              <td class="default-cursor"> {{ item.title }} </td>
+              <td class="default-cursor"> {{ item.email }}</td>
+              <td class="default-cursor">{{ item.phone_office }}</td>
             </tr>
           </tbody>
         </template>
@@ -94,14 +98,14 @@
             <tbody class="table-body">
               <tr class="table-border" v-for='item in value'>
                 <td>
-                  <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                  <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
                     :href="urlEmployee(item.department, item.full_name_url)">
-                    {{ item.full_name }}   
+                    {{ item.formatted_name }}   
                   </a>
                 </td>
-                <td>{{ item.title }}</td>
-                <td>{{ item.email }}</td>
-                <td>{{ item.phone_office }}</td>
+                <td class="default-cursor">{{ item.title }}</td>
+                <td class="default-cursor">{{ item.email }}</td>
+                <td class="default-cursor">{{ item.phone_office }}</td>
               </tr>
             </tbody>
           </template>
@@ -126,14 +130,14 @@
             <tbody class="table-body">
               <tr class="table-border" v-for='item in value'>
                 <td>
-                  <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                  <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
                     :href="urlEmployee(item.department, item.full_name_url)">
-                    {{ item.full_name }}
+                    {{ item.formatted_name }}
                   </a>
                 </td>
-                <td>{{ item.title }}</td>
-                <td>{{ item.email }}</td>
-                <td>{{ item.phone_office }}</td>
+                <td class="default-cursor">{{ item.title }}</td>
+                <td class="default-cursor">{{ item.email }}</td>
+                <td class="default-cursor">{{ item.phone_office }}</td>
               </tr>
             </tbody>
           </template>
@@ -175,7 +179,7 @@ export default {
     totalLength: 0,
     divisionLength: 0,
     headers: [
-      { text: "Name", value: "full_name" },
+      { text: "Name", value: "formatted_name" },
       { text: "Position", value: "title" },
       { text: "E-Mail Address", value: "email" },
       { text: "Phone Number", value: "phone_office" },
@@ -309,7 +313,9 @@ export default {
 </script>
 
 <style scoped>
+
 .full-name{
+  cursor: pointer;
   margin-left:3px;
 }
 .table-header {
