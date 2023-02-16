@@ -14,12 +14,6 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
           </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-card class="d-flex align-center" color="transparent" outlined>
-            <a class="mb-0 pr-4 menu-button" style="cursor:pointer;">Français</a>
-            <IconLoader class="pl-4 pr-5" height="30px" :image="'menu'" :color="'black'" style="cursor:pointer; border-radius: 0; border-left: 1px solid #f1f1f1;"/>
-            <a style="cursor:pointer;" class="mb-0 menu-button">Menu</a>
-          </v-card>
           
           <div>
           </div>
