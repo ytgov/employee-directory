@@ -207,7 +207,7 @@ export default {
     },
     checkError(){
       if(this.error === true){
-        window.location.href = this.url + '/employee-not-found/' + this.name;
+        window.location.href = this.url + '/page-not-found/';
       }
     },
     setCenter(marker) {

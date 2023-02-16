@@ -95,7 +95,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     if (paramFullName === 'any-employee') {
         paramFullName = ''
     } else {
-        paramFullName = 'keyword=' + paramFullName
+        paramFullName = paramFullName
     }
 
     if (paramDepartment === 'any-department') {
@@ -103,7 +103,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     } else {
         paramDepartment = (req.params.department.replace(reg, ' '))
     }
-    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, full_name: paramFullName } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
         .then((response: any) => {
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
@@ -200,7 +200,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     let pageError = false
 
 
-    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, full_name: paramFullName } })
+    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
         .then((response: any) => {
             var resultEmployees = response.data.employees;
             interface EmployeeTable {
@@ -267,10 +267,14 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
             let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.toLowerCase().indexOf(paramFullName) >= 0 })
 
+            
             if(employeeFiltered.length === 0) {
                 pageError = true
+
+                
             }
 
+            
             let managerName: any
 
             employeeFiltered.forEach((element) => {
