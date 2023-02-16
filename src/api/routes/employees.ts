@@ -179,7 +179,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                  break;
             }
 
-            res.send({ data: 'hola', meta: { count: employeesByDept.length } });
+            res.send({ data: finalResult, meta: { count: employeesByDept.length } });
         })
         .catch((error: any) => {
             console.log(error);
