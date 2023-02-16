@@ -6,18 +6,18 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -webkit-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -moz-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     
-    " color="#fff" flat height="86" class="shadow">
+    " color="#fff" flat height="77" max-height="77" class="shadow">
       <div class="header-container">
         <v-row align-content="space-between" align="center">
-          <a href="/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
+          <a href="https://yukon.ca/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
               class="ml-4"></v-progress-circular>
           </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-card class="d-flex align-center" color="transparent" outlined>
-            <a class="mb-0 pr-7 menu-button" style="cursor:pointer;">Français</a>
-            <IconLoader class="pl-7 pr-5" height="30px" :image="'menu'" :color="'black'" style="cursor:pointer; border-radius: 0; border-left: 1px solid #f1f1f1;"/>
+            <a class="mb-0 pr-4 menu-button" style="cursor:pointer;">Français</a>
+            <IconLoader class="pl-4 pr-5" height="30px" :image="'menu'" :color="'black'" style="cursor:pointer; border-radius: 0; border-left: 1px solid #f1f1f1;"/>
             <a style="cursor:pointer;" class="mb-0 menu-button">Menu</a>
           </v-card>
           
@@ -125,9 +125,9 @@ export default {
   padding: 12px 24px;
 }
 
-@media (min-width:1180px) {
+@media (min-width:1070px) {
   .header-container {
-    width: 1180px;
+    width: 1170px;
   }
 }
 
@@ -192,9 +192,9 @@ export default {
   background-color: #EDEDED;
 }
 
-@media (min-width: 1180px) {
+@media (min-width: 1170px) {
   .container-content {
-    width: 1180px !important;
+    width: 1170px !important;
   }
 }
 

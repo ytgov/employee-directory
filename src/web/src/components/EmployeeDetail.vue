@@ -28,7 +28,7 @@
         <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
           <h2 class="mt-4 mb-2">Organization</h2>
           <v-row>
-            <v-col cols="12" sm="6" class="mb-1">
+            <v-col class="mb-1 detail-columns">
               <h3 v-if="checkStatus(item.department)" class="mb-0">
                 Department:
                 <a :href="generateUrl('department', 'n/a', 'n/a')">{{
@@ -38,8 +38,7 @@
               <h3 v-if="checkStatus(item.division)" class="mb-0">
                 Division: {{ item.division }}
               </h3>
-            </v-col>
-            <v-col cols="12" sm="6" class="mb-1">
+
               <h3 v-if="checkStatus(item.branch)" class="mb-0">
                 Branch:
                 <a :href="generateUrl('branch', item.branch, item.division)">{{
@@ -55,7 +54,7 @@
         <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
           <h2 class="mt-4 mb-2">Contact:</h2>
           <v-row>
-            <v-col class="mb-1" cols="12" sm="6">
+            <v-col class="mb-1 detail-columns">
               <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
                 Phone Office:
                 <a :href="getPhone(item.phone_office)">{{
@@ -65,8 +64,7 @@
               <h3 v-if="checkStatus(item.mobile)" class="mb-0">
                 Mobile: <a :href="getPhone(item.mobile)">{{ item.mobile }}</a>
               </h3>
-            </v-col>
-            <v-col cols="12" sm="6" class="mb-1">
+            
               <h3 v-if="checkStatus(item.email)" class="mb-0">
                 E-mail Address:
                 <a :href="getMail(item.email)">{{ item.email }}</a>
@@ -431,5 +429,17 @@ export default {
 
 .employee-detail h3 {
   font-size: 22px;
+}
+
+.detail-columns {
+  overflow-wrap: break-word;
+  columns: 1;
+}
+
+
+@media (min-width:800px) {
+  .detail-columns {
+    columns:2;
+  }
 }
 </style>
