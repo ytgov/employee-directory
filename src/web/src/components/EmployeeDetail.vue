@@ -336,7 +336,9 @@ export default {
           `${urls.FIND_EMPLOYEE_URL}employee-detail/${department}/${full_name}`
         )
         .then((resp) => {
-          this.error = resp.data.meta.pageError;
+
+          this.error = resp.data.data;
+
           this.checkError();
           this.employee = resp.data.data;
           this.division = resp.data.data[0].division;
@@ -359,7 +361,9 @@ export default {
           this.updateBreadCrumbs();
         })
 
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err)
+        } )
         .finally(() => {
           this.loading = false;
         });
