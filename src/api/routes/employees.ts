@@ -14,8 +14,8 @@ dotenv.config({ path: path });
 import employee_json from '../json/employees.json';
 import division_json from '../json/division.json';
 
-export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
-export const DIVISIONSJSON = process.env.DIVISIONSJSON;
+export const EMPLOYEEJSON = process.env.EMPLOYEEJSON_local;
+export const DIVISIONSJSON = process.env.DIVISIONSJSON_local;
 
 
 export const employeesRouter = express.Router();
