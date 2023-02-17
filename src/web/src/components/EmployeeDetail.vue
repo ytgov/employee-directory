@@ -226,7 +226,7 @@ export default {
           method: "GET",
           // Headers: { "Access-Control-Allow-Origin": "*" },
           withCredentials: false,
-          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${office},+${community}&key=${config.GMAPS_KEY}`,
+          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${community}&key=${config.GMAPS_KEY}`,
         })
         .then((resp) => {
           const newPosition = get(resp, 'data.results[0].geometry.location', this.center);
