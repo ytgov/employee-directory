@@ -185,7 +185,7 @@ export default {
       const dynamicBreadcrumb = arr.find(({ dynamic }) => !!dynamic);
 
       if (dynamicBreadcrumb) {
-        dynamicBreadcrumb.name = this.department;
+        dynamicBreadcrumb.name = this.title;
       }
       this.breadcrumbsList = arr
     },

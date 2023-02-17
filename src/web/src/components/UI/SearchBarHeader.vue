@@ -108,7 +108,7 @@ export default {
                 if (department === '') {
                     window.location.href = '/find-employee/search/keyword=' + name + '&department=any-department'
                 } else if (name === '') {
-                    window.location.href = '/find-employee/search/keyword=any-employee&department=' + department
+                    window.location.href = '/find-employee/' + department
                 } else {
                     window.location.href = '/find-employee/search/keyword=' + name + '&department=' + department
                 }

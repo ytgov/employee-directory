@@ -22,7 +22,7 @@
                     <v-row>
                         <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
                             <v-chip label outlined color="#00616D">See all government employees</v-chip>
-                            <v-chip label outlined color="#00616D">Department</v-chip>
+                            <v-chip label outlined color="#00616D">Location</v-chip>
                             <v-chip label outlined color="#00616D">Position</v-chip>
                         </v-col>
                     </v-row>
