@@ -61,10 +61,6 @@
                   item.phone_office
                 }}</a>
               </h3>
-              <h3 v-if="checkStatus(item.mobile)" class="mb-0">
-                Mobile: <a :href="getPhone(item.mobile)">{{ item.mobile }}</a>
-              </h3>
-            
               <h3 v-if="checkStatus(item.email)" class="mb-0">
                 E-mail Address:
                 <a :href="getMail(item.email)">{{ item.email }}</a>
@@ -92,12 +88,6 @@
           <h2 class="mt-4 mb-2">Location</h2>
           <v-row>
             <v-col class="mb-1" cols="12" md="6">
-              <h3 v-if="checkStatus(item.office)" class="mb-0">
-                Office: <span>{{ item.office }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.suite)" class="mb-0">
-                Suite: <span>{{ item.suite }}</span>
-              </h3>
               <h3 v-if="checkStatus(item.address)" class="mb-0">
                 Address: <a>{{ item.address }}</a>
               </h3>
@@ -109,9 +99,6 @@
               </h3>
               <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
                 Mail Code: <span>{{ item.mailcode }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.po_box)" class="mb-0">
-                P.O. Box: <span>{{ item.po_box }}</span>
               </h3>
             </v-col>
             <v-col cols="12" md="6">

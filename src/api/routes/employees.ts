@@ -188,16 +188,10 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
 
                 interface EmployeeDetail extends EmployeeTable {
-                    organization: String
+                    
                     unit: String
-                    suite: String
-                    fax_office: String
-                    mobile: String
-                    office: String
-                    po_box: String
+                    fax_office: String                   
                     postal_code: String
-                    latitude: number
-                    longitude: number
                     mailcode: string
                     full_name_url: string
                 }
@@ -205,24 +199,17 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 var employee: EmployeeDetail = {
                     'full_name': element.full_name.replace(".", " "),
                     'formatted_name': element.first_name + ' ' + element.last_name,
-                    'organization': element.organization,
                     'department': element.department,
                     'division': element.division,
                     'branch': element.branch,
                     'unit': element.unit,
                     'title': element.title,
                     'email': element.email,
-                    'suite': element.suite,
                     'phone_office': element.phone_office,
                     'fax_office': element.fax_office,
-                    'mobile': element.mobile,
-                    'office': element.office,
                     'address': element.address,
-                    'po_box': element.po_box,
                     'community': element.community,
                     'postal_code': element.postal_code,
-                    'latitude': element.latitude,
-                    'longitude': element.longitude,
                     'mailcode': element.mailcode,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
                     'division_url': division_url,
