@@ -135,6 +135,8 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             if(paramDepartment !== ''){
                 employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
             }
+
+            employeesByDept = _.orderBy(employeesByDept,[employee => employee.full_name], ['asc'])
             
             let departments = _.groupBy(employeesByDept, item => `${item.department}`);
 
