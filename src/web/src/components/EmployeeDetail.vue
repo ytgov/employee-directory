@@ -61,10 +61,6 @@
                   item.phone_office
                 }}</a>
               </h3>
-              <h3 v-if="checkStatus(item.mobile)" class="mb-0">
-                Mobile: <a :href="getPhone(item.mobile)">{{ item.mobile }}</a>
-              </h3>
-            
               <h3 v-if="checkStatus(item.email)" class="mb-0">
                 E-mail Address:
                 <a :href="getMail(item.email)">{{ item.email }}</a>
@@ -92,12 +88,6 @@
           <h2 class="mt-4 mb-2">Location</h2>
           <v-row>
             <v-col class="mb-1" cols="12" md="6">
-              <h3 v-if="checkStatus(item.office)" class="mb-0">
-                Office: <span>{{ item.office }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.suite)" class="mb-0">
-                Suite: <span>{{ item.suite }}</span>
-              </h3>
               <h3 v-if="checkStatus(item.address)" class="mb-0">
                 Address: <a>{{ item.address }}</a>
               </h3>
@@ -110,16 +100,16 @@
               <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
                 Mail Code: <span>{{ item.mailcode }}</span>
               </h3>
-              <h3 v-if="checkStatus(item.po_box)" class="mb-0">
-                P.O. Box: <span>{{ item.po_box }}</span>
-              </h3>
             </v-col>
             <v-col cols="12" md="6">
-              <GmapMap class="mb-2" :center="center" :zoom="14" map-type-id="terrain"
-                style="width: 100%; min-height: 300px;">
-                <GmapMarker :key="index" v-for="(m, index) in markers" :position="m.position" :clickable="true"
-                  :draggable="true" @click="center = m.position" />
-              </GmapMap>
+
+              <l-map style="height: 300px" :zoom="zoom" :center="center">
+
+                <l-tile-layer :url="mapUrl"></l-tile-layer>
+                <l-marker :lat-lng="center"></l-marker>
+                
+              </l-map>
+
             </v-col>
           </v-row>
         </v-card>
@@ -131,19 +121,36 @@
 <script>
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
-import { get } from 'lodash';
 import * as urls from "../urls";
-import * as config from "../config"
+
+
+import L from 'leaflet';
+import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+import { Geocoder } from 'leaflet-control-geocoder';
+
+
+import { Icon } from 'leaflet';
+
+delete Icon.Default.prototype._getIconUrl;
+Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 const axios = require("axios");
 export default {
   components: {
     DepartmentHeader,
     SearchBarHeader,
-
+    LMap,
+    LTileLayer,
+    LMarker,
+    Geocoder,
   },
   name: "EmployeeDetail",
   data: () => ({
+    zoom: 13,
     noBgImg: true,
     department: "",
     managerAvailability: true,
@@ -167,6 +174,7 @@ export default {
     error: false,
     name: '',
     url: '',
+    mapUrl: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`,
   }),
   watch: {
     $route() {
@@ -195,6 +203,8 @@ export default {
     this.getUrl();
   },
   methods: {
+
+
     getUrl() {
       const urlLocation = String(window.location.href);
       let url = urlLocation.split(window.location.pathname);
@@ -205,36 +215,14 @@ export default {
 
       this.url = url[0]
     },
-    checkError(){
-      if(this.error === true){
+    checkError() {
+      if (this.error === true) {
         window.location.href = this.url + '/page-not-found/';
       }
     },
     setCenter(marker) {
       this.center = marker;
       this.markers[0] = { position: marker }
-    },
-    getGeoCodingData() {
-      const find = " ";
-      const reg = new RegExp(find, "g");
-
-      const address = this.address.replace(reg, "-");
-      const office = this.office.replace(reg, "-");
-      const community = this.community.replace(reg, "-");
-      axios
-        .request({
-          method: "GET",
-          // Headers: { "Access-Control-Allow-Origin": "*" },
-          withCredentials: false,
-          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${community}&key=${config.GMAPS_KEY}`,
-        })
-        .then((resp) => {
-          const newPosition = get(resp, 'data.results[0].geometry.location', this.center);
-          this.setCenter(newPosition);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
     getMail(mail) {
       const link = "mailto:" + mail;
@@ -257,7 +245,7 @@ export default {
 
     generateUrl(type, param, index) {
       let url = this.url
-      
+
       let find = " ";
 
       let reg = new RegExp(find, "g");
@@ -354,16 +342,20 @@ export default {
           this.department = resp.data.data[0].department;
           this.loading = false;
 
-          this.office = resp.data.data[0].office;
+
           this.address = resp.data.data[0].address;
           this.community = resp.data.data[0].community;
-          this.getGeoCodingData();
+
+
+
+
+
           this.updateBreadCrumbs();
         })
 
         .catch((err) => {
           console.error(err)
-        } )
+        })
         .finally(() => {
           this.loading = false;
         });
@@ -443,7 +435,7 @@ export default {
 
 @media (min-width:800px) {
   .detail-columns {
-    columns:2;
+    columns: 2;
   }
 }
 </style>

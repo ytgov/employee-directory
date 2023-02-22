@@ -4,6 +4,8 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
 
+import { EmployeeTable } from './interface';
+
 let path;
 switch (process.env.NODE_ENV) {
     default:
@@ -94,23 +96,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
         .then((response: any) => {
             var resultEmployees = response.data.employees;
-            interface EmployeeTable {
-                full_name: string
-                formatted_name: string
-                title: string
-                division: string
-                branch: string
-                email: String
-                phone_office: String
-                department: string
-                manager: string
-                managerSorter: string
-                division_url: string
-                full_name_url: string
-                value: number
-                address: String
-                community: String
-            }
 
             resultEmployees.forEach(function (element: any) {
                 var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
@@ -124,7 +109,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                     'phone_office': element.phone_office !== '' ? element.phone_office : '-',
                     'department': element.department,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
-                    'managerSorter': '',
                     'division_url': division_url,
                     'full_name_url': element.full_name,
                     'value': 0,
@@ -182,60 +166,38 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
         .then((response: any) => {
             var resultEmployees = response.data.employees;
-            interface EmployeeTable {
-                full_name: string
-                formatted_name: string
-                organization: String
-                department: string
-                division: string
-                branch: string
-                unit: String
-                title: string
-                email: String
-                suite: String
-                phone_office: String
-                fax_office: String
-                mobile: String
-                office: String
-                address: String
-                po_box: String
-                community: String
-                postal_code: String
-                latitude: number
-                longitude: number
-                manager: string
-                mailcode: string
-                division_url: string
-                full_name_url: string
-            }
+            
             resultEmployees.forEach(function (element: any) {
                 var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
 
-                var employee: EmployeeTable = {
+                interface EmployeeDetail extends EmployeeTable {
+                    
+                    unit: String
+                    fax_office: String                   
+                    postal_code: String
+                    mailcode: string
+                    full_name_url: string
+                }
+
+                var employee: EmployeeDetail = {
                     'full_name': element.full_name.replace(".", " "),
                     'formatted_name': element.first_name + ' ' + element.last_name,
-                    'organization': element.organization,
                     'department': element.department,
                     'division': element.division,
                     'branch': element.branch,
                     'unit': element.unit,
                     'title': element.title,
                     'email': element.email,
-                    'suite': element.suite,
                     'phone_office': element.phone_office,
                     'fax_office': element.fax_office,
-                    'mobile': element.mobile,
-                    'office': element.office,
                     'address': element.address,
-                    'po_box': element.po_box,
                     'community': element.community,
                     'postal_code': element.postal_code,
-                    'latitude': element.latitude,
-                    'longitude': element.longitude,
                     'mailcode': element.mailcode,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
                     'division_url': division_url,
                     'full_name_url': element.full_name,
+                    'value': 0,
                 };
 
                 employeeArr.push(employee);
@@ -296,22 +258,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
-            interface EmployeeTable {
-                full_name: string
-                formatted_name: string
-                title: string
-                division: string
-                branch: string
-                email: String
-                phone_office: String
-                department: string
-                manager: any
-                division_url: string
-                full_name_url: string
-                value: number
-                address: string
-                community: string
-            }
             
             resultEmployees.forEach(function (element: any) {
                 var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
