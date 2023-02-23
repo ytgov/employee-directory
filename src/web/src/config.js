@@ -1,6 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 export const applicationName = "Find a government employee | Government of Yukon eServices";
 export const applicationIcon = "mdi-cash-register";
 

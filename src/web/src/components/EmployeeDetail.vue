@@ -4,7 +4,7 @@
 
     <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
 
-    <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
+    <v-breadcrumbs class="mt-6 breadcrumbs px-0" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
           {{ item.name }}
@@ -15,142 +15,149 @@
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <v-row class="mt-16"></v-row>
-    <v-row>
-      <v-col v-for="item in employee" :key="item.full_name">
-        <h2 class="mb-1" style="color: #dc4405 !important; font-size: 34px !important">
-          {{ item.formatted_name }}
-        </h2>
-        <h3 v-if="checkStatus(item.title)" class="mb-8" style="color: #512a44 !important; font-size: 24px !important">
-          {{ item.title }}
-        </h3>
+    <v-container class="px-0">
+      <v-row class="mt-16"></v-row>
+      <v-row>
+        <v-col v-for="item in employee" :key="item.full_name">
+          <h2 class="mb-1" style="color: #dc4405 !important; font-size: 34px !important">
+            {{ item.formatted_name }}
+          </h2>
+          <h3 v-if="checkStatus(item.title)" class="mb-8" style="color: #512a44 !important; font-size: 24px !important">
+            {{ item.title }}
+          </h3>
 
-        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-          <h2 class="mt-4 mb-2">Organization</h2>
-          <v-row>
-            <v-col class="mb-1 detail-columns">
-              <h3 v-if="checkStatus(item.department)" class="mb-0">
-                Department:
-                <a :href="generateUrl('department', 'n/a', 'n/a')">{{
-                  item.department
-                }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.division)" class="mb-0">
-                Division: {{ item.division }}
-              </h3>
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+            <h2 class="mt-4 mb-2">Organization</h2>
+            <v-row>
+              <v-col class="mb-1 detail-columns">
+                <h3 v-if="checkStatus(item.department)" class="mb-0">
+                  Department:
+                  <a :href="generateUrl('department', 'n/a', 'n/a')">{{
+                    item.department
+                  }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.division)" class="mb-0">
+                  Division: {{ item.division }}
+                </h3>
 
-              <h3 v-if="checkStatus(item.branch)" class="mb-0">
-                Branch:
-                <a :href="generateUrl('branch', item.branch, item.division)">{{
-                  item.branch
-                }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.unit)" class="mb-0">
-                Unit: <span>{{ item.unit }}</span>
-              </h3>
-            </v-col>
-          </v-row>
-        </v-card>
-        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-          <h2 class="mt-4 mb-2">Contact:</h2>
-          <v-row>
-            <v-col class="mb-1 detail-columns">
-              <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
-                Phone Office:
-                <a :href="getPhone(item.phone_office)">{{
-                  item.phone_office
-                }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.mobile)" class="mb-0">
-                Mobile: <a :href="getPhone(item.mobile)">{{ item.mobile }}</a>
-              </h3>
-            
-              <h3 v-if="checkStatus(item.email)" class="mb-0">
-                E-mail Address:
-                <a :href="getMail(item.email)">{{ item.email }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.fax_office)" class="mb-0">
-                Fax Office: <span>{{ item.fax_office }}</span>
-              </h3>
-            </v-col>
-          </v-row>
-        </v-card>
-        <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-          <h2 class="mt-4 mb-2">Position Information</h2>
-          <v-row>
-            <v-col class="mb-1">
-              <h3 class="mb-0">
-                Manager:
-                <a :href="generateUrl('manager', item.manager, 'n/a')">{{
-                  item.manager
-                }}</a>
-              </h3>
-            </v-col>
-          </v-row>
-        </v-card>
-        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-          <h2 class="mt-4 mb-2">Location</h2>
-          <v-row>
-            <v-col class="mb-1" cols="12" md="6">
-              <h3 v-if="checkStatus(item.office)" class="mb-0">
-                Office: <span>{{ item.office }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.suite)" class="mb-0">
-                Suite: <span>{{ item.suite }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.address)" class="mb-0">
-                Address: <a>{{ item.address }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.community)" class="mb-0">
-                Community: <span>{{ item.community }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
-                Postal Code: <span>{{ item.postal_code }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
-                Mail Code: <span>{{ item.mailcode }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.po_box)" class="mb-0">
-                P.O. Box: <span>{{ item.po_box }}</span>
-              </h3>
-            </v-col>
-            <v-col cols="12" md="6">
-              <GmapMap class="mb-2" :center="center" :zoom="14" map-type-id="terrain"
-                style="width: 100%; min-height: 300px;">
-                <GmapMarker :key="index" v-for="(m, index) in markers" :position="m.position" :clickable="true"
-                  :draggable="true" @click="center = m.position" />
-              </GmapMap>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-    </v-row>
+                <h3 v-if="checkStatus(item.branch)" class="mb-0">
+                  Branch:
+                  <a :href="generateUrl('branch', item.branch, item.division)">{{
+                    item.branch
+                  }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.unit)" class="mb-0">
+                  Unit: <span>{{ item.unit }}</span>
+                </h3>
+              </v-col>
+            </v-row>
+          </v-card>
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+            <h2 class="mt-4 mb-2">Contact:</h2>
+            <v-row>
+              <v-col class="mb-1 detail-columns">
+                <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
+                  Phone Office:
+                  <a :href="getPhone(item.phone_office)">{{
+                    item.phone_office
+                  }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.email)" class="mb-0">
+                  E-mail Address:
+                  <a :href="getMail(item.email)">{{ item.email }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.fax_office)" class="mb-0">
+                  Fax Office: <span>{{ item.fax_office }}</span>
+                </h3>
+              </v-col>
+            </v-row>
+          </v-card>
+          <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+            <h2 class="mt-4 mb-2">Position Information</h2>
+            <v-row>
+              <v-col class="mb-1">
+                <h3 class="mb-0">
+                  Manager:
+                  <a :href="generateUrl('manager', item.manager, 'n/a')">{{
+                    item.manager
+                  }}</a>
+                </h3>
+              </v-col>
+            </v-row>
+          </v-card>
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+            <h2 class="mt-4 mb-2">Location</h2>
+            <v-row>
+              <v-col class="mb-1" cols="12" md="6">
+                <h3 v-if="checkStatus(item.address)" class="mb-0">
+                  Address: <a>{{ item.address }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.community)" class="mb-0">
+                  Community: <span>{{ item.community }}</span>
+                </h3>
+                <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
+                  Postal Code: <span>{{ item.postal_code }}</span>
+                </h3>
+                <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
+                  Mail Code: <span>{{ item.mailcode }}</span>
+                </h3>
+              </v-col>
+              <v-col cols="12" md="6">
+
+                <l-map style="height: 300px" :zoom="zoom" :center="center">
+
+                  <l-tile-layer :url="mapUrl"></l-tile-layer>
+                  <l-marker :lat-lng="center"></l-marker>
+
+                </l-map>
+
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
 <script>
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
-import { get } from 'lodash';
 import * as urls from "../urls";
-import * as config from "../config"
+
+
+import L from 'leaflet';
+import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+
+import { Icon } from 'leaflet';
+
+delete Icon.Default.prototype._getIconUrl;
+Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 const axios = require("axios");
 export default {
   components: {
     DepartmentHeader,
     SearchBarHeader,
+    LMap,
+    LTileLayer,
+    LMarker,
 
   },
   name: "EmployeeDetail",
   data: () => ({
+    zoom: 13,
     noBgImg: true,
     department: "",
     managerAvailability: true,
     managerDepartment: [],
     center: {
-      "lat": 60.7170045,
-      "lng": -135.0492597
+      "lat": 0,
+      "lng": 0
     },
     markers: [],
     breadcrumbsList: [],
@@ -167,6 +174,7 @@ export default {
     error: false,
     name: '',
     url: '',
+    mapUrl: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`,
   }),
   watch: {
     $route() {
@@ -195,6 +203,8 @@ export default {
     this.getUrl();
   },
   methods: {
+
+
     getUrl() {
       const urlLocation = String(window.location.href);
       let url = urlLocation.split(window.location.pathname);
@@ -205,36 +215,14 @@ export default {
 
       this.url = url[0]
     },
-    checkError(){
-      if(this.error === true){
+    checkError() {
+      if (this.error === true) {
         window.location.href = this.url + '/page-not-found/';
       }
     },
     setCenter(marker) {
       this.center = marker;
       this.markers[0] = { position: marker }
-    },
-    getGeoCodingData() {
-      const find = " ";
-      const reg = new RegExp(find, "g");
-
-      const address = this.address.replace(reg, "-");
-      const office = this.office.replace(reg, "-");
-      const community = this.community.replace(reg, "-");
-      axios
-        .request({
-          method: "GET",
-          // Headers: { "Access-Control-Allow-Origin": "*" },
-          withCredentials: false,
-          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${community}&key=${config.GMAPS_KEY}`,
-        })
-        .then((resp) => {
-          const newPosition = get(resp, 'data.results[0].geometry.location', this.center);
-          this.setCenter(newPosition);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
     getMail(mail) {
       const link = "mailto:" + mail;
@@ -257,7 +245,7 @@ export default {
 
     generateUrl(type, param, index) {
       let url = this.url
-      
+
       let find = " ";
 
       let reg = new RegExp(find, "g");
@@ -354,16 +342,20 @@ export default {
           this.department = resp.data.data[0].department;
           this.loading = false;
 
-          this.office = resp.data.data[0].office;
+
           this.address = resp.data.data[0].address;
           this.community = resp.data.data[0].community;
-          this.getGeoCodingData();
+
+          this.center = resp.data.data[0].center;
+
+          console.log(this.center)
+
           this.updateBreadCrumbs();
         })
 
         .catch((err) => {
           console.error(err)
-        } )
+        })
         .finally(() => {
           this.loading = false;
         });
@@ -443,7 +435,7 @@ export default {
 
 @media (min-width:800px) {
   .detail-columns {
-    columns:2;
+    columns: 2;
   }
 }
 </style>
