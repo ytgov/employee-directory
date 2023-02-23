@@ -5,11 +5,8 @@ import router from "./router";
 import store from "./store";
 import axios from "axios";
 import * as VueGoogleMaps from 'vue2-google-maps'
-
 import 'leaflet/dist/leaflet.css';
-
 import * as config from "./config";
-
 import vuetify from "./plugins/vuetify";
 
 Vue.config.productionTip = false;
@@ -32,6 +29,7 @@ Vue.directive("yk-primary", {
     el.style.textTransform = "lowercase";
   }
 }); */
+
 
 axios.defaults.withCredentials = false
 

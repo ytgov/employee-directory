@@ -13,23 +13,14 @@ switch (process.env.NODE_ENV) {
 }
 dotenv.config({ path: path });
 
-import employee_json from '../json/employees.json';
-import division_json from '../json/division.json';
-
 export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
 export const DIVISIONSJSON = process.env.DIVISIONSJSON;
 
+
 export const ESRI_KEY = process.env.ESRI_KEY;
 
+
 export const employeesRouter = express.Router();
-
-employeesRouter.get("/json/:file", async (req: Request, res: Response) => {
-    const filename = req.params.file;
-    const file = `../json/${filename}`;
-
-    if (filename == 'employees.json') res.send(employee_json);
-    if (filename == 'division.json') res.send(division_json);
-});
 
 employeesRouter.post("/", async (req: Request, res: Response) => {
 
@@ -226,13 +217,10 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
             });
 
-            let employeeFilteredByDpt = employeeArr.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
-
-            let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.toLowerCase().indexOf(paramFullName) >= 0 })
-
-
-            if (employeeFiltered.length === 0) {
-                return res.send({ data: true })
+            let employeeFiltered =  employeeArr;
+            
+            if(employeeFiltered.length === 0) {
+                return res.send( {data: true})
             }
 
             await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
@@ -249,8 +237,8 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
             })
 
             let managerFilter: any[] = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
-
-            res.send({ data: employeeFiltered, meta: { manager: managerFilter } });
+            let firstRow = [_.head(employeeFiltered)];
+            res.send({ data: firstRow, meta: { manager: managerFilter } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -313,16 +301,12 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 employeesByDept.push(employee);
             });
 
-            employeesByDept = employeesByDept.filter(item => {
-                return item.department.toLowerCase().indexOf(paramDepartment) >= 0
-            })
-
-            let employeesByDivision = employeesByDept
+            let employeesByDivision = [];
             //Filter by Division  
             if (notDivision) {
-                employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
-            } else {
-                employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+              employeesByDivision = employeesByDept.filter(item => {return item.division === '-'|| _.isUndefined(item.division) || _.isEmpty(item.division)  }) 
+            }else{
+              employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
             }
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
@@ -375,16 +359,16 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             });
 
             //Obtain all objects from managers
-            let managersByDivision = employeesByDivision.filter(item => {
-                if (_.isEmpty(item.manager) || item.manager === '-' || item.manager === item.full_name) {
-                    item.level = 0;
-                    return true;
+            let managersByDivision = employeesByDivision.filter((item: { manager: string; full_name: any; level: number; }) => {
+                if( _.isEmpty(item.manager) || item.manager === '-' ||  item.manager === item.full_name){
+                     item.level = 0;
+                     return true;
                 }
             });
 
             //Obtain all employee objects not in Manager's array.
-            let employeesByManager = employeesByDivision.filter(function (e) {
-                return !_.find(managersByDivision, { full_name: e.full_name })
+            let employeesByManager = employeesByDivision.filter(function (e: { full_name: any; }) {
+                return !_.find(managersByDivision, {full_name:e.full_name})
             })
 
             const getEmployeesByManager = (employeesArray: any, currentManager: any, level: any) => {
@@ -459,11 +443,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
-            var resultEmployees = response.data.employees;
-
-            employeesByDept = resultEmployees.filter(function (e: any) {
-                return e.department.toLowerCase().indexOf(paramDepartment) >= 0
-            })
+            var employeesByDept = response.data.employees;
 
             if (employeesByDept.length == 0) {
                 error = true
@@ -511,11 +491,7 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
-            var resultEmployees = response.data.employees;
-
-            employeesByDept = resultEmployees.filter(function (e: any) {
-                return e.department.toLowerCase().indexOf(paramDepartment) >= 0
-            })
+            var employeesByDept = response.data.employees;
 
             let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
 
