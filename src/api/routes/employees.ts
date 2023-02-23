@@ -16,6 +16,10 @@ dotenv.config({ path: path });
 export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
 export const DIVISIONSJSON = process.env.DIVISIONSJSON;
 
+
+export const ESRI_KEY = process.env.ESRI_KEY;
+
+
 export const employeesRouter = express.Router();
 
 employeesRouter.post("/", async (req: Request, res: Response) => {
@@ -79,7 +83,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     const itemsPerPage = (req.body.itemsPerPage);
     var find = '-';
     var reg = new RegExp(find, 'g');
-    let paramDepartment = (req.params.department).replace(/\--/g,'-/-')
+    let paramDepartment = (req.params.department).replace(/\--/g, '-/-')
     let paramFullName = (req.params.full_name).replace(".", " ")
 
     if (paramFullName === 'any-employee') {
@@ -105,7 +109,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                     'title': element.title !== '' ? element.title : '-',
                     'division': element.division !== null ? element.division : '-',
                     'branch': element.branch !== null ? element.branch : '',
-                    'email': element.email,
+                    'email': element.email.toLowerCase(),
                     'phone_office': element.phone_office !== '' ? element.phone_office : '-',
                     'department': element.department,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
@@ -119,6 +123,13 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                 employeesByDept.push(employee);
 
             });
+
+            if (paramDepartment !== '') {
+                employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
+            }
+
+            employeesByDept = _.orderBy(employeesByDept, [employee => employee.full_name], ['asc'])
+
             let departments = _.groupBy(employeesByDept, item => `${item.department}`);
 
             for (const [key, value] of Object.entries(departments)) {
@@ -131,19 +142,19 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             let location = _.groupBy(employeesByDept, item => `${item.address}, ${item.community}`);
             let position = _.groupBy(employeesByDept, item => `${item.title}`);
             let finalResult: any
-            switch(groupBy){
-              case 0:
-                finalResult = employeesByDept
-                break;
-              case 1:
-                finalResult = departments
-                break;
-              case 2:
-                finalResult = location
-                break;
-              case 3:
-                 finalResult = position
-                 break;
+            switch (groupBy) {
+                case 0:
+                    finalResult = employeesByDept
+                    break;
+                case 1:
+                    finalResult = departments
+                    break;
+                case 2:
+                    finalResult = location
+                    break;
+                case 3:
+                    finalResult = position
+                    break;
             }
 
             res.send({ data: finalResult, meta: { count: employeesByDept.length } });
@@ -160,23 +171,24 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     var find = '-';
     var reg = new RegExp(find, 'g');
 
-    let paramDepartment = (req.params.department).replace(/\--/g,'-/-').replace(reg, ' ')
+    let paramDepartment = (req.params.department).replace(/\--/g, '-/-').replace(reg, ' ')
     let paramFullName = (req.params.full_name)
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
-        .then((response: any) => {
+        .then( async (response: any) => {
             var resultEmployees = response.data.employees;
-            
+
             resultEmployees.forEach(function (element: any) {
                 var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
 
                 interface EmployeeDetail extends EmployeeTable {
-                    
+
                     unit: String
-                    fax_office: String                   
+                    fax_office: String
                     postal_code: String
                     mailcode: string
                     full_name_url: string
+                    center: any
                 }
 
                 var employee: EmployeeDetail = {
@@ -187,7 +199,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                     'branch': element.branch,
                     'unit': element.unit,
                     'title': element.title,
-                    'email': element.email,
+                    'email': element.email.toLowerCase(),
                     'phone_office': element.phone_office,
                     'fax_office': element.fax_office,
                     'address': element.address,
@@ -198,6 +210,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                     'division_url': division_url,
                     'full_name_url': element.full_name,
                     'value': 0,
+                    'center': { "lat": 0, "lng": 0 }
                 };
 
                 employeeArr.push(employee);
@@ -210,7 +223,13 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 return res.send( {data: true})
             }
 
-            
+            await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
+            .then((response: any) => {
+                const center = response.data.candidates[0].location
+                employeeFiltered[0].center.lat = center.y
+                employeeFiltered[0].center.lng = center.x
+            })
+
             let managerName: any
 
             employeeFiltered.forEach((element) => {
@@ -236,18 +255,18 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     var find = '-';
     var reg = new RegExp(find, 'g');
 
-    let paramDepartment = (req.params.department.replace(/\--/g,'-/-').replace(reg, ' '))
+    let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
-    var notDivision =  paramDivision === 'not-division' ;
-     
+    var notDivision = paramDivision === 'not-division';
+
     if (paramDivision === 'not-division') {
         paramDivision = ''
     } else {
         paramDivision = (req.params.division.replace(reg, ' '))
     }
 
-    var notBranch =  paramBranch === 'not-branch' ;
+    var notBranch = paramBranch === 'not-branch';
     if (paramBranch === 'all-branches' || paramBranch === 'all branches') {
         paramBranch = ''
     } else {
@@ -258,7 +277,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
-            
+
             resultEmployees.forEach(function (element: any) {
                 var division_url = element.division !== null ? element.division.replace(/\s/g, '-') : '';
                 var employee: EmployeeTable = {
@@ -267,7 +286,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     'title': element.title !== '' ? element.title : '-',
                     'division': element.division !== null ? element.division : '-',
                     'branch': element.branch !== null ? element.branch : '',
-                    'email': element.email,
+                    'email': element.email.toLowerCase(),
                     'phone_office': element.phone_office !== '' ? element.phone_office : '-',
                     'department': element.department,
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
@@ -291,12 +310,12 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             }
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
-            
+
             //Filter by Branch
-            if(notBranch){
-              employeesByDivision = employeesByDivision.filter(item => {return item.branch === '-'||  _.isUndefined(item.branch) || _.isEmpty(item.branch)  })
-            }else if (paramBranch !== '') {
-              employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
+            if (notBranch) {
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
+            } else if (paramBranch !== '') {
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
             }
 
             //Get all the Managers' name
@@ -307,10 +326,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             //Check if all managers exist in the consulted department/branch.
             var namesMissing = _.difference(managersNameByDivision, namesByDivision);
 
-            if(!_.isEmpty(namesMissing)){
-                managersMissing = namesMissing.map(function(name:string) {
-                    let managerMissing = _.find(employeesByDept, {full_name:name});
-                    if(!_.isUndefined(managerMissing)){
+            if (!_.isEmpty(namesMissing)) {
+                managersMissing = namesMissing.map(function (name: string) {
+                    let managerMissing = _.find(employeesByDept, { full_name: name });
+                    if (!_.isUndefined(managerMissing)) {
                         managerMissing.manager = managerMissing.full_name;
                         return managerMissing;
                     }
@@ -320,8 +339,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             managersMissing = _.compact(managersMissing);
 
             //Add the managers missing in the array
-            if(!_.isEmpty(employeesByDivision) && !_.isEmpty(managersMissing)){
-                 employeesByDivision = _.union(employeesByDivision, managersMissing);
+            if (!_.isEmpty(employeesByDivision) && !_.isEmpty(managersMissing)) {
+                employeesByDivision = _.union(employeesByDivision, managersMissing);
             }
 
             //Get all the Managers' name
@@ -330,10 +349,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             namesByDivision = _.map(employeesByDivision, 'full_name');
             //Check if all managers exist in the consulted department/branch.
             namesMissing = _.difference(managersNameByDivision, namesByDivision);
-            
+
             //Change the manager's name if the manager is not in the same department, remove from the hierarchy
-            employeesByDivision = employeesByDivision.map(function(item:any) {
-                if( _.indexOf(namesMissing, item.manager) >= 0 ){
+            employeesByDivision = employeesByDivision.map(function (item: any) {
+                if (_.indexOf(namesMissing, item.manager) >= 0) {
                     item.manager = item.full_name;
                 }
                 return item;
@@ -351,7 +370,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let employeesByManager = employeesByDivision.filter(function (e: { full_name: any; }) {
                 return !_.find(managersByDivision, {full_name:e.full_name})
             })
-          
+
             const getEmployeesByManager = (employeesArray: any, currentManager: any, level: any) => {
                 const currentEmployees = employeesArray.filter(
                     (employee: any) => employee.manager === currentManager.full_name
@@ -361,7 +380,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 }
                 let employeesList: any = [];
                 const currentLevel = level + 1;
-                employeesList = currentEmployees.map(function(item:any) {
+                employeesList = currentEmployees.map(function (item: any) {
                     item.level = currentLevel;
                     item.value += currentManager.value
                     return item;
@@ -370,19 +389,19 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 for (const employee__ of employeesList) {
                     const employees = getEmployeesByManager(employeesArray, employee__, currentLevel);
                     employeesList = [...employeesList, employees];
-                  }
+                }
                 return [currentManager, ...employeesList.flat()];
             }
 
             let result: any = [];
             let levelOfDepth: any = 0;
             for (const manager of managersByDivision) {
-                levelOfDepth = _.isUndefined(manager.level) ?  0 : manager.level;
+                levelOfDepth = _.isUndefined(manager.level) ? 0 : manager.level;
                 result = [...result, ...getEmployeesByManager(employeesByManager, manager, levelOfDepth)];
             }
 
             let resultRev = result.slice().reverse();
-             let resultFilttered = resultRev.filter(function (elem: any, index: any, self: any) {
+            let resultFilttered = resultRev.filter(function (elem: any, index: any, self: any) {
                 return index == self.indexOf(elem);
             });
 
@@ -393,16 +412,16 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
             let endResult: any
             //Return the grouped array 
-             switch(groupBy){
-              case 0:
-                endResult = finalResult
-                break;
-              case 1:
-                endResult =  _.groupBy(finalResult, function (item: any) { return `${item.address}, ${item.community}` });
-                break;
-              case 2:
-                endResult = _.groupBy(finalResult, function (item: any) { return `${item.title}` });
-                break;
+            switch (groupBy) {
+                case 0:
+                    endResult = finalResult
+                    break;
+                case 1:
+                    endResult = _.groupBy(finalResult, function (item: any) { return `${item.address}, ${item.community}` });
+                    break;
+                case 2:
+                    endResult = _.groupBy(finalResult, function (item: any) { return `${item.title}` });
+                    break;
             }
 
             res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
@@ -417,7 +436,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var find = '-';
     var reg = new RegExp(find, 'g');
     var _ = require("lodash");
-    let paramDepartment = (req.params.department.replace(reg, ' ').replace(/\--/g,'-/-'))
+    let paramDepartment = (req.params.department.replace(reg, ' ').replace(/\--/g, '-/-'))
     var employeesByDept = Object();
     let error = false
 
@@ -426,7 +445,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             var employeesByDept = response.data.employees;
 
-            if(employeesByDept.length == 0) {
+            if (employeesByDept.length == 0) {
                 error = true
             }
 
@@ -440,7 +459,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                     element.branch = 'Not Branch'
                 }
             })
-            
+
 
             let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
 
@@ -464,7 +483,7 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
 
     var find = '-';
     var reg = new RegExp(find, 'g');
-    const paramDepartment = req.body.department.replace(/\--/g,'-/-')
+    const paramDepartment = req.body.department.replace(/\--/g, '-/-')
 
     var employeesByDept = Object();
 

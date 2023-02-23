@@ -296,3 +296,7 @@ body .aurora--mini:before {
 .z-indx {
   z-index: 100;
 }
+
+.d-table {
+  width: 100%;
+}
