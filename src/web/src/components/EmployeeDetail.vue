@@ -150,7 +150,7 @@ export default {
   },
   name: "EmployeeDetail",
   data: () => ({
-    zoom: 13,
+    zoom: 17,
     noBgImg: true,
     department: "",
     managerAvailability: true,

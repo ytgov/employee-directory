@@ -3,23 +3,14 @@
         <v-container class="container-content px-md-0 px-lg-3">
             <h1 v-if="title !== null">Find a goverment employee</h1>
 
-            <v-banner v-if="info" class="mb-6 mt-8 info_find-employee">
-                <span>
-                    You can use this service to find the contact information of a person who works for a Government of
-                    Yukon
-                    organization.
-                </span>
-                <br />
-                <br />
-                <p>
-                    Enter the person's first or last name, position title, email address or telephone number in the
-                    search
-                    box to
-                    get started. You can also enter the name of a department, division or branch to view all employees
-                    in
-                    that
-                    specific organization.
-                </p>
+            <v-banner v-if="info" class="info_find-employee">
+                <strong>I know who I am looking for</strong> 
+                <ul>
+                    <li>Enter the employee's name, position title, email address or phone number in the search box. You can also select their department from the drop down, but this is optional.</li>
+                    <li>Select the "Search' button to display the results.</li>
+                </ul>
+                <strong>I am not sure who I need to contact - I want to browse</strong> 
+                <p>Scroll down the page and select the department you want to browse.</p>
             </v-banner>
 
             <v-form @submit.prevent="updateSearch">
