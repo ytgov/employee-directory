@@ -135,7 +135,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             if(paramDepartment !== ''){
                 employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
             }
-
+            
             employeesByDept = _.orderBy(employeesByDept,[employee => employee.full_name], ['asc'])
             
             let departments = _.groupBy(employeesByDept, item => `${item.department}`);
@@ -196,6 +196,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                     postal_code: String
                     mailcode: string
                     full_name_url: string
+                    
                 }
 
                 var employee: EmployeeDetail = {

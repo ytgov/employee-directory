@@ -4,7 +4,7 @@
 
     <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
 
-    <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
+    <v-breadcrumbs class="mt-6 breadcrumbs px-0" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
           {{ item.name }}
@@ -15,106 +15,108 @@
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <v-row class="mt-16"></v-row>
-    <v-row>
-      <v-col v-for="item in employee" :key="item.full_name">
-        <h2 class="mb-1" style="color: #dc4405 !important; font-size: 34px !important">
-          {{ item.formatted_name }}
-        </h2>
-        <h3 v-if="checkStatus(item.title)" class="mb-8" style="color: #512a44 !important; font-size: 24px !important">
-          {{ item.title }}
-        </h3>
+    <v-container class="px-0">
+      <v-row class="mt-16"></v-row>
+      <v-row>
+        <v-col v-for="item in employee" :key="item.full_name">
+          <h2 class="mb-1" style="color: #dc4405 !important; font-size: 34px !important">
+            {{ item.formatted_name }}
+          </h2>
+          <h3 v-if="checkStatus(item.title)" class="mb-8" style="color: #512a44 !important; font-size: 24px !important">
+            {{ item.title }}
+          </h3>
 
-        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-          <h2 class="mt-4 mb-2">Organization</h2>
-          <v-row>
-            <v-col class="mb-1 detail-columns">
-              <h3 v-if="checkStatus(item.department)" class="mb-0">
-                Department:
-                <a :href="generateUrl('department', 'n/a', 'n/a')">{{
-                  item.department
-                }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.division)" class="mb-0">
-                Division: {{ item.division }}
-              </h3>
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+            <h2 class="mt-4 mb-2">Organization</h2>
+            <v-row>
+              <v-col class="mb-1 detail-columns">
+                <h3 v-if="checkStatus(item.department)" class="mb-0">
+                  Department:
+                  <a :href="generateUrl('department', 'n/a', 'n/a')">{{
+                    item.department
+                  }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.division)" class="mb-0">
+                  Division: {{ item.division }}
+                </h3>
 
-              <h3 v-if="checkStatus(item.branch)" class="mb-0">
-                Branch:
-                <a :href="generateUrl('branch', item.branch, item.division)">{{
-                  item.branch
-                }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.unit)" class="mb-0">
-                Unit: <span>{{ item.unit }}</span>
-              </h3>
-            </v-col>
-          </v-row>
-        </v-card>
-        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-          <h2 class="mt-4 mb-2">Contact:</h2>
-          <v-row>
-            <v-col class="mb-1 detail-columns">
-              <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
-                Phone Office:
-                <a :href="getPhone(item.phone_office)">{{
-                  item.phone_office
-                }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.email)" class="mb-0">
-                E-mail Address:
-                <a :href="getMail(item.email)">{{ item.email }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.fax_office)" class="mb-0">
-                Fax Office: <span>{{ item.fax_office }}</span>
-              </h3>
-            </v-col>
-          </v-row>
-        </v-card>
-        <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-          <h2 class="mt-4 mb-2">Position Information</h2>
-          <v-row>
-            <v-col class="mb-1">
-              <h3 class="mb-0">
-                Manager:
-                <a :href="generateUrl('manager', item.manager, 'n/a')">{{
-                  item.manager
-                }}</a>
-              </h3>
-            </v-col>
-          </v-row>
-        </v-card>
-        <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-          <h2 class="mt-4 mb-2">Location</h2>
-          <v-row>
-            <v-col class="mb-1" cols="12" md="6">
-              <h3 v-if="checkStatus(item.address)" class="mb-0">
-                Address: <a>{{ item.address }}</a>
-              </h3>
-              <h3 v-if="checkStatus(item.community)" class="mb-0">
-                Community: <span>{{ item.community }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
-                Postal Code: <span>{{ item.postal_code }}</span>
-              </h3>
-              <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
-                Mail Code: <span>{{ item.mailcode }}</span>
-              </h3>
-            </v-col>
-            <v-col cols="12" md="6">
+                <h3 v-if="checkStatus(item.branch)" class="mb-0">
+                  Branch:
+                  <a :href="generateUrl('branch', item.branch, item.division)">{{
+                    item.branch
+                  }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.unit)" class="mb-0">
+                  Unit: <span>{{ item.unit }}</span>
+                </h3>
+              </v-col>
+            </v-row>
+          </v-card>
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+            <h2 class="mt-4 mb-2">Contact:</h2>
+            <v-row>
+              <v-col class="mb-1 detail-columns">
+                <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
+                  Phone Office:
+                  <a :href="getPhone(item.phone_office)">{{
+                    item.phone_office
+                  }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.email)" class="mb-0">
+                  E-mail Address:
+                  <a :href="getMail(item.email)">{{ item.email }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.fax_office)" class="mb-0">
+                  Fax Office: <span>{{ item.fax_office }}</span>
+                </h3>
+              </v-col>
+            </v-row>
+          </v-card>
+          <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+            <h2 class="mt-4 mb-2">Position Information</h2>
+            <v-row>
+              <v-col class="mb-1">
+                <h3 class="mb-0">
+                  Manager:
+                  <a :href="generateUrl('manager', item.manager, 'n/a')">{{
+                    item.manager
+                  }}</a>
+                </h3>
+              </v-col>
+            </v-row>
+          </v-card>
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+            <h2 class="mt-4 mb-2">Location</h2>
+            <v-row>
+              <v-col class="mb-1" cols="12" md="6">
+                <h3 v-if="checkStatus(item.address)" class="mb-0">
+                  Address: <a>{{ item.address }}</a>
+                </h3>
+                <h3 v-if="checkStatus(item.community)" class="mb-0">
+                  Community: <span>{{ item.community }}</span>
+                </h3>
+                <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
+                  Postal Code: <span>{{ item.postal_code }}</span>
+                </h3>
+                <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
+                  Mail Code: <span>{{ item.mailcode }}</span>
+                </h3>
+              </v-col>
+              <v-col cols="12" md="6">
 
-              <l-map style="height: 300px" :zoom="zoom" :center="center">
+                <l-map style="height: 300px" :zoom="zoom" :center="center">
 
-                <l-tile-layer :url="mapUrl"></l-tile-layer>
-                <l-marker :lat-lng="center"></l-marker>
-                
-              </l-map>
+                  <l-tile-layer :url="mapUrl"></l-tile-layer>
+                  <l-marker :lat-lng="center"></l-marker>
 
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-    </v-row>
+                </l-map>
+
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
