@@ -128,8 +128,6 @@ import * as urls from "../urls";
 
 import L from 'leaflet';
 import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
-import { Geocoder } from 'leaflet-control-geocoder';
-
 
 import { Icon } from 'leaflet';
 
@@ -148,7 +146,7 @@ export default {
     LMap,
     LTileLayer,
     LMarker,
-    Geocoder,
+
   },
   name: "EmployeeDetail",
   data: () => ({
@@ -158,8 +156,8 @@ export default {
     managerAvailability: true,
     managerDepartment: [],
     center: {
-      "lat": 60.7170045,
-      "lng": -135.0492597
+      "lat": 0,
+      "lng": 0
     },
     markers: [],
     breadcrumbsList: [],
@@ -348,9 +346,9 @@ export default {
           this.address = resp.data.data[0].address;
           this.community = resp.data.data[0].community;
 
+          this.center = resp.data.data[0].center;
 
-
-
+          console.log(this.center)
 
           this.updateBreadCrumbs();
         })
