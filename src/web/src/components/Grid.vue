@@ -184,8 +184,8 @@ export default {
     headers: [
       { text: "Name", value: "formatted_name" },
       { text: "Position", value: "title" },
-      { text: "E-Mail Address", value: "email" },
-      { text: "Phone Number", value: "phone_office" },
+      { text: "E-mail address", value: "email" },
+      { text: "Phone number", value: "phone_office" },
     ],
     page: 1,
     pageCount: 0,
