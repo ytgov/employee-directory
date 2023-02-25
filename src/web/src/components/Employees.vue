@@ -1,12 +1,8 @@
 <template>
   <div class="books">
     <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
-
-    <div class="aurora-town">
-      <span class="aurora--main"></span>
-    </div>
-
-
+    
+    <Aurora/>
 
     <v-container class="px-0">
       <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-16 mb-n8 px-0" :items="breadcrumbsList">
@@ -50,13 +46,15 @@
 import IconLoader from './icons/IconLoader.vue'
 import SearchBarHeader from './UI/SearchBarHeader.vue'
 import * as urls from "../urls";
+import Aurora from './UI/Aurora.vue';
 
 const axios = require("axios");
 export default {
   components: {
     IconLoader,
     SearchBarHeader,
-  },
+    Aurora
+},
   name: "Employees",
   data: () => ({
     noBgImg: true,

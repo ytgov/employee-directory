@@ -1,10 +1,9 @@
 <template>
   <div class="home">
     <SearchBarHeader class="search-header" :title="null" />
+    
+    <Aurora/>
 
-    <div class="aurora-town">
-      <span class="aurora--main"></span>
-    </div>
     <v-container class="px-0">
 
       <v-breadcrumbs class="mt-6 breadcrumbs ml-n5" :items="breadcrumbsList">
@@ -43,12 +42,14 @@
 </template>
 
 <script>
+import Aurora from '../components/UI/Aurora.vue';
 import SearchBarHeader from '../components/UI/SearchBarHeader.vue'
 
 export default {
   components: {
     SearchBarHeader,
-  },
+    Aurora
+},
   data() {
     return {
       breadcrumbsList: [],
