@@ -33,7 +33,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
         </v-row>
       </v-container>
     </v-main>
-    <TheForm/>
+    <FeedbackForm/>
     <v-footer class="mt-16" flat style="z-index: 10" padless height="70">
       <v-card class="flex " flat tile>
         <v-card-title class="py-16 header-container full-width" id="footer-bg">
@@ -74,7 +74,7 @@ import store from "./store";
 import * as config from "./config";
 import { mapState } from "vuex";
 import IconLoader from "./components/icons/IconLoader.vue";
-import TheForm from "./components/UI/TheForm.vue";
+import FeedbackForm from "./components/UI/FeedbackForm.vue";
 
 export default {
     name: "App",
@@ -107,7 +107,7 @@ export default {
             this.menuShow = !this.menuShow;
         },
     },
-    components: { IconLoader, TheForm }
+    components: { IconLoader, FeedbackForm }
 };
 </script>
 
