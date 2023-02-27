@@ -185,7 +185,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     let paramFullName = (req.params.full_name)
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
-        .then( async (response: any) => {
+        .then(async (response: any) => {
             var resultEmployees = response.data.employees;
 
             resultEmployees.forEach(function (element: any) {
@@ -199,6 +199,8 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                     mailcode: string
                     full_name_url: string
                     center: any
+                    latitude: Number
+                    longitude: Number
                 }
 
                 var employee: EmployeeDetail = {
@@ -219,6 +221,8 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
                     'division_url': division_url,
                     'full_name_url': element.full_name,
+                    'latitude': element.latitude,
+                    'longitude': element.longitude,
                     'value': 0,
                     'center': { "lat": 0, "lng": 0 }
                 };
@@ -229,17 +233,27 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
             let employeeFilteredByDpt = employeeArr.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
 
             let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.toLowerCase().indexOf(paramFullName) >= 0 })
-            
-            if(employeeFiltered.length === 0) {
-                return res.send( {data: true})
+
+            if (employeeFiltered.length === 0) {
+                return res.send({ data: true })
             }
 
-            await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
-            .then((response: any) => {
-                const center = response.data.candidates[0].location
-                employeeFiltered[0].center.lat = center.y
-                employeeFiltered[0].center.lng = center.x
-            })
+
+            if (employeeFiltered[0].latitude !== null) {
+                employeeFiltered[0].center.lat = employeeFiltered[0].latitude
+                employeeFiltered[0].center.lng = employeeFiltered[0].longitude
+            } else {
+
+                await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
+                    .then((response: any) => {
+                        const center = response.data.candidates[0].location
+                        employeeFiltered[0].center.lat = center.y
+                        employeeFiltered[0].center.lng = center.x
+                    }).catch((error: any) => {
+                        console.log(error)
+                    })
+
+            }
 
             let managerName: any
 
@@ -315,6 +329,11 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 return item.department.toLowerCase().indexOf(paramDepartment) >= 0
             })
 
+            // Getting the department with correct punctuation
+            const department = _.uniqBy(employeesByDept, function (e: any) {
+                return e.department;
+            });
+
             let employeesByDivision = employeesByDept
 
             //Filter by Division  
@@ -323,6 +342,12 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             } else {
                 employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
             }
+
+            // Getting the division with correct punctuation
+            const division = _.uniqBy(employeesByDivision, function (e: any) {
+                return e.division;
+            });
+
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
 
@@ -439,7 +464,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     break;
             }
 
-            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
+            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength, department: department[0].department , division: division[0].division } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -463,6 +488,11 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
             employeesByDept = resultEmployees.filter(function (e: any) {
                 return e.department.toLowerCase().indexOf(paramDepartment) >= 0
             })
+
+            // Getting the department with correct punctuation
+            const department = _.uniqBy(employeesByDept, function (e: any) {
+                return e.paramDepartment;
+            });
 
             if (employeesByDept.length == 0) {
                 error = true
@@ -490,7 +520,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division, meta: { count: 0, error } });
+            res.send({ data: division, meta: { count: 0, error, department: department[0].department } });
 
         })
         .catch((error: any) => {

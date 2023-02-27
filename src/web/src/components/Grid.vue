@@ -74,7 +74,8 @@
                 </td>
                 <td class="default-cursor"> {{ item.title }} </td>
                 <td class="default-cursor"> {{ item.email }}</td>
-                <td class="default-cursor">{{ item.phone_office }}</td>
+                <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a>
+                </td>
               </tr>
             </tbody>
           </template>
@@ -107,7 +108,7 @@
                   </td>
                   <td class="default-cursor">{{ item.title }}</td>
                   <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor">{{ item.phone_office }}</td>
+                  <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a></td>
                 </tr>
               </tbody>
             </template>
@@ -139,7 +140,7 @@
                   </td>
                   <td class="default-cursor">{{ item.title }}</td>
                   <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor">{{ item.phone_office }}</td>
+                  <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a> </td>
                 </tr>
               </tbody>
             </template>
@@ -184,12 +185,14 @@ export default {
     headers: [
       { text: "Name", value: "formatted_name" },
       { text: "Position", value: "title" },
-      { text: "E-Mail Address", value: "email" },
-      { text: "Phone Number", value: "phone_office" },
+      { text: "E-mail address", value: "email" },
+      { text: "Phone number", value: "phone_office" },
     ],
     page: 1,
     pageCount: 0,
     itemsPerPage: 9999,
+    windowWidth: window.innerWidth,
+    mobilecheck: false,
   }),
   watch: {
     '$route'() {
@@ -212,15 +215,44 @@ export default {
         this.loading = true
         this.getDataFromApi();
       },
+    },
+    windowWidth: {
+      handler() {
+        if (this.windowWidth > 900) {
+          this.mobileCheck = false
+        } else this.mobileCheck = true
+      }
     }
   },
   emits: ['changeBg'],
   mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    })
+    if (this.windowWidth > 900) {
+      this.mobileCheck = false
+    } else this.mobileCheck = true
     this.getDataFromApi();
     this.updateBreadCrumbs();
     this.$emit('changeBg');
   },
   methods: {
+    getPhone(number) {
+      const find = "-";
+      const reg = new RegExp(find, "g");
+      const numberFormatted = number.replace(reg, "");
+      const link = "tel:" + numberFormatted;
+
+      if(this.mobileCheck === false) {
+        return
+      } else { return String(link); }
+    },
+    onResize() {
+      this.windowWidth = window.innerWidth
+    },
+    checkPageWidth() {
+
+    },
     cleanParam(param) {
       if (param === '-') {
         param = 'N/A'
@@ -298,6 +330,7 @@ export default {
           url: `${urls.FIND_EMPLOYEE_URL}${department}/${division}/${branch}?search=`
         })
         .then((resp) => {
+          this.title = resp.data.meta.department
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
@@ -323,7 +356,6 @@ export default {
 
 .table-header {
   height: 300px !important;
-  background-color: green;
 }
 
 .overf {
@@ -337,4 +369,5 @@ export default {
 
 .angle-right-multiple {
   width: 5px;
-}</style>
+}
+</style>

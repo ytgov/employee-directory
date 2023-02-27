@@ -1,6 +1,9 @@
 <template>
   <div class="books">
     <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
+    
+    <Aurora/>
+
     <v-container class="px-0">
       <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-16 mb-n8 px-0" :items="breadcrumbsList">
 
@@ -12,15 +15,6 @@
 
         </template>
       </v-breadcrumbs>
-
-      <div class="aurora-town">
-        <span class="aurora--main"></span>
-      </div>
-
-      <div class="text-center loading" v-show="loading">
-        <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-      </div>
-
       <v-row class="mb-6 mt-16">
         <v-col cols="12" md="4" sm="6" xs="12" v-for='(items, index, id) in item' :key="id">
           <v-hover v-slot="{ hover }">
@@ -52,13 +46,15 @@
 import IconLoader from './icons/IconLoader.vue'
 import SearchBarHeader from './UI/SearchBarHeader.vue'
 import * as urls from "../urls";
+import Aurora from './UI/Aurora.vue';
 
 const axios = require("axios");
 export default {
   components: {
     IconLoader,
     SearchBarHeader,
-  },
+    Aurora
+},
   name: "Employees",
   data: () => ({
     noBgImg: true,
@@ -122,23 +118,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-body .aurora--main:before {
-  top: 590px !important;
-
-}
-
-@media(min-width:600px) {
-  body .aurora--main:before {
-    top: 430px !important;
-  }
-}
-
-@media(min-width:767px) {
-  body .aurora--main:before {
-    right: -53%;
-    top: 380px !important;
-  }
-}
-</style>

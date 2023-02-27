@@ -348,8 +348,6 @@ export default {
 
           this.center = resp.data.data[0].center;
 
-          console.log(this.center)
-
           this.updateBreadCrumbs();
         })
 
