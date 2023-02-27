@@ -74,7 +74,7 @@
                 </td>
                 <td class="default-cursor"> {{ item.title }} </td>
                 <td class="default-cursor"> {{ item.email }}</td>
-                <td class="default-cursor"> <label :class="{ telephone: mobileCheck }"> {{ item.phone_office }} </label>
+                <td class="default-cursor"> <a  :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a>
                 </td>
               </tr>
             </tbody>
@@ -236,6 +236,16 @@ export default {
     this.$emit('changeBg');
   },
   methods: {
+    getPhone(number) {
+      const find = "-";
+      const reg = new RegExp(find, "g");
+      const numberFormatted = number.replace(reg, "");
+      const link = "tel:" + numberFormatted;
+
+      if(this.mobileCheck === false) {
+        return
+      } else { return String(link); }
+    },
     onResize() {
       this.windowWidth = window.innerWidth
     },

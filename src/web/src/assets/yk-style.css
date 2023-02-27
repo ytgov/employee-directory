@@ -253,6 +253,12 @@ a {
 }
 
 .telephone {
-  text-decoration: underline;
-  color: #00818f;
+  text-decoration: underline !important;
+  color: #00818f !important;
+}
+
+.telephone-desktop {
+  text-decoration: none !important;
+  color: black !important;
+  cursor: default !important;
 }
