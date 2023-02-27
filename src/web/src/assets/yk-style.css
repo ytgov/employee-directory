@@ -251,3 +251,8 @@ a {
 .d-table {
   width: 100%;
 }
+
+.telephone {
+  text-decoration: underline;
+  color: #00818f;
+}
