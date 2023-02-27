@@ -78,23 +78,23 @@ export default {
             let indexFormatted = index.replace(reg, '-')
             let paramFormatted = param.replace(reg, '-')
 
-            if (indexFormatted === 'N/A') {
+            if (indexFormatted === 'Employees who are not assigned a division') {
                 indexFormatted = 'not-division'
             }
 
             if (type === 'division') {
 
 
-                if (indexFormatted === 'N/A') {
+                if (indexFormatted === 'Employees who are not assigned a division') {
                     return url + '/find-employee/' + department + '/not-division/all-branches'
                 }
-                return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
+                return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
 
             } else if (type === 'branch') {
-                if (param === 'N/A') {
-                    return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/not-branch'
+                if (param === 'Employees who are not assigned a branch') {
+                    return url + '/find-employee/' + department + '/' + indexFormatted + '/not-branch'
                 }
-                return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
+                return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
             }
 
 

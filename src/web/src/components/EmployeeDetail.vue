@@ -282,7 +282,7 @@ export default {
           "/find-employee/" +
           department +
           "/" +
-          indexFormatted.toLowerCase() +
+          indexFormatted +
           "/all-branches"
         );
       } else if (type === "branch") {
@@ -292,7 +292,7 @@ export default {
             "/find-employee/" +
             department +
             "/" +
-            indexFormatted.toLowerCase() +
+            indexFormatted +
             "/not-branch"
           );
         }
@@ -301,9 +301,9 @@ export default {
           "/find-employee/" +
           department +
           "/" +
-          indexFormatted.toLowerCase() +
+          indexFormatted +
           "/" +
-          paramFormatted.toLowerCase()
+          paramFormatted
         );
       }
     },
@@ -369,13 +369,12 @@ export default {
         if (element.name == "Department") {
           element.name = this.department;
           element.link =
-            "/find-employee/" + this.department.replace(reg, "-").toLowerCase();
+            "/find-employee/" + this.department.replace(reg, "-");
         } else if (element.name == "Division") {
           element.name = this.division;
           element.link =
             ("/find-employee/" + this.department + "/" + this.division)
-              .replace(reg, "-")
-              .toLowerCase() + "/all-branches";
+              .replace(reg, "-") + "/all-branches";
         } else if (element.name == "Branch") {
           if (this.branch === null) {
             element.name = null;
@@ -391,7 +390,6 @@ export default {
             this.branch
           )
             .replace(reg, "-")
-            .toLowerCase();
         } else if (element.name == "Username") {
           element.name = this.title;
         }

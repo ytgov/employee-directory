@@ -135,7 +135,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             });
 
             if (paramDepartment !== '') {
-                employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
+                employeesByDept = employeesByDept.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
             }
 
             employeesByDept = _.orderBy(employeesByDept, [employee => employee.full_name], ['asc'])
@@ -230,9 +230,9 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 employeeArr.push(employee);
 
             });
-            let employeeFilteredByDpt = employeeArr.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
+            let employeeFilteredByDpt = employeeArr.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
 
-            let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.toLowerCase().indexOf(paramFullName) >= 0 })
+            let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.indexOf(paramFullName) >= 0 })
 
             if (employeeFiltered.length === 0) {
                 return res.send({ data: true })
@@ -326,7 +326,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             });
 
             employeesByDept = employeesByDept.filter(item => {
-                return item.department.toLowerCase().indexOf(paramDepartment) >= 0
+                return item.department.indexOf(paramDepartment) >= 0
             })
 
             // Getting the department with correct punctuation
@@ -340,7 +340,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             if (notDivision) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
             } else {
-                employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+                employeesByDivision = employeesByDept.filter(item => { return item.division.indexOf(paramDivision) >= 0 })
             }
 
             // Getting the division with correct punctuation
@@ -355,7 +355,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             if (notBranch) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
             } else if (paramBranch !== '') {
-                employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
             }
 
             //Get all the Managers' name
@@ -486,7 +486,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
             var resultEmployees = response.data.employees;
 
             employeesByDept = resultEmployees.filter(function (e: any) {
-                return e.department.toLowerCase().indexOf(paramDepartment) >= 0
+                return e.department.indexOf(paramDepartment) >= 0
             })
 
             // Getting the department with correct punctuation
@@ -502,10 +502,10 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             employeesByDept.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'Not Division'
+                    element.division = 'Employees who are not assigned a division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'Not Branch'
+                    element.branch = 'Employees who are not assigned a branch'
                 }
             })
 
@@ -543,7 +543,7 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
             var resultEmployees = response.data.employees;
 
             employeesByDept = resultEmployees.filter(function (e: any) {
-                return e.department.toLowerCase().indexOf(paramDepartment) >= 0
+                return e.department.indexOf(paramDepartment) >= 0
             })
 
 
@@ -551,10 +551,10 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
 
             employeesByDept.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'Not Division'
+                    element.division = 'Employees who are not assigned a division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'Not Branch'
+                    element.branch = 'Employees who are not assigned a branch'
                 }
             })
 

@@ -25,7 +25,7 @@
             <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
               max-width="590">
               <div class="py-4 d-flex align-center justify-center" style="width: 200px">
-                <IconLoader :image="department" :color="'purple'" />
+                <IconLoader :image="department.toLowerCase()" :color="'purple'" />
               </div>
               <div class="d-flex align-center justify-center" style="width:80%">
                 <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
@@ -129,8 +129,10 @@ export default {
       let reg = new RegExp(find, 'g');
       let department = this.department.toLowerCase().replace(reg, '-')
       let division = item.toLowerCase()
-      if (this.check === item.toLowerCase()) {
-        window.location.href = '/find-employee/' + department + '/' + item.toLowerCase().replace(reg, '-') + '/all-branches'
+      if (this.check === item) {
+        window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+      } else if(this.check === item && item === 'Employees who are not assigned a division') {
+        window.location.href = '/find-employee/' + department + '/not-division' + '/all-branches'
       }
       this.check = division
     },
@@ -156,7 +158,7 @@ export default {
       let indexFormatted = index.replace(reg, '-')
       let paramFormatted = param.replace(reg, '-')
 
-      if (indexFormatted === 'N/A') {
+      if (indexFormatted === 'Employees who are not assigned a division') {
         indexFormatted = 'not-division'
       }
 
@@ -166,13 +168,13 @@ export default {
         if (indexFormatted === 'not-division') {
           return url + '/find-employee/' + department + '/not-division/all-branches'
         }
-        return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
+        return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
 
       } else if (type === 'branch') {
-        if (param === 'N/A') {
-          return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/not-branch'
+        if (param === 'Employees who are not assigned a division') {
+          return url + '/find-employee/' + department + '/' + indexFormatted + '/not-branch'
         }
-        return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
+        return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
       }
 
 

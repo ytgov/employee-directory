@@ -89,7 +89,7 @@ export default {
     indexUrl(field, value) {
 
       let department = "/find-employee/" + field.replace(/\//g, '')
-      let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
+      let noSpaces = department.replaceAll(/\s/g, '-');
       if (value.length === 0) {
         return "" + noSpaces + '/not-division/all-branches'
       } else {

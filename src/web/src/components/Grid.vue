@@ -250,9 +250,6 @@ export default {
     onResize() {
       this.windowWidth = window.innerWidth
     },
-    checkPageWidth() {
-
-    },
     cleanParam(param) {
       if (param === '-') {
         param = 'N/A'
@@ -270,7 +267,7 @@ export default {
     urlEmployee(department, name) {
       var find = ' ';
       var reg = new RegExp(find, 'g');
-      return '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
+      return '/find-employee/employee-detail/' + department.replace(reg, '-') + '/' + name
     },
     capitalizeString(param) {
       const string = param
@@ -284,11 +281,11 @@ export default {
       dynamicBreadcrumb.forEach((element => {
         if (element.name == 'Department') {
           element.name = this.department;
-          element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
+          element.link = '/find-employee/' + this.department.replace(reg, '-')
         } else if (element.name == 'Division') {
           element.name = this.div;
           if (this.branch !== 'all-branches') {
-            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-').toLowerCase() + '/all-branches'
+            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-') + '/all-branches'
           } else {
             element.link = null
           }
