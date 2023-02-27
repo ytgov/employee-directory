@@ -74,7 +74,7 @@
                 </td>
                 <td class="default-cursor"> {{ item.title }} </td>
                 <td class="default-cursor"> {{ item.email }}</td>
-                <td class="default-cursor"> <a  :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a>
+                <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a>
                 </td>
               </tr>
             </tbody>
@@ -108,7 +108,7 @@
                   </td>
                   <td class="default-cursor">{{ item.title }}</td>
                   <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor">{{ item.phone_office }}</td>
+                  <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a></td>
                 </tr>
               </tbody>
             </template>
@@ -140,7 +140,7 @@
                   </td>
                   <td class="default-cursor">{{ item.title }}</td>
                   <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor">{{ item.phone_office }}</td>
+                  <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a> </td>
                 </tr>
               </tbody>
             </template>
@@ -191,7 +191,8 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 9999,
-    windowWidth: window.innerWidth
+    windowWidth: window.innerWidth,
+    mobilecheck: false,
   }),
   watch: {
     '$route'() {

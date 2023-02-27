@@ -58,7 +58,9 @@
                                 </td>
                                 <td class="default-cursor">{{ item.title }}</td>
                                 <td class="default-cursor">{{ item.email }}</td>
-                                <td class="default-cursor">{{ item.phone_office }}</td>
+                                <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                                        :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }"> {{
+                                            item.phone_office }} </a> </td>
                             </tr>
                         </tbody>
                     </template>
@@ -92,7 +94,9 @@
                                     </td>
                                     <td class="default-cursor">{{ item.title }}</td>
                                     <td class="default-cursor">{{ item.email }}</td>
-                                    <td class="default-cursor">{{ item.phone_office }}</td>
+                                    <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                                            :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }">
+                                            {{ item.phone_office }} </a> </td>
                                 </tr>
                             </tbody>
                         </template>
@@ -127,7 +131,9 @@
                                     </td>
                                     <td class="default-cursor">{{ item.title }}</td>
                                     <td class="default-cursor">{{ item.email }}</td>
-                                    <td class="default-cursor">{{ item.phone_office }}</td>
+                                    <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                                            :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }">
+                                            {{ item.phone_office }} </a> </td>
                                 </tr>
                             </tbody>
                         </template>
@@ -161,7 +167,9 @@
                                     </td>
                                     <td class="default-cursor">{{ item.title }}</td>
                                     <td class="default-cursor">{{ item.email }}</td>
-                                    <td class="default-cursor">{{ item.phone_office }}</td>
+                                    <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                                            :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }">
+                                            {{ item.phone_office }} </a> </td>
                                 </tr>
                             </tbody>
                         </template>
@@ -204,11 +212,26 @@ export default {
                 this.loading = true
                 this.getDataFromApi();
             },
+        },
+        windowWidth: {
+            handler() {
+                if (this.windowWidth > 900) {
+                    this.mobileCheck = false
+                } else this.mobileCheck = true
+            }
         }
 
     },
     emits: ['changeBg'],
     mounted() {
+
+        this.$nextTick(() => {
+            window.addEventListener('resize', this.onResize);
+        })
+        if (this.windowWidth > 900) {
+            this.mobileCheck = false
+        } else this.mobileCheck = true
+
         this.getDataFromApi();
         this.updateBreadCrumbs();
         this.$emit('changeBg');
@@ -233,10 +256,25 @@ export default {
             ],
             loading: false,
             searchTitle: '',
+            windowWidth: window.innerWidth,
+            mobilecheck: false,
         }
     },
 
     methods: {
+        getPhone(number) {
+            const find = "-";
+            const reg = new RegExp(find, "g");
+            const numberFormatted = number.replace(reg, "");
+            const link = "tel:" + numberFormatted;
+
+            if (this.mobileCheck === false) {
+                return
+            } else { return String(link); }
+        },
+        onResize() {
+            this.windowWidth = window.innerWidth
+        },
         urlEmployee(department, name) {
             var find = ' ';
             var reg = new RegExp(find, 'g');
