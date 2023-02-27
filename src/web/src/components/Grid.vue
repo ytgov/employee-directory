@@ -298,6 +298,7 @@ export default {
           url: `${urls.FIND_EMPLOYEE_URL}${department}/${division}/${branch}?search=`
         })
         .then((resp) => {
+          this.title = resp.data.meta.department
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;

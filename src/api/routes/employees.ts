@@ -238,7 +238,7 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 return res.send({ data: true })
             }
 
-            
+
             if (employeeFiltered[0].latitude !== null) {
                 employeeFiltered[0].center.lat = employeeFiltered[0].latitude
                 employeeFiltered[0].center.lng = employeeFiltered[0].longitude
@@ -329,6 +329,11 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 return item.department.toLowerCase().indexOf(paramDepartment) >= 0
             })
 
+            // Getting the department with correct punctuation
+            const department = _.uniqBy(employeesByDept, function (e: any) {
+                return e.department;
+            });
+
             let employeesByDivision = employeesByDept
 
             //Filter by Division  
@@ -337,6 +342,12 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             } else {
                 employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
             }
+
+            // Getting the division with correct punctuation
+            const division = _.uniqBy(employeesByDivision, function (e: any) {
+                return e.division;
+            });
+
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
 
@@ -453,7 +464,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     break;
             }
 
-            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
+            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength, department: department[0].department , division: division[0].division } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -477,6 +488,11 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
             employeesByDept = resultEmployees.filter(function (e: any) {
                 return e.department.toLowerCase().indexOf(paramDepartment) >= 0
             })
+
+            // Getting the department with correct punctuation
+            const department = _.uniqBy(employeesByDept, function (e: any) {
+                return e.paramDepartment;
+            });
 
             if (employeesByDept.length == 0) {
                 error = true
@@ -504,7 +520,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division, meta: { count: 0, error } });
+            res.send({ data: division, meta: { count: 0, error, department: department[0].department } });
 
         })
         .catch((error: any) => {
