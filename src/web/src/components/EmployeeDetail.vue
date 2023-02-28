@@ -102,7 +102,7 @@
                   Mail Code: <span>{{ item.mailcode }}</span>
                 </h3>
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col v-if="center !== null" cols="12" md="6">
 
                 <l-map style="height: 300px" :zoom="zoom" :center="center">
 
@@ -150,7 +150,7 @@ export default {
   },
   name: "EmployeeDetail",
   data: () => ({
-    zoom: 13,
+    zoom: 17,
     noBgImg: true,
     department: "",
     managerAvailability: true,
@@ -249,19 +249,19 @@ export default {
       let find = " ";
 
       let reg = new RegExp(find, "g");
-      let department = this.department.replace(reg, "-").toLowerCase();
+      let department = this.department.replace(reg, "-");
       let indexFormatted = index.replace(reg, "-");
       let paramFormatted = param.replace(reg, "-");
 
       if (type === 'manager') {
         if (this.managerAvailability !== true) {
-          return url + '/employee-not-found/' + param.replace(reg, ".").toLowerCase()
+          return url + '/employee-not-found/' + param.replace(reg, ".")
         } else {
           return url +
             "/find-employee/employee-detail/" +
             this.managerDepartment +
             "/" +
-            param.replace(reg, ".").toLowerCase()
+            param.replace(reg, ".")
         }
       }
 
@@ -282,7 +282,7 @@ export default {
           "/find-employee/" +
           department +
           "/" +
-          indexFormatted.toLowerCase() +
+          indexFormatted +
           "/all-branches"
         );
       } else if (type === "branch") {
@@ -292,7 +292,7 @@ export default {
             "/find-employee/" +
             department +
             "/" +
-            indexFormatted.toLowerCase() +
+            indexFormatted +
             "/not-branch"
           );
         }
@@ -301,9 +301,9 @@ export default {
           "/find-employee/" +
           department +
           "/" +
-          indexFormatted.toLowerCase() +
+          indexFormatted +
           "/" +
-          paramFormatted.toLowerCase()
+          paramFormatted
         );
       }
     },
@@ -348,8 +348,6 @@ export default {
 
           this.center = resp.data.data[0].center;
 
-          console.log(this.center)
-
           this.updateBreadCrumbs();
         })
 
@@ -371,13 +369,12 @@ export default {
         if (element.name == "Department") {
           element.name = this.department;
           element.link =
-            "/find-employee/" + this.department.replace(reg, "-").toLowerCase();
+            "/find-employee/" + this.department.replace(reg, "-");
         } else if (element.name == "Division") {
           element.name = this.division;
           element.link =
             ("/find-employee/" + this.department + "/" + this.division)
-              .replace(reg, "-")
-              .toLowerCase() + "/all-branches";
+              .replace(reg, "-") + "/all-branches";
         } else if (element.name == "Branch") {
           if (this.branch === null) {
             element.name = null;
@@ -393,7 +390,6 @@ export default {
             this.branch
           )
             .replace(reg, "-")
-            .toLowerCase();
         } else if (element.name == "Username") {
           element.name = this.title;
         }

@@ -25,7 +25,7 @@
             <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
               max-width="590">
               <div class="py-4 d-flex align-center justify-center" style="width: 200px">
-                <IconLoader :image="department" :color="'purple'" />
+                <IconLoader :image="department.toLowerCase()" :color="'purple'" />
               </div>
               <div class="d-flex align-center justify-center" style="width:80%">
                 <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
@@ -42,7 +42,7 @@
                     }}</a>
                   </li>
                   <v-expand-transition>
-                    <ul v-if="check === parent_item.toLowerCase()">
+                    <ul v-if="check === parent_item">
                       <li v-for="(item, index, id) in item" :key="id" class="py-2">
                         <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
                         }}</a>
@@ -127,11 +127,15 @@ export default {
     activateBranches(item) {
       let find = ' ';
       let reg = new RegExp(find, 'g');
-      let department = this.department.toLowerCase().replace(reg, '-')
-      let division = item.toLowerCase()
-      if (this.check === item.toLowerCase()) {
-        window.location.href = '/find-employee/' + department + '/' + item.toLowerCase().replace(reg, '-') + '/all-branches'
-      }
+      let department = this.department.replace(reg, '-')
+
+      let division = item
+
+      if (this.check === item) {
+        if(this.check === 'Employees who are not assigned a division') {
+          window.location.href = '/find-employee/' + department + '/not-division/all-branches'
+        } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+      } 
       this.check = division
     },
     capitalizeString(param) {
@@ -156,7 +160,7 @@ export default {
       let indexFormatted = index.replace(reg, '-')
       let paramFormatted = param.replace(reg, '-')
 
-      if (indexFormatted === 'N/A') {
+      if (indexFormatted === 'Employees-who-are-not-assigned-a-division') {
         indexFormatted = 'not-division'
       }
 
@@ -166,16 +170,20 @@ export default {
         if (indexFormatted === 'not-division') {
           return url + '/find-employee/' + department + '/not-division/all-branches'
         }
-        return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/all-branches'
+        return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
 
       } else if (type === 'branch') {
-        if (param === 'N/A') {
-          return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/not-branch'
+        
+        if (paramFormatted === 'Employees-who-are-not-assigned-a-branch' && indexFormatted !== 'not-division') {
+
+          return url + '/find-employee/' + department + '/' + indexFormatted +'/all-branches'
+
+        } else {
+
+          return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
+      
         }
-        return url + '/find-employee/' + department + '/' + indexFormatted.toLowerCase() + '/' + paramFormatted.toLowerCase()
       }
-
-
     },
     updateBreadCrumbs() {
 
@@ -193,10 +201,6 @@ export default {
         this.show = null
       } else
         this.show = param;
-    },
-    divisionMethod() {
-      let department = req.params.department
-      this.title = department
     },
     getDataFromApi() {
       var find = '-';
@@ -218,6 +222,7 @@ export default {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
           this.loading = false;
+          this.title = resp.data.meta.department
         })
         .catch((err) => console.error(err))
         .finally(() => {
