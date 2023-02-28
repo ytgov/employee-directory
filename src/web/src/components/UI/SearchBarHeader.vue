@@ -1,7 +1,7 @@
 <template>
     <div class="full-width yellow-border white-bg pl-0 pt-5 find-employee">
         <v-container class="container-content px-md-0 px-lg-3">
-            <h1 v-if="title !== null">Find a goverment employee</h1>
+            <h1 v-if="title !== null">Find a government employee</h1>
                 <p>
                     <strong>I know who I am looking for</strong>
                     <ol>
