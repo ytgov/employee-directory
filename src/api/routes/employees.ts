@@ -485,6 +485,10 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                 return e.department.indexOf(paramDepartment) >= 0
             })
 
+            if(_.isEmpty(employeesByDept)){
+                return res.send({ data: [], meta: { count: 0, error, department: paramDepartment } });
+            }
+
             // Getting the department with correct punctuation
             const department = _.uniqBy(employeesByDept, function (e: any) {
                 return e.paramDepartment;
@@ -505,9 +509,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                 }
             })
 
-
             let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
-
 
             for (const [key, value] of Object.entries(division)) {
                 const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
