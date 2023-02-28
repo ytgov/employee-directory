@@ -50,7 +50,7 @@
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
       <div v-if="itemsValue === 0" class="mb-6 mt-2">
-
+        <!-- <EmployeesGrid/> -->
         <v-data-table dense class="py-5 px-0 d-table" hide-default-footer :items="items" :headers="headers"
           :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" hide-default-header
           mobile-breakpoint="0">
@@ -158,6 +158,7 @@ import DivisionsCard from "./UI/DivisionsCard.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
+import EmployeesGrid from "./UI/EmployeesGrid.vue";
 
 export default {
   name: "Grid",
@@ -166,7 +167,8 @@ export default {
     DivisionsCard,
     IconLoader,
     SearchBarHeader,
-  },
+    EmployeesGrid
+},
   data: () => ({
     itemsValue: null,
     selection: '',
@@ -314,6 +316,7 @@ export default {
         formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
       }
       this.title = this.capitalizeString(department.replace(reg, ' '))
+
       this.department = this.capitalizeString(department.replace(reg, ' '))
       this.div = this.capitalizeString(division.replace(reg, ' '))
       this.branch = this.capitalizeString(branch.replace(reg, ' '))
@@ -327,7 +330,6 @@ export default {
           url: `${urls.FIND_EMPLOYEE_URL}${department}/${division}/${branch}?search=`
         })
         .then((resp) => {
-          this.title = resp.data.meta.department
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;

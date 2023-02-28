@@ -330,11 +330,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 return item.department.indexOf(paramDepartment) >= 0
             })
 
-            // Getting the department with correct punctuation
-            const department = _.uniqBy(employeesByDept, function (e: any) {
-                return e.department;
-            });
-
             let employeesByDivision = employeesByDept
 
             //Filter by Division  
@@ -465,7 +460,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     break;
             }
 
-            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength, department: department[0].department, division: division[0].division } });
+            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
         })
         .catch((error: any) => {
             console.log(error);
