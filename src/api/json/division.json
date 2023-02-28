@@ -1,5 +1,5 @@
 {
-    "count": 685,
+    "count": 686,
     "divisions": [
         {
             "department": "Cabinet Office",
@@ -1130,13 +1130,6 @@
         },
         {
             "department": "Energy Mines and Resources",
-            "division": "Corporate Services ",
-            "branch": "Strategic Alliances",
-            "unit": null,
-            "order": 40
-        },
-        {
-            "department": "Energy Mines and Resources",
             "division": null,
             "branch": null,
             "unit": null,
@@ -1228,6 +1221,34 @@
         },
         {
             "department": "Energy Mines and Resources",
+            "division": "Strategic Initiatives and Partnerships",
+            "branch": null,
+            "unit": null,
+            "order": 100
+        },
+        {
+            "department": "Energy Mines and Resources",
+            "division": "Strategic Initiatives and Partnerships",
+            "branch": "Energy",
+            "unit": null,
+            "order": 100
+        },
+        {
+            "department": "Energy Mines and Resources",
+            "division": "Strategic Initiatives and Partnerships",
+            "branch": "Geothermal and Petroleum Resources",
+            "unit": null,
+            "order": 100
+        },
+        {
+            "department": "Energy Mines and Resources",
+            "division": "Strategic Initiatives and Partnerships",
+            "branch": "Strategic Alliances",
+            "unit": null,
+            "order": 100
+        },
+        {
+            "department": "Energy Mines and Resources",
             "division": "Sustainable Resources",
             "branch": null,
             "unit": null,
@@ -1250,13 +1271,6 @@
         {
             "department": "Energy Mines and Resources",
             "division": "Sustainable Resources",
-            "branch": "Energy",
-            "unit": null,
-            "order": 100
-        },
-        {
-            "department": "Energy Mines and Resources",
-            "division": "Sustainable Resources",
             "branch": "Forest Management",
             "unit": null,
             "order": 100
@@ -1273,13 +1287,6 @@
             "division": "Sustainable Resources",
             "branch": "Forest Management",
             "unit": "Planning and Development",
-            "order": 100
-        },
-        {
-            "department": "Energy Mines and Resources",
-            "division": "Sustainable Resources",
-            "branch": "Geothermal and Petroleum Resources",
-            "unit": null,
             "order": 100
         },
         {
