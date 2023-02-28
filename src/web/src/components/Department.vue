@@ -33,6 +33,7 @@
             </v-card-actions>
 
             <v-card outlined color="transparent" class="flex-column py-10">
+              <h2 style="color:#522A44!important; font-size: 30px;">Browse employees by these divisions</h2>
               <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" :key="item.full_name"
                 class="px-8">
                 <v-card outlined color="transparent">
@@ -51,6 +52,8 @@
                   </v-expand-transition>
                 </v-card>
               </v-card>
+              <div style="height:20px;"></div>
+              <a class="mb-2" style="font-size: 22px; font-weight: 700;">View a list of all Departments of {{ title }}</a>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
