@@ -58,8 +58,6 @@ export default {
             let division = item
 
             if (this.check === item) {
-                console.log(item, 'ITEM')
-                console.log(this.check, 'CHECK')
                 if (this.check === 'Employees who are not assigned a division') {
                     window.location.href = '/find-employee/' + department + '/not-division/all-branches'
                 } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
