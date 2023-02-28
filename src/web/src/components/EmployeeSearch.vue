@@ -251,7 +251,7 @@ export default {
             headers: [
                 { text: "Name", value: "formatted_name" },
                 { text: "Position", value: "title" },
-                { text: "E-mail address", value: "email" },
+                { text: "Email address", value: "email" },
                 { text: "Phone number", value: "phone_office" },
             ],
             loading: false,
