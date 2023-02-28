@@ -18,7 +18,6 @@
       <v-row class="mt-16"></v-row>
       <v-row>
         <v-col col="6">
-
           <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
             max-width="1180" min-height="542" outlined>
 
@@ -33,6 +32,7 @@
             </v-card-actions>
 
             <v-card outlined color="transparent" class="flex-column py-10">
+              <h2 style="color:#522A44!important; font-size: 30px;">Browse employees by these divisions</h2>
               <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" :key="item.full_name"
                 class="px-8">
                 <v-card outlined color="transparent">
@@ -51,11 +51,16 @@
                   </v-expand-transition>
                 </v-card>
               </v-card>
+              <div style="height:20px;"></div>
+              <a class="mb-2" style="font-size: 22px; font-weight: 700;">View a list of all Departments of {{ title }}</a>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
         </v-col>
       </v-row>
+
+      <!-- <EmployeesGrid/> -->
+
     </v-container>
   </div>
 </template>
@@ -66,14 +71,16 @@ import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
+import EmployeesGrid from "./UI/EmployeesGrid.vue";
 
 const axios = require("axios");
 export default {
   components: {
     IconLoader,
     DepartmentHeader,
-    SearchBarHeader
-  },
+    SearchBarHeader,
+    EmployeesGrid
+},
   name: "Department",
   data: () => ({
     error: false,
@@ -211,6 +218,8 @@ export default {
       formattedQueryParam = `${encodeURIComponent(`${department}`)}`
       this.department = department.replace(reg, ' ')
       this.title = this.capitalizeString(department.replace(reg, ' '))
+
+      console.log(this.title)
       axios
         .post(
           `${urls.FIND_EMPLOYEE_URL}${department}`,
