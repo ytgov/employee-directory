@@ -230,7 +230,6 @@ export default {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
           this.loading = false;
-          this.title = resp.data.meta.department
         })
         .catch((err) => console.error(err))
         .finally(() => {

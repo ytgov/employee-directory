@@ -3,23 +3,22 @@
         <v-container class="container-content px-md-0 px-lg-3">
             <h1 v-if="title !== null">Find a government employee</h1>
 
-            <v-banner v-if="info" class="mb-6 mt-8 info_find-employee">
-                <span>
+            <v-banner v-if="info" class="mb-2 mt-8 info_find-employee">
+                <strong>
                     I know who I am looking for
-                </span>
-                <br />
-                <br />
-                <p>
-                    1. Enter the employee's name, position title, email address or phone number in the search box. You can also select their department from the drop down, but this is optional.
-                </p>
-                <p>
-                    2. Select the "Search' button to display the results.
-                </p>
-                <span>
+                </strong>
+                <ol type="1" class="mb-3">
+                    <li>
+                        Enter the employee's name, position title, email address or phone number in the search box. You can
+                        also select their department from the drop down, but this is optional.
+                    </li>
+                    <li>
+                        Select the "Search' button to display the results.
+                    </li>
+                </ol>
+                <strong>
                     I am not sure who I need to contact - I want to browse
-                </span>
-                <br />
-                <br />
+                </strong>
                 <p>
                     Scroll down the page and select the department you want to browse.
                 </p>
@@ -37,8 +36,8 @@
                     <v-col class="mb-2" sm="6" cols="12">
                         <v-row no-gutters>
                             <v-col cols="9">
-                                <v-select class="input-with-button" :items="item" v-model="departmentSearch" dense="" background-color="#F1F1F1"
-                                    outlined="outlined" flat="" label="Department" solo>
+                                <v-select class="input-with-button" :items="item" v-model="departmentSearch" dense=""
+                                    background-color="#F1F1F1" outlined="outlined" flat="" label="Department" solo>
                                 </v-select>
                             </v-col>
                             <v-col cols="3">
@@ -163,19 +162,17 @@ export default {
 }
 
 .input-with-button>>>fieldset {
-    
+
     border-top-left-radius: 5px !important;
     border-bottom-left-radius: 5px !important;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
 }
 
- button {
+button {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
     border-top-right-radius: 5px !important;
     border-bottom-right-radius: 5px !important;
 }
-
-
 </style>
