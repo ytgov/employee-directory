@@ -485,11 +485,6 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                 return e.department.indexOf(paramDepartment) >= 0
             })
 
-            // Getting the department with correct punctuation
-            const department = _.uniqBy(employeesByDept, function (e: any) {
-                return e.paramDepartment;
-            });
-
             if (employeesByDept.length == 0) {
                 error = true
             }
@@ -516,7 +511,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division, meta: { count: 0, error, department: department[0].department } });
+            res.send({ data: division, meta: { count: 0, error } });
 
         })
         .catch((error: any) => {
