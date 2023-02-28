@@ -239,21 +239,22 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
             }
 
 
-            if (employeeFiltered[0].latitude !== null) {
-                employeeFiltered[0].center.lat = employeeFiltered[0].latitude
-                employeeFiltered[0].center.lng = employeeFiltered[0].longitude
-            } else {
+            if (employeeFiltered[0].community && employeeFiltered[0].address !== '' || null) {
+                if (employeeFiltered[0].latitude !== null) {
+                    employeeFiltered[0].center.lat = employeeFiltered[0].latitude
+                    employeeFiltered[0].center.lng = employeeFiltered[0].longitude
+                } else {
 
-                await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
-                    .then((response: any) => {
-                        const center = response.data.candidates[0].location
-                        employeeFiltered[0].center.lat = center.y
-                        employeeFiltered[0].center.lng = center.x
-                    }).catch((error: any) => {
-                        console.log(error)
-                    })
-
-            }
+                    await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
+                        .then((response: any) => {
+                            const center = response.data.candidates[0].location
+                            employeeFiltered[0].center.lat = center.y
+                            employeeFiltered[0].center.lng = center.x
+                        }).catch((error: any) => {
+                            console.log(error)
+                        })
+                }
+            } else employeeFiltered[0].center = null
 
             let managerName: any
 
@@ -464,7 +465,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     break;
             }
 
-            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength, department: department[0].department , division: division[0].division } });
+            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength, department: department[0].department, division: division[0].division } });
         })
         .catch((error: any) => {
             console.log(error);

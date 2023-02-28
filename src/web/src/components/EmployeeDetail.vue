@@ -102,7 +102,7 @@
                   Mail Code: <span>{{ item.mailcode }}</span>
                 </h3>
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col v-if="center !== null" cols="12" md="6">
 
                 <l-map style="height: 300px" :zoom="zoom" :center="center">
 
@@ -150,7 +150,7 @@ export default {
   },
   name: "EmployeeDetail",
   data: () => ({
-    zoom: 13,
+    zoom: 17,
     noBgImg: true,
     department: "",
     managerAvailability: true,
@@ -249,19 +249,19 @@ export default {
       let find = " ";
 
       let reg = new RegExp(find, "g");
-      let department = this.department.replace(reg, "-").toLowerCase();
+      let department = this.department.replace(reg, "-");
       let indexFormatted = index.replace(reg, "-");
       let paramFormatted = param.replace(reg, "-");
 
       if (type === 'manager') {
         if (this.managerAvailability !== true) {
-          return url + '/employee-not-found/' + param.replace(reg, ".").toLowerCase()
+          return url + '/employee-not-found/' + param.replace(reg, ".")
         } else {
           return url +
             "/find-employee/employee-detail/" +
             this.managerDepartment +
             "/" +
-            param.replace(reg, ".").toLowerCase()
+            param.replace(reg, ".")
         }
       }
 

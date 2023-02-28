@@ -4,27 +4,38 @@
       <img src="/Aurora-mini.svg" style="margin: 5% 0px 3% 0px" height="44" />
     </div>
     <div class="pt-6 z-i" style="border-top:1px solid #d4c7cf;">
-      <div class="d-flex align-end">
-        <h4 class="mr-4" style="font-weight:500;">Was this page helpful? *</h4>
+      <div class="d-flex align-center">
+        <h4 class="mr-4 help" style="font-weight:500;">Was this page helpful? *</h4>
         <div @click="startForm(1)" class="icon mr-4">
-          <IconLoader :color="colorCheck === 1 ? 'blue' : 'black'" height="40" :image="'cabinet office'" />
+          <IconLoader :color="colorCheck === 1 ? 'selected' : 'unselected'" height="33" :image="'thumbs up'" />
         </div>
         <div @click="startForm" class="icon mr-4">
-          <IconLoader @click="startForm(2)" :color="colorCheck === 2 ? 'blue' : 'black'" class="icon icon-inverted"
-            height="40" :image="'cabinet office'" />
+          <IconLoader @click="startForm(2)" :color="colorCheck === 2 ? 'selected' : 'unselected'" class="icon" height="33"
+            :image="'thumbs down'" />
         </div>
       </div>
     </div>
     <v-form ref="feedbackForm" @submit.prevent="sendEmail" v-if="formStatus" class="pt-8">
-      <h4 style="font-weight:500;">{{ feedbackCheck === 1 ? 'How did this page help you? *' : 'How can we improve this page ? * ' }}</h4>
-      <v-textarea :error-messages="this.feedbackError ? ['Please enter a message!'] : []" v-model="feedbackText" outlined
-        class="mt-4 area" background-color="#f1f1f1" rows="5">
+      <h4 class="help">{{ feedbackCheck === 1 ? 'How did this page help you? *' : 'How can we improve this page? * ' }}
+      </h4>
+      <v-textarea v-model="feedbackText" outlined class="mt-4 area" background-color="#f1f1f1" rows="5">
 
       </v-textarea>
       <v-btn type="submit" class="btn px-7" tonal elevation="0" height="60px" color="#00616D">Submit feedback</v-btn>
     </v-form>
 
-    <v-card class="form-success my-4 pa-4" v-if="success">Thanks for taking the time to send us your feedback.</v-card>
+    <v-card class="feedback-form form-success my-4 pa-4 help d-flex align-center" v-if="success">
+      <IconLoader @click="startForm(2)" :color="'success'" class="icon mr-3" height="16" :image="'success'" />
+      <p class="ma-0">
+        Thanks for taking the time to send us your feedback.
+      </p>
+    </v-card>
+    <v-card class="feedback-form form-error my-4 pa-4 help d-flex align-center" v-if="feedbackError">
+      <p class="ma-0">
+        {{ feedbackCheck === 1 ? 'How did this page help you? ' : 'How can we improve this page? ' }}
+        field is required.
+      </p>
+    </v-card>
   </v-container>
 </template>
 
@@ -61,12 +72,19 @@ export default {
       if (this.feedbackText !== '') {
         this.feedbackError = false
       }
+    },
+    success() {
+      if (this.success === true) {
+        setTimeout(() => {
+          this.success = false
+        }, "3000")
+      }
     }
   },
   methods: {
     convertTZ(date, tzString) {
-    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
-  },
+      return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: tzString }));
+    },
 
 
     startForm(type) {
@@ -80,7 +98,7 @@ export default {
         this.feedbackError = true
         return
       } else {
-        const convertedDate = this.convertTZ(new Date()) 
+        const convertedDate = this.convertTZ(new Date())
 
         convertedDate.getHours();
 
@@ -88,7 +106,7 @@ export default {
 
         const url = window.location.href;
 
-        if(this.feedbackCheck === 1) {
+        if (this.feedbackCheck === 1) {
           emailSubject = 'How did this page help you?'
         } else emailSubject = 'How can we improve this page?'
 
@@ -125,16 +143,34 @@ export default {
   border: #ccc !important;
 }
 
-.icon-inverted {
-  transform: rotate(180deg);
-}
-
 .icon {
   cursor: pointer;
 }
 
+.help {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
 .form-success {
-  border: none !important;
+  border-left: #278400 5px solid !important;
   background-color: #dbedcf !important;
+}
+
+.feedback-form {
+  border-bottom: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+}
+
+.form-error {
+  border-left: #a94442 5px solid !important;
+  background-color: #f3e9e8 !important;
+}
+
+.form-error p {
+  color: #a94442 !important;
 }
 </style>
