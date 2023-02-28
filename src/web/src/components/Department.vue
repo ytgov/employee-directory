@@ -42,7 +42,7 @@
                     }}</a>
                   </li>
                   <v-expand-transition>
-                    <ul v-if="check === parent_item.toLowerCase()">
+                    <ul v-if="check === parent_item">
                       <li v-for="(item, index, id) in item" :key="id" class="py-2">
                         <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
                         }}</a>
@@ -127,13 +127,17 @@ export default {
     activateBranches(item) {
       let find = ' ';
       let reg = new RegExp(find, 'g');
-      let department = this.department.toLowerCase().replace(reg, '-')
-      let division = item.toLowerCase()
+      let department = this.department.replace(reg, '-')
+
+      let division = item
+
       if (this.check === item) {
-        window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
-      } else if(this.check === item && item === 'Employees who are not assigned a division') {
-        window.location.href = '/find-employee/' + department + '/not-division' + '/all-branches'
-      }
+        console.log(item,'ITEM')
+        console.log(this.check, 'CHECK')
+        if(this.check === 'Employees who are not assigned a division') {
+          window.location.href = '/find-employee/' + department + '/not-division/all-branches'
+        } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+      } 
       this.check = division
     },
     capitalizeString(param) {
@@ -158,7 +162,7 @@ export default {
       let indexFormatted = index.replace(reg, '-')
       let paramFormatted = param.replace(reg, '-')
 
-      if (indexFormatted === 'Employees who are not assigned a division') {
+      if (indexFormatted === 'Employees-who-are-not-assigned-a-division') {
         indexFormatted = 'not-division'
       }
 
@@ -171,10 +175,16 @@ export default {
         return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
 
       } else if (type === 'branch') {
-        if (param === 'Employees who are not assigned a division') {
-          return url + '/find-employee/' + department + '/' + indexFormatted + '/not-branch'
+        
+        if (paramFormatted === 'Employees-who-are-not-assigned-a-branch' && indexFormatted !== 'not-division') {
+
+          return url + '/find-employee/' + department + '/' + indexFormatted +'/all-branches'
+
+        } else {
+
+          return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
+      
         }
-        return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
       }
 
 

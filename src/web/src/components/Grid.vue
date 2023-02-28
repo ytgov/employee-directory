@@ -31,8 +31,8 @@
       </v-row>
 
       <v-row>
-        <DivisionsCard :division="this.div" :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()"
-          :department="this.department.toLowerCase()" class="mt-6" />
+        <DivisionsCard :division="this.div" :checkClass="this.branch" :checkHover="this.div"
+          :department="this.department" class="mt-6" />
       </v-row>
 
       <div class="pt-6 pb-n12 mt-10 d-flex flex-column align-start justify-center">

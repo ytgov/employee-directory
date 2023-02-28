@@ -7,16 +7,15 @@
 
                         <v-card outlined color="transparent">
                             <li>
-                                <a :class="{ 'branch-pressed': checkHover == parent_item.toLowerCase() }"
+                                <a :class="{ 'branch-pressed': checkHover == parent_item }"
                                     @click="activateBranches(parent_item)" :key="id" class="division">{{
-                                            parent_item
+                                        parent_item
                                     }}</a>
                             </li>
                             <v-expand-transition>
-                                <ul
-                                    v-if="checkHover === parent_item.toLowerCase() || check === parent_item.toLowerCase()">
+                                <ul v-if="checkHover === parent_item || check === parent_item">
                                     <li class="py-1" v-for="(value, index, id) in item" :key="id">
-                                        <a :class="{ 'branch-pressed': checkClass === index.toLowerCase() }"
+                                        <a :class="{ 'branch-pressed': checkClass === index }"
                                             :href="generateUrl('branch', index, parent_item)"
                                             class="branch my-2 px-0 py-3">{{ index }}</a>
                                     </li>
@@ -54,13 +53,18 @@ export default {
         activateBranches(item) {
             let find = ' ';
             let reg = new RegExp(find, 'g');
-            let department = this.$props.department.toLowerCase().replace(reg, '-')
-            let division = this.$props.division.toLowerCase().replace(reg, '-')
+            let department = this.department.replace(reg, '-')
 
-            if (this.check === item.toLowerCase() || division === item.toLowerCase().replace(reg, '-')) {
-                window.location.href = '/find-employee/' + department + '/' + item.toLowerCase().replace(reg, '-') + '/all-branches'
+            let division = item
+
+            if (this.check === item) {
+                console.log(item, 'ITEM')
+                console.log(this.check, 'CHECK')
+                if (this.check === 'Employees who are not assigned a division') {
+                    window.location.href = '/find-employee/' + department + '/not-division/all-branches'
+                } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
             }
-            this.check = item.toLowerCase()
+            this.check = division
         },
         generateUrl(type, param, index) {
 
@@ -71,6 +75,8 @@ export default {
                 return element !== ''
             })
             url = url[0]
+
+            this.url = url[0]
             let find = ' ';
 
             let reg = new RegExp(find, 'g');
@@ -78,26 +84,30 @@ export default {
             let indexFormatted = index.replace(reg, '-')
             let paramFormatted = param.replace(reg, '-')
 
-            if (indexFormatted === 'Employees who are not assigned a division') {
+            if (indexFormatted === 'Employees-who-are-not-assigned-a-division') {
                 indexFormatted = 'not-division'
             }
 
             if (type === 'division') {
 
 
-                if (indexFormatted === 'Employees who are not assigned a division') {
+                if (indexFormatted === 'not-division') {
                     return url + '/find-employee/' + department + '/not-division/all-branches'
                 }
                 return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
 
             } else if (type === 'branch') {
-                if (param === 'Employees who are not assigned a branch') {
-                    return url + '/find-employee/' + department + '/' + indexFormatted + '/not-branch'
+
+                if (paramFormatted === 'Employees-who-are-not-assigned-a-branch' && indexFormatted !== 'not-division') {
+
+                    return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
+
+                } else {
+
+                    return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
+
                 }
-                return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
             }
-
-
         },
         getDataFromApi() {
             this.loading = true;
