@@ -283,6 +283,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
+
     var notDivision = paramDivision === 'not-division';
 
     if (paramDivision === 'not-division') {
@@ -486,7 +487,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
             })
 
             if (employeesByDept.length == 0) {
-                error = true
+                res.send({ meta: { count: 0, error } });
             }
 
             let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
@@ -511,7 +512,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division, meta: { count: 0, error } });
+            res.send({ data: division , meta: { count: 0, error } });
 
         })
         .catch((error: any) => {

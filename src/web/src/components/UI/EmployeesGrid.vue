@@ -1,6 +1,6 @@
 <template>
     <v-data-table dense class="py-5 px-0 d-table" hide-default-footer :items="items" :headers="headers"
-        :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" hide-default-header mobile-breakpoint="0">
+        :options.sync="options" :items-per-page="itemsPerPage" hide-default-header mobile-breakpoint="0">
         <template v-slot:header="{ props }">
             <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
             </th>
@@ -16,13 +16,15 @@
                             </IconLoader>
                             <IconLoader v-if="item.level > 1" v-for='n in item.level' :color="'blue'" image="1"
                                 class="angle-right-multiple"></IconLoader>
-                            <label class="full-name">{{ item.formatted_name }}</label>
+                            <label class="full-name">{{ item.full_name }}</label>
                         </a>
                     </td>
-                    <td class="default-cursor"> {{ title }} </td>
-                    <td class="default-cursor"> {{ email }}</td>
-                    <td class="default-cursor"> <a :href="getPhone(phone_office)"
-                            :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }"> {{ phone_office }} </a>
+                    <td class="default-cursor"> {{ item.title }} </td>
+                    <td class="default-cursor"> {{ item.email }}</td>
+                    <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                            :class="{ telephone: check=== true, 'telephone-desktop': check === false }"> {{
+                                item.phone_office
+                            }} </a>
                     </td>
                 </tr>
             </tbody>
@@ -33,17 +35,84 @@
 
 
 <script>
+import IconLoader from '../icons/IconLoader.vue'
 
 export default {
-    props: ['',],
-    data(){
-        return {
+    components: {
+        IconLoader
+    },
 
+    props: ['items','department','check'],
+    mounted() {
+        
+    },
+    data() {
+        return {
+            headers: [
+                { text: "Name", value: "formatted_name" },
+                { text: "Position", value: "title" },
+                { text: "Email address", value: "email" },
+                { text: "Phone number", value: "phone_office" },
+            ],
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 9999,
+            itemsValue: null,
+            selection: '',
+            dataTableParam: 0,
+            branch: '',
+            breadcrumbsList: [],
+            title: '',
+            div: '',
+            loading: false,
+            search: "",
+            options: {},
+            totalLength: 0,
+            divisionLength: 0,
         }
+    },
+    methods: {
+        getPhone(number) {
+            const find = "-";
+            const reg = new RegExp(find, "g");
+            const numberFormatted = number.replace(reg, "");
+            const link = "tel:" + numberFormatted;
+
+            if (this.mobileCheck === false) {
+                return
+            } else { return String(link); }
+        },
+
+        cleanParam(param) {
+            if (param === '-') {
+                param = 'N/A'
+            }
+            return param;
+        },
+        cleanLocation(location) {
+            if (location[0] === ',') {
+                let link = location.slice(1);
+                return link.replace(/['"']+/g, '')
+            } else {
+                return location.replace(/['"']+/g, '')
+            }
+        },
+        urlEmployee(department, name) {
+            var find = ' ';
+            var reg = new RegExp(find, 'g');
+            return '/find-employee/employee-detail/' + department.replace(reg, '-') + '/' + name
+        },
+        capitalizeString(param) {
+            const string = param
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        },
     }
 }
 
 </script>
 
 
-<style scoped></style>
+<style scoped>
+
+
+</style>

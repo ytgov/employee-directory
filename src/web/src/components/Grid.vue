@@ -31,8 +31,8 @@
       </v-row>
 
       <v-row>
-        <DivisionsCard :division="this.div" :checkClass="this.branch" :checkHover="this.div"
-          :department="this.department" class="mt-6" />
+        <DivisionsCard :division="this.div" :checkClass="this.branch" :checkHover="this.div" :department="this.department"
+          class="mt-6" />
       </v-row>
 
       <div class="pt-6 pb-n12 mt-10 d-flex flex-column align-start justify-center">
@@ -50,38 +50,7 @@
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
       <div v-if="itemsValue === 0" class="mb-6 mt-2">
-        <!-- <EmployeesGrid/> -->
-        <v-data-table dense class="py-5 px-0 d-table" hide-default-footer :items="items" :headers="headers"
-          :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" hide-default-header
-          mobile-breakpoint="0">
-          <template v-slot:header="{ props }">
-            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-            </th>
-          </template>
-          <template v-slot:body="{ items }">
-            <tbody class="table-body">
-              <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }"
-                class="table-border" v-for='(item, index, id ) in items' :key="id">
-                <td>
-                  <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
-                    :href="urlEmployee(item.department, item.full_name_url)">
-                    <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right">
-                    </IconLoader>
-                    <IconLoader v-if="item.level > 1" v-for='n in item.level' :color="'blue'" image="1"
-                      class="angle-right-multiple"></IconLoader>
-                    <label class="full-name">{{ item.formatted_name }}</label>
-                  </a>
-                </td>
-                <td class="default-cursor"> {{ item.title }} </td>
-                <td class="default-cursor"> {{ item.email }}</td>
-                <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a>
-                </td>
-              </tr>
-            </tbody>
-          </template>
-
-        </v-data-table>
-
+        <EmployeesGrid :check="mobileCheck" :items="items" :department="department" />
       </div>
 
       <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
@@ -91,28 +60,7 @@
           </div>
         </v-row>
         <div class="mt-4 d-flex align-center">
-          <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
-            :loading="loading" hide-default-header mobile-breakpoint="0">
-            <template v-slot:header="{ props }">
-              <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-              </th>
-            </template>
-            <template v-slot:body="{ items }">
-              <tbody class="table-body">
-                <tr class="table-border" v-for='item in value'>
-                  <td>
-                    <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
-                      :href="urlEmployee(item.department, item.full_name_url)">
-                      {{ item.formatted_name }}
-                    </a>
-                  </td>
-                  <td class="default-cursor">{{ item.title }}</td>
-                  <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a></td>
-                </tr>
-              </tbody>
-            </template>
-          </v-data-table>
+          <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
         </div>
       </div>
 
@@ -123,28 +71,7 @@
           </div>
         </v-row>
         <div class="mt-8 d-flex align-center">
-          <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
-            :loading="loading" hide-default-header mobile-breakpoint="0">
-            <template v-slot:header="{ props }">
-              <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-              </th>
-            </template>
-            <template v-slot:body="{ items }">
-              <tbody class="table-body">
-                <tr class="table-border" v-for='item in value'>
-                  <td>
-                    <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
-                      :href="urlEmployee(item.department, item.full_name_url)">
-                      {{ item.formatted_name }}
-                    </a>
-                  </td>
-                  <td class="default-cursor">{{ item.title }}</td>
-                  <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a> </td>
-                </tr>
-              </tbody>
-            </template>
-          </v-data-table>
+          <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
         </div>
       </div>
     </v-container>
@@ -168,7 +95,7 @@ export default {
     IconLoader,
     SearchBarHeader,
     EmployeesGrid
-},
+  },
   data: () => ({
     itemsValue: null,
     selection: '',
@@ -194,7 +121,7 @@ export default {
     pageCount: 0,
     itemsPerPage: 9999,
     windowWidth: window.innerWidth,
-    mobilecheck: false,
+    mobileCheck: false,
   }),
   watch: {
     '$route'() {
@@ -221,12 +148,12 @@ export default {
     windowWidth: {
       handler() {
         if (this.windowWidth > 900) {
+
           this.mobileCheck = false
         } else this.mobileCheck = true
       }
     }
   },
-  emits: ['changeBg'],
   mounted() {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
@@ -236,18 +163,24 @@ export default {
     } else this.mobileCheck = true
     this.getDataFromApi();
     this.updateBreadCrumbs();
-    this.$emit('changeBg');
   },
   methods: {
-    getPhone(number) {
-      const find = "-";
-      const reg = new RegExp(find, "g");
-      const numberFormatted = number.replace(reg, "");
-      const link = "tel:" + numberFormatted;
+    cleanParam(param) {
 
-      if(this.mobileCheck === false) {
-        return
-      } else { return String(link); }
+      if (param === '-') {
+        param = 'N/A'
+      }
+
+      return param;
+    },
+    cleanLocation(location) {
+
+      if (location[0] === ',') {
+        let link = location.slice(1);
+        return link.replace(/['"]+/g, '')
+      } else {
+        return location.replace(/['"]+/g, '')
+      }
     },
     onResize() {
       this.windowWidth = window.innerWidth
@@ -258,19 +191,7 @@ export default {
       }
       return param;
     },
-    cleanLocation(location) {
-      if (location[0] === ',') {
-        let link = location.slice(1);
-        return link.replace(/['"']+/g, '')
-      } else {
-        return location.replace(/['"']+/g, '')
-      }
-    },
-    urlEmployee(department, name) {
-      var find = ' ';
-      var reg = new RegExp(find, 'g');
-      return '/find-employee/employee-detail/' + department.replace(reg, '-') + '/' + name
-    },
+
     capitalizeString(param) {
       const string = param
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -347,26 +268,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.full-name {
-  cursor: pointer;
-  margin-left: 3px;
-}
-
-.table-header {
-  height: 300px !important;
-}
-
-.overf {
-  z-index: 1;
-  overflow: hidden;
-}
-
-.angle-right {
-  width: 6px;
-}
-
-.angle-right-multiple {
-  width: 5px;
-}
-</style>
+<style scoped></style>

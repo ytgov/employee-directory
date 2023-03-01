@@ -96,13 +96,13 @@ export default {
 
             } else if (type === 'branch') {
 
-                if (paramFormatted === 'Employees-who-are-not-assigned-a-branch' && indexFormatted !== 'not-division') {
+                if (paramFormatted !== 'Employees-who-are-not-assigned-a-branch' && indexFormatted !== 'not-division') {
 
-                    return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
+                    return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
 
                 } else {
 
-                    return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
+                    return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
 
                 }
             }
