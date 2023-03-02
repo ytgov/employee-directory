@@ -52,15 +52,62 @@
                 </v-card>
               </v-card>
               <div style="height:20px;"></div>
-              <a class="mb-2" style="font-size: 22px; font-weight: 700;">View a list of all Departments of {{ title }}</a>
+              <a @click="toggleApiSearch" class="mb-2" style="font-size: 22px; font-weight: 700;"
+                :class="{ colorOnClick: checkGrid }">View a list of all Department of {{ title }}</a>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
         </v-col>
       </v-row>
+      <div class="mt-7" v-if="checkGrid">
+        <v-row>
+          <v-col cols="12" md="2" class="d-flex align-center justify-start">
+            <h4 class="">Group by: </h4>
+          </v-col>
+          <v-col cols="12" md="8">
+            <v-chip-group v-model="selection" center-active mandatory>
+              <v-row>
+                <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
+                  <v-chip label outlined color="#00616D">See all government employees</v-chip>
+                  <v-chip label outlined color="#00616D">Location</v-chip>
+                  <v-chip label outlined color="#00616D">Position</v-chip>
+                </v-col>
+              </v-row>
+            </v-chip-group>
+          </v-col>
+        </v-row>
+        <div class="pt-6 pb-n12 mt-5 d-flex flex-column align-start justify-center">
 
-      <!-- <EmployeesGrid/> -->
+        </div>
+        <div class="text-center loading" v-show="loading">
+          <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+        </div>
+        <div v-if="itemsValue === 0" class="mb-6 mt-2">
+          <EmployeesGrid :check="mobileCheck" :items="employees" :department="department" />
+        </div>
 
+        <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in employees' class="mb-6 mt-2">
+          <v-row class="px-3">
+            <div class="mt-8 d-flex align-center">
+              <h3 class="division-text ">{{ cleanLocation(parent_array) }}</h3>
+            </div>
+          </v-row>
+          <div class="mt-4 d-flex align-center">
+            <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
+          </div>
+        </div>
+
+        <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in employees' class="mb-6 mt-2">
+          <v-row>
+            <div class="mt-8 d-flex align-center">
+              <h3 class="division-text px-3">{{ cleanParam(parent_array) }}</h3>
+            </div>
+          </v-row>
+          <div class="mt-8 d-flex align-center">
+            <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
+          </div>
+        </div>
+      </div>
     </v-container>
   </div>
 </template>
@@ -80,9 +127,11 @@ export default {
     DepartmentHeader,
     SearchBarHeader,
     EmployeesGrid
-},
+  },
   name: "Department",
   data: () => ({
+    itemsValue: null,
+    employees: [],
     error: false,
     check: '',
     department: '',
@@ -96,6 +145,11 @@ export default {
     options: {},
     url: '',
     loading: true,
+    checkGrid: false,
+    selection: '',
+    mobileCheck: false,
+    windowWidth: window.innerWidth,
+    checkAPIStatus: false,
 
   }),
   emits: ['changeBg'],
@@ -118,14 +172,60 @@ export default {
       },
       deep: true,
     },
+    selection: {
+      handler() {
+        this.loading = true
+        this.getEmployeeData();
+      },
+    },
+    windowWidth: {
+      handler() {
+        if (this.windowWidth > 900) {
+
+          this.mobileCheck = false
+        } else this.mobileCheck = true
+      }
+    }
   },
   mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    })
+    if (this.windowWidth > 900) {
+      this.mobileCheck = false
+    } else this.mobileCheck = true
     this.getDataFromApi();
     this.updateBreadCrumbs();
-    this.$emit('changeBg');
   },
   methods: {
 
+    toggleApiSearch(){
+      if(this.checkAPIStatus !== false) {
+        this.checkGrid = !this.checkGrid
+        return
+      } else this.getEmployeeData()
+    },
+
+    cleanParam(param) {
+
+      if (param === '-') {
+        param = 'N/A'
+      }
+
+      return param;
+    },
+    cleanLocation(location) {
+
+      if (location[0] === ',') {
+        let link = location.slice(1);
+        return link.replace(/['"]+/g, '')
+      } else {
+        return location.replace(/['"]+/g, '')
+      }
+    },
+    onResize() {
+      this.windowWidth = window.innerWidth
+    },
     checkError() {
       if (this.error === true) {
         window.location.href = this.url + '/page-not-found'
@@ -139,10 +239,10 @@ export default {
       let division = item
 
       if (this.check === item) {
-        if(this.check === 'Employees who are not assigned a division') {
+        if (this.check === 'Employees who are not assigned a division') {
           window.location.href = '/find-employee/' + department + '/not-division/all-branches'
         } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
-      } 
+      }
       this.check = division
     },
     capitalizeString(param) {
@@ -180,15 +280,15 @@ export default {
         return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
 
       } else if (type === 'branch') {
-        
-        if (paramFormatted === 'Employees-who-are-not-assigned-a-branch' && indexFormatted !== 'not-division') {
 
-          return url + '/find-employee/' + department + '/' + indexFormatted +'/all-branches'
+        if (paramFormatted !== 'Employees-who-are-not-assigned-a-branch' && indexFormatted !== 'not-division') {
+
+          return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
 
         } else {
 
-          return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
-      
+          return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
+
         }
       }
     },
@@ -219,7 +319,6 @@ export default {
       this.department = department.replace(reg, ' ')
       this.title = this.capitalizeString(department.replace(reg, ' '))
 
-      console.log(this.title)
       axios
         .post(
           `${urls.FIND_EMPLOYEE_URL}${department}`,
@@ -231,7 +330,38 @@ export default {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
           this.loading = false;
-          this.title = resp.data.meta.department
+        })
+        .catch((err) => console.error(err))
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    getEmployeeData() {
+      var find = '-';
+      var reg = new RegExp(find, 'g');
+      const { department, division, branch } = this.$route.params;
+      this.loading = true;
+      let formattedQueryParam = ''
+
+      formattedQueryParam = `${encodeURIComponent(`${department}`)}`
+
+      axios
+        .request({
+          method: 'POST',
+          data: {
+            groupBy: this.selection,
+          },
+          url: `${urls.FIND_EMPLOYEE_URL}${department}/only-department/only-department?search=`
+        })
+        .then((resp) => {
+          this.employees = resp.data.data;
+          this.checkAPIStatus = true;
+          this.checkGrid = true;
+          this.totalLength = resp.data.meta.branchCount;
+          this.divisionLength = resp.data.meta.divisionCount;
+          this.itemsPerPage = resp.data.meta.divisionCount;
+          this.itemsValue = this.selection
+          this.loading = false;
         })
         .catch((err) => console.error(err))
         .finally(() => {

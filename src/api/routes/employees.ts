@@ -283,7 +283,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
+
     var notDivision = paramDivision === 'not-division';
+
+    var onlyDept = paramDivision === 'only-department' && paramBranch === 'only-department'
 
     if (paramDivision === 'not-division') {
         paramDivision = ''
@@ -333,22 +336,21 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let employeesByDivision = employeesByDept
 
             //Filter by Division  
-            if (notDivision) {
+            if(onlyDept){
+
+            } else if (notDivision) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
             } else {
                 employeesByDivision = employeesByDept.filter(item => { return item.division.indexOf(paramDivision) >= 0 })
             }
 
-            // Getting the division with correct punctuation
-            const division = _.uniqBy(employeesByDivision, function (e: any) {
-                return e.division;
-            });
-
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
 
             //Filter by Branch
-            if (notBranch) {
+            if(onlyDept) {
+
+            } else if (notBranch) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
             } else if (paramBranch !== '') {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
@@ -485,17 +487,8 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                 return e.department.indexOf(paramDepartment) >= 0
             })
 
-            if(_.isEmpty(employeesByDept)){
-                return res.send({ data: [], meta: { count: 0, error, department: paramDepartment } });
-            }
-
-            // Getting the department with correct punctuation
-            const department = _.uniqBy(employeesByDept, function (e: any) {
-                return e.paramDepartment;
-            });
-
             if (employeesByDept.length == 0) {
-                error = true
+                res.send({ meta: { count: 0, error } });
             }
 
             let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
@@ -518,7 +511,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division, meta: { count: 0, error, department: department[0].department } });
+            res.send({ data: division, meta: { count: 0, error } });
 
         })
         .catch((error: any) => {
