@@ -10,13 +10,13 @@
                 <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }"
                     class="table-border" v-for='(item, index, id ) in items' :key="id">
                     <td>
-                        <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
+                        <a class="d-flex flex-wrap align-center" :style="getMargin( 8 , item.level )" style="word-wrap: normal;"
                             :href="urlEmployee(item.department, item.full_name_url)">
                             <IconLoader style="width:10px !important;" v-if="item.level === 1" :color2="'blue'" :image="'circle'" class="angle-right">
                             </IconLoader>
                             <IconLoader style="width:10px !important;" v-if="item.level > 1" :size="item.level" :color2="'white'" :color="'blue'" :image="'circle'"
                                 class="angle-right-multiple"></IconLoader>
-                            <label class="full-name">{{ item.full_name }}</label>
+                            <label class="full-name">{{ item.formatted_name }}</label>
                         </a>
                     </td>
                     <td class="default-cursor"> {{ item.title }} </td>
@@ -72,6 +72,16 @@ export default {
         }
     },
     methods: {
+
+        getMargin( baseMarginValue , level ){
+
+            const total = baseMarginValue * level
+            const object = {
+                marginLeft : total + 'px'
+            }
+            return object
+        },
+
         getPhone(number) {
             const find = "-";
             const reg = new RegExp(find, "g");
