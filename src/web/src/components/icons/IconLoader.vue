@@ -205,51 +205,61 @@
             d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
     </svg>
 
-    <svg v-else-if="image == 'icon'" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+    <svg v-else-if="image == 'icon'" :class="color" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg "
         xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 897.4 673"
-        style="enable-background:new 0 0 897.4 673; width: 100%;" xml:space="preserve">
-        <polyline class="st0" points="618.1,235.1 639.9,235.1 639.9,278.1 618.1,278.1 " />
-        <polyline class="st0" points="618.1,163 639.9,163 639.9,205.9 618.1,205.9 " />
-        <path class="st0" d="M286,112c-5.7,0-10.9,2.3-15.5,6.3c-4,4-6.3,9.7-6.3,15.5V538c0-5.7,2.3-10.9,6.3-15.5c4-4,9.7-6.3,15.5-6.3
-        	h310.3V112H286z" />
-        <line class="st0" x1="322.1" y1="112" x2="322.1" y2="516.8" />
-        <line class="st0" x1="292.9" y1="155.5" x2="292.9" y2="473.3" />
-        <path class="st0" d="M264.3,538c0,5.7,2.3,10.9,6.3,15.5c4,4,9.7,6.3,15.5,6.3h339.5V372" />
-        <path class="st0" d="M576.9,429.8c-7.4,8.6-19.5,9.2-27.5,1.1c-16-16-32.6-32.1-48.7-48.7c-2.3-2.9-3.4-7.4-4-11.5
-        	c-1.1-8-2.3-8.6-9.7-4c-37.8,23.5-86.5,14.3-113.4-21.2c-29.8-38.9-21.2-93.9,18.3-120.8s94.5-15.5,119.7,24.6
-        	c9.2,13.7,13.7,29.2,13.7,45.8c0,16.6-4.6,31.5-13.7,45.2c-4,7.4-3.4,8,4,9.7c4.6,1.1,10.9,2.9,14.3,6.3
-        	c15.5,14.9,29.8,29.8,44.7,44.7C583.2,410.9,583.8,421.8,576.9,429.8z" />
+        style="enable-background:new 0 0 897.4 673; width: 100%; transform:scale(1.6)" xml:space="preserve">
+        <polyline :class="stroke" class="st0" points="618.1,235.1 639.9,235.1 639.9,278.1 618.1,278.1 " />
+        <polyline :class="stroke" class="st0" points="618.1,163 639.9,163 639.9,205.9 618.1,205.9 " />
+        <path :class="stroke" class="st0" d="M286,112c-5.7,0-10.9,2.3-15.5,6.3c-4,4-6.3,9.7-6.3,15.5V538c0-5.7,2.3-10.9,6.3-15.5c4-4,9.7-6.3,15.5-6.3
+            	h310.3V112H286z" />
+        <line :class="stroke" class="st0" x1="322.1" y1="112" x2="322.1" y2="516.8" />
+        <line :class="stroke" class="st0" x1="292.9" y1="155.5" x2="292.9" y2="473.3" />
+        <path :class="stroke" class="st0" d="M264.3,538c0,5.7,2.3,10.9,6.3,15.5c4,4,9.7,6.3,15.5,6.3h339.5V372" />
+        <path :class="stroke" class="st0" d="M576.9,429.8c-7.4,8.6-19.5,9.2-27.5,1.1c-16-16-32.6-32.1-48.7-48.7c-2.3-2.9-3.4-7.4-4-11.5
+            	c-1.1-8-2.3-8.6-9.7-4c-37.8,23.5-86.5,14.3-113.4-21.2c-29.8-38.9-21.2-93.9,18.3-120.8s94.5-15.5,119.7,24.6
+            	c9.2,13.7,13.7,29.2,13.7,45.8c0,16.6-4.6,31.5-13.7,45.2c-4,7.4-3.4,8,4,9.7c4.6,1.1,10.9,2.9,14.3,6.3
+            	c15.5,14.9,29.8,29.8,44.7,44.7C583.2,410.9,583.8,421.8,576.9,429.8z" />
         <g id="Layer_2_00000039840894317108364330000005016640489707313066_">
         </g>
-        <line class="st1" x1="630.1" y1="299.8" x2="630.1" y2="357.7" />
-        <line class="st0" x1="322.1" y1="155.5" x2="596.4" y2="155.5" />
-        <line class="st0" x1="322.1" y1="473.3" x2="596.4" y2="473.3" />
+        <line :class="stroke" class="st1" x1="630.1" y1="299.8" x2="630.1" y2="357.7" />
+        <line :class="stroke" class="st0" x1="322.1" y1="155.5" x2="596.4" y2="155.5" />
+        <line :class="stroke" class="st0" x1="322.1" y1="473.3" x2="596.4" y2="473.3" />
         <g id="Layer_2_00000101792232014886782580000001293784067667376290_">
         </g>
-        <circle class="st0" cx="441.8" cy="271.2" r="24" />
-        <path class="st0" d="M488.7,339.3c0,0-3.4-22.3-10.3-26.3c-6.9-4-17.7-8.6-19.5-9.2s-9.2,5.2-18.3,5.2s-16.6-5.7-18.3-5.2
-        	c-1.7,0.6-12.6,5.2-19.5,9.2c-6.9,4-10.3,26.3-10.3,26.3H488.7z" />
-        <line class="st2" x1="465.2" y1="338.2" x2="465.2" y2="331.3" />
-        <line class="st2" x1="417.7" y1="338.2" x2="417.7" y2="331.3" />
+        <circle :class="stroke" class="st0" cx="441.8" cy="271.2" r="24" />
+        <path :class="stroke" class="st0" d="M488.7,339.3c0,0-3.4-22.3-10.3-26.3c-6.9-4-17.7-8.6-19.5-9.2s-9.2,5.2-18.3,5.2s-16.6-5.7-18.3-5.2
+            	c-1.7,0.6-12.6,5.2-19.5,9.2c-6.9,4-10.3,26.3-10.3,26.3H488.7z" />
+        <line :class="stroke" class="st2" x1="465.2" y1="338.2" x2="465.2" y2="331.3" />
+        <line :class="stroke" class="st2" x1="417.7" y1="338.2" x2="417.7" y2="331.3" />
     </svg>
 
-    <svg v-else-if="image == 'circle'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-        viewBox="0 0 1027 1027" style="enable-background:new 0 0 1027 1027;" xml:space="preserve">
+    <svg v-else-if="image == 'circle'" version="1.1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1027 1027"
+        style="enable-background:new 0 0 1027 1027;" xml:space="preserve">
         <g id="black">
-            <circle :class="color" cx="513.5" cy="513.5" r="421.84"/>
+            <circle :class="color" cx="513.5" cy="513.5" r="421.84" />
         </g>
         <g id="white">
             <g>
-                <circle :style="{'transform': 'scale(calc(0 + .'+ size +' + .05 ))'}" style="transform-origin: center;"  :class="color2" cx="513.5" cy="513.5" r="421.84" />
+                <circle :style="{ 'transform': 'scale(calc(0 + .' + size + ' + .05 ))' }" style="transform-origin: center;"
+                    :class="color2" cx="513.5" cy="513.5" r="421.84" />
             </g>
         </g>
+    </svg>
+
+    <svg v-else-if="image == 'sun'" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 37.4 21.9"
+        style="enable-background:new 0 0 37.4 21.9;" xml:space="preserve">
+        <polygon class="st0"  style="transform: scale(.7); transform-origin:center"
+            points="18.6,1.3 16.5,7.9 12,2.6 12.6,9.6 6.4,6.4 9.7,12.5 2.7,11.9 8.1,16.4 1.5,18.5 7.2,20.3 12.1,15.1 
+    	14.1,17.2 18.6,12.3 23.2,17.2 25.2,15.1 30,20.2 35.8,18.4 29.1,16.3 34.4,11.8 27.5,12.5 30.7,6.3 24.5,9.5 25.1,2.6 20.7,7.9 " />
     </svg>
 </template>
 
 
 <script>
 export default {
-    props: ['image', 'color','color2','size'],
+    props: ['image', 'color', 'color2', 'size','stroke'],
 }
 </script>
 
@@ -264,6 +274,9 @@ export default {
 
 .purple {
     fill: #512A44;
+}
+.purple-stroke{
+    stroke: #512A44 !important;
 }
 
 .blue {
@@ -302,5 +315,4 @@ export default {
     stroke: #FFFFFF;
     stroke-linecap: round;
     stroke-miterlimit: 10;
-}
-</style>
+}</style>
