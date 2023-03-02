@@ -83,7 +83,7 @@
           <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
         </div>
         <div v-if="itemsValue === 0" class="mb-6 mt-2">
-          <EmployeesGrid :check="mobileCheck" :items="employees" :department="department" />
+          <EmployeesGrid :divisions="false" :check="mobileCheck" :items="employees" :department="department" />
         </div>
 
         <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in employees' class="mb-6 mt-2">
@@ -93,7 +93,7 @@
             </div>
           </v-row>
           <div class="mt-4 d-flex align-center">
-            <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
+            <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
           </div>
         </div>
 
@@ -104,7 +104,7 @@
             </div>
           </v-row>
           <div class="mt-8 d-flex align-center">
-            <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
+            <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
           </div>
         </div>
       </div>
