@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${HOST_PORT:-8088}:3000"

@@ -1,12 +1,63 @@
-version: "3.7"
+version: "3.8"
 services:
+    db:
+        image: postgres:14.1-alpine
+        restart: always
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=B1z0nt..
+        ports:
+            - '5432:5432'
     node_hss_backend:
         build: 
             context: "./"
             dockerfile: Dockerfile
         # command: ["nodemon", "server.js"]
+        # depends_on:
+        #     - db
+        volumes:
+            - .:/app/
+            - /app/node_modules
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: B1z0nt..
+            NODE_ENV: development
+            DB_HOST: 52.25.183.226
+            DB_PORT: 5432
+            DB_USER: postgres
+            DB_PASSWORD: B1z0nt..
+            DB_NAME_CONSTELLATION: bizont_edms_constellation_health
+            DB_NAME_MIDWIFERY: bizont_edms_midwifery
+            DB_NAME_HIPMA: bizont_edms_hipma
         volumes:
             - "./:/usr/src/app"
-            - "./.env.development:/.env"
+            - "./.env.development:/.env.development"
+            - "./.env:/.env"
+        # command:
+        #     - /bin/sh
+        #     - -c
+        #     - |
+        #       npm install -g db-migrate db-migrate-pg
+        #       db-migrate db:create bizont_edms_constellation_health
+        #       db-migrate up:constellation -e constellation
+        #       db-migrate db:create bizont_edms_midwifery
+        #       db-migrate up:midwifery -e midwifery
+        #       db-migrate db:create bizont_edms_hipma
+        #       db-migrate up:hipma -e hipma
         ports:
             - 8080:8080
+            - 3000:3000
+# version: "3.7"
+# services:
+#     node_hss_backend:
+#         build: 
+#             context: "./"
+#             dockerfile: Dockerfile
+#         # command: ["nodemon", "server.js"]
+#         volumes:
+#             - "./:/usr/src/app"
+#             - "./.env:/.env"
+#             - "./.env.development:/.env.development"
+#         ports:
+#             - 3000:3000
+
