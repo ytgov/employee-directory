@@ -4,6 +4,8 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
 
+import { Email } from './smtp.js'
+
 import { EmployeeTable } from './interface';
 
 let path;
@@ -587,4 +589,45 @@ employeesRouter.post("/SearchBar", async (req: Request, res: Response) => {
         .catch((error: any) => {
             console.log(error);
         });
+});
+
+employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
+
+    //Content from client
+    let feedbackContentSubject = (req.body.emailSubject);
+    let feedbackFormContent = (req.body.emailBody);
+    let emailDate = (req.body.emailDate);
+    let pageUrl = (req.body.pageUrl)
+
+    const bodyContentFormatted = 
+    `<p><strong>Submited on:</strong> ${emailDate}</p>
+    <p><strong>${feedbackContentSubject} :</strong> ${feedbackFormContent}</p> 
+    <p<strong>Url:</strong> <a href="${pageUrl}">${pageUrl}</a></p>`;
+
+    const subject = 'Feedback from the Find a government employee service'
+    
+    console.log(feedbackContentSubject)
+    console.log(feedbackFormContent)
+    console.log(emailDate)
+    console.log(pageUrl)
+    console.log(bodyContentFormatted)
+    console.log(subject)
+
+    Email.send({
+
+        Host: process.env.SMTP_SERVER,
+        To: process.env.EMAIL_TO,
+        From: process.env.EMAIL_FROM,
+        Port: process.env.SMTP_PORT,
+        Subject: subject,
+        Body: bodyContentFormatted,
+
+      }).then((response: any) => {
+
+        res.send({ data: response });
+    })
+    .catch((error: any) => {
+        console.log(error);
+    });
+    
 });
