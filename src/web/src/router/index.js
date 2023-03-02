@@ -14,21 +14,7 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    redirect: {name: "Find a government employee"},
-    // validate: (to, from, next) => {
-    //   const pattern = /^[-a-zA-Z0-9@:%._\+~#=]{2,256}$/
-    //   if (pattern.test(to.params.url)) {
-    //     try {
-    //       console.log('TEST!!!')
-    //       to.params.url = decodeURIComponent(to.params.url.replace(/%/g, '%25'))
-    //       next()
-    //     } catch (error) {
-    //       next({ name: 'Not Found' })
-    //     }
-    //   } else {
-    //     next({ name: 'Not Found' })
-    //   }
-    // }
+    redirect: {name: "Find a government employee"}
   },
   {
     path: "/find-Employee/employee-detail/:department/:full_name",
@@ -119,10 +105,5 @@ const router = new VueRouter({
   routes,
   
 });
-
-// router.beforeEach((to, from, next) => {
-//   console.log('test')
-//   return next();
-// });
 
 export default router;

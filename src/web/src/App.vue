@@ -7,6 +7,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 -moz-box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     
     " color="#fff" flat height="77" max-height="77" class="shadow">
+    <v-container class="px-0">
       <div class="header-container">
         <v-row align-content="space-between" align="center">
           <a href="https://yukon.ca/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
@@ -19,6 +20,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
           </div>
         </v-row>
       </div>
+      </v-container>
     </v-app-bar>
 
     <v-main :class="{ 'no-bg-img': noBgImg === false }">
@@ -31,6 +33,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
         </v-row>
       </v-container>
     </v-main>
+    <FeedbackForm/>
     <v-footer class="mt-16" flat style="z-index: 10" padless height="70">
       <v-card class="flex " flat tile>
         <v-card-title class="py-16 header-container full-width" id="footer-bg">
@@ -39,21 +42,25 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
           </v-container>
         </v-card-title>
         <v-divider></v-divider>
+        
         <v-card class="footer-details">
+          <v-container class="px-3 px-md-0">
 
-          <div class="header-container d-flex justify-space-between">
+          <div class="d-flex justify-space-between">
 
-            <div class="d-flex flex-column pa-2 width-100">
+            <div class="d-flex flex-column pa-2">
               <a target="_blank" href="https://yukon.ca/">Government of Yukon</a>
               <a target="_blank" href="https://yukon.ca/en/copyright">Copyright</a>
               <a target="_blank" href="https://yukon.ca/en/disclaimer">Disclaimer</a>
               <a target="_blank" href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
             </div>
-            <v-card-text class="white--text text-right with-100">
+            <v-card-text class="white--text text-right">
               <span>© {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
             </v-card-text>
           </div>
+        </v-container>
         </v-card>
+        
       </v-card>
     </v-footer>
 
@@ -67,6 +74,7 @@ import store from "./store";
 import * as config from "./config";
 import { mapState } from "vuex";
 import IconLoader from "./components/icons/IconLoader.vue";
+import FeedbackForm from "./components/UI/FeedbackForm.vue";
 
 export default {
     name: "App",
@@ -99,7 +107,7 @@ export default {
             this.menuShow = !this.menuShow;
         },
     },
-    components: { IconLoader }
+    components: { IconLoader, FeedbackForm }
 };
 </script>
 

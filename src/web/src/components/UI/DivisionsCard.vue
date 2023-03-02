@@ -1,8 +1,7 @@
 <template>
-    <v-row>
-        <v-col class="flex-row align-center justify-center">
-
-            <v-card elevation="1" max-width="1090" class="mx-auto flex-column py-10">
+    <v-row class="px-3">
+        <v-col>
+            <v-card elevation="1" width="100%" class="py-10">
                 <v-row>
                     <v-col cols="6" v-for="(item, parent_item, id) in items" :key="id" class="px-8 py-1">
 

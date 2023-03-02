@@ -3,176 +3,184 @@
         <SearchBarHeader />
         <DepartmentHeader v-if="department !== 'Any department'" :title="this.department"
             :image="this.department.toLowerCase().replace(/\//g, '')" />
-
-        <v-breadcrumbs class="mt-6 mb-8 breadcrumbs" :items="breadcrumbsList">
-            <template v-slot:item="{ item }">
-                <v-breadcrumbs-item :href="item.link">
-                    {{ item.name }}
-                </v-breadcrumbs-item>
-            </template>
-        </v-breadcrumbs>
-
-
-        <h2 class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
-        </h2>
-        <v-row>
-            <v-col cols="12" md="2" class="d-flex align-center justify-start">
-                <h4 class="">Group by: </h4>
-            </v-col>
-            <v-col cols="12" md="8">
-                <v-chip-group v-model="selection" center-active mandatory>
-                    <v-row>
-                        <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
-                            <v-chip label outlined color="#00616D">See all government employees</v-chip>
-                            <v-chip label outlined color="#00616D">Department</v-chip>
-                            <v-chip label outlined color="#00616D">Location</v-chip>
-                            <v-chip label outlined color="#00616D">Position</v-chip>
-                        </v-col>
-                    </v-row>
-                </v-chip-group>
-            </v-col>
-        </v-row>
-
-        <div class="text-center loading" v-show="loading">
-            <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-        </div>
-
-        <div v-if="itemsValue === 0">
-
-            <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="items"
-                :headers="headers" :loading="loading" hide-default-header :items-per-page="itemsPerPage"
-                mobile-breakpoint="0">
-                <template v-slot:header="{ props }">
-                    <th class="data-header py-3 pl-3 " v-for="head in props.headers" :key="head.id">{{ head.text }}
-                    </th>
+        <v-container class="px-0">
+            <v-breadcrumbs class="mt-6 mb-8 breadcrumbs px-0" :items="breadcrumbsList">
+                <template v-slot:item="{ item }">
+                    <v-breadcrumbs-item :href="item.link">
+                        {{ item.name }}
+                    </v-breadcrumbs-item>
                 </template>
-                <template v-slot:body="{ items }">
-                    <tbody class="table-body">
-                        <tr class="table-border" v-for='item in items' :key="item.full_name">
-                            <td>
-                                <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                    :href="urlEmployee(item.department, item.full_name_url)">
+            </v-breadcrumbs>
 
-                                    {{ item.formatted_name }}
-                                </a>
-                            </td>
-                            <td class="default-cursor">{{ item.title }}</td>
-                            <td class="default-cursor">{{ item.email }}</td>
-                            <td class="default-cursor">{{ item.phone_office }}</td>
-                        </tr>
-                    </tbody>
-                </template>
 
-            </v-data-table>
-        </div>
-        <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
-            <h2 class="mt-8 ml-5 department-text">{{ cleanParam(parent_array) }}</h2>
-
-            <div v-for="(item, index, id) in value" :key="id">
-                <div class="mt-8 ml-5 d-flex align-center">
-                    <h3 class="division-text">{{ cleanParam(index) }}</h3>
-                    <h3 class="ml-3 py-1 px-3 division-length">{{ item.length }}</h3>
-                </div>
-
-                <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="item"
-                    :headers="headers" :loading="loading" hide-default-header mobile-breakpoint="0">
-                    <template v-slot:header="{ props }">
-                        <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-                        </th>
-                    </template>
-                    <template v-slot:body="{ items }">
-                        <tbody class="table-body">
-                            <tr class="table-border" v-for='item in item'>
-                                <td>
-                                    <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                        :href="urlEmployee(item.department, item.full_name_url)">
-
-                                        {{ item.formatted_name }}
-                                    </a>
-                                </td>
-                                <td class="default-cursor">{{ item.title }}</td>
-                                <td class="default-cursor">{{ item.email }}</td>
-                                <td class="default-cursor">{{ item.phone_office }}</td>
-                            </tr>
-                        </tbody>
-                    </template>
-
-                </v-data-table>
-
-            </div>
-
-        </div>
-
-        <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
+            <h2 class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
+            </h2>
             <v-row>
-                <div class="mt-8 ml-12 d-flex align-center">
-                    <h3 class="division-text ">{{ cleanLocation(parent_array) }}</h3>
-                </div>
+                <v-col cols="12" md="2" class="d-flex align-center justify-start">
+                    <h4 class="">Group by: </h4>
+                </v-col>
+                <v-col cols="12" md="8">
+                    <v-chip-group v-model="selection" center-active mandatory>
+                        <v-row>
+                            <v-col
+                                class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
+                                <v-chip label outlined color="#00616D">See all government employees</v-chip>
+                                <v-chip label outlined color="#00616D">Department</v-chip>
+                                <v-chip label outlined color="#00616D">Location</v-chip>
+                                <v-chip label outlined color="#00616D">Position</v-chip>
+                            </v-col>
+                        </v-row>
+                    </v-chip-group>
+                </v-col>
             </v-row>
-            <div class="mt-4 ml-5 d-flex align-center">
-                <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="value"
-                    :headers="headers" :loading="loading" hide-default-header mobile-breakpoint="0">
+
+            <div class="text-center loading" v-show="loading">
+                <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+            </div>
+
+            <div v-if="itemsValue === 0">
+
+                <v-data-table dense class="py-5 d-table" hide-default-footer :items="items" :headers="headers"
+                    :loading="loading" hide-default-header :items-per-page="itemsPerPage" mobile-breakpoint="0">
                     <template v-slot:header="{ props }">
-                        <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+                        <th class="data-header py-3 pl-3 " v-for="head in props.headers" :key="head.id">{{ head.text }}
                         </th>
                     </template>
                     <template v-slot:body="{ items }">
                         <tbody class="table-body">
-                            <tr class="table-border" v-for='item in value'>
+                            <tr class="table-border" v-for='item in items' :key="item.full_name">
                                 <td>
                                     <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
                                         :href="urlEmployee(item.department, item.full_name_url)">
+
                                         {{ item.formatted_name }}
                                     </a>
                                 </td>
                                 <td class="default-cursor">{{ item.title }}</td>
                                 <td class="default-cursor">{{ item.email }}</td>
-                                <td class="default-cursor">{{ item.phone_office }}</td>
+                                <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                                        :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }"> {{
+                                            item.phone_office }} </a> </td>
                             </tr>
                         </tbody>
                     </template>
+
                 </v-data-table>
-
             </div>
+            <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
+                <h2 class="mt-8 department-text">{{ cleanParam(parent_array) }}</h2>
 
-        </div>
+                <div v-for="(item, index, id) in value" :key="id">
+                    <div class="mt-8 d-flex align-center">
+                        <h3 class="division-text">{{ cleanParam(index) }}</h3>
+                        <h3 class="py-1 px-3 division-length">{{ item.length }}</h3>
+                    </div>
 
-        <div v-if="itemsValue === 3" v-for='(value, parent_array, key) in items' class="class=d-flex mb-6 mt-2">
-            <v-row>
-                <div class="mt-8 ml-12 d-flex align-center">
-                    <h3 class="division-text ">{{ cleanParam(parent_array) }}</h3>
+                    <v-data-table dense class="py-5 d-table" hide-default-footer :items="item" :headers="headers"
+                        :loading="loading" hide-default-header mobile-breakpoint="0">
+                        <template v-slot:header="{ props }">
+                            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+                            </th>
+                        </template>
+                        <template v-slot:body="{ items }">
+                            <tbody class="table-body">
+                                <tr class="table-border" v-for='item in item'>
+                                    <td>
+                                        <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                                            :href="urlEmployee(item.department, item.full_name_url)">
+
+                                            {{ item.formatted_name }}
+                                        </a>
+                                    </td>
+                                    <td class="default-cursor">{{ item.title }}</td>
+                                    <td class="default-cursor">{{ item.email }}</td>
+                                    <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                                            :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }">
+                                            {{ item.phone_office }} </a> </td>
+                                </tr>
+                            </tbody>
+                        </template>
+
+                    </v-data-table>
+
                 </div>
-            </v-row>
-            <div class="mt-8 ml-5 d-flex align-center">
-                <v-data-table dense class="pa-5 d-table auto width-100" hide-default-footer :items="value"
-                    :headers="headers" :loading="loading" hide-default-header mobile-breakpoint="0">
-                    <template v-slot:header="{ props }">
-                        <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-                        </th>
-                    </template>
-                    <template v-slot:body="{ items }">
-                        <tbody class="table-body">
-                            <tr class="table-border" v-for='item in value'>
-                                <td>
-                                    <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                        :href="urlEmployee(item.department, item.full_name_url)">
-                                        {{ item.formatted_name }}
-                                    </a>
-                                </td>
-                                <td class="default-cursor">{{ item.title }}</td>
-                                <td class="default-cursor">{{ item.email }}</td>
-                                <td class="default-cursor">{{ item.phone_office }}</td>
-                            </tr>
-                        </tbody>
-                    </template>
-
-                </v-data-table>
 
             </div>
 
-        </div>
+            <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
+                <v-row>
+                    <div class="mt-8 d-flex align-center">
+                        <h3 class="division-text pl-3">{{ cleanLocation(parent_array) }}</h3>
+                    </div>
+                </v-row>
+                <div class="mt-4 d-flex align-center">
+                    <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
+                        :loading="loading" hide-default-header mobile-breakpoint="0">
+                        <template v-slot:header="{ props }">
+                            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+                            </th>
+                        </template>
+                        <template v-slot:body="{ items }">
+                            <tbody class="table-body">
+                                <tr class="table-border" v-for='item in value'>
+                                    <td>
+                                        <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                                            :href="urlEmployee(item.department, item.full_name_url)">
+                                            {{ item.formatted_name }}
+                                        </a>
+                                    </td>
+                                    <td class="default-cursor">{{ item.title }}</td>
+                                    <td class="default-cursor">{{ item.email }}</td>
+                                    <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                                            :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }">
+                                            {{ item.phone_office }} </a> </td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-data-table>
+
+                </div>
+
+            </div>
+
+            <div v-if="itemsValue === 3" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
+                <v-row>
+                    <div class="mt-8 pl-3 d-flex align-center">
+                        <h3 class="division-text ">{{ cleanParam(parent_array) }}</h3>
+                    </div>
+                </v-row>
+                <div class="mt-8 d-flex align-center">
+                    <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
+                        :loading="loading" hide-default-header mobile-breakpoint="0">
+                        <template v-slot:header="{ props }">
+                            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+                            </th>
+                        </template>
+                        <template v-slot:body="{ items }">
+                            <tbody class="table-body">
+                                <tr class="table-border" v-for='item in value'>
+                                    <td>
+                                        <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
+                                            :href="urlEmployee(item.department, item.full_name_url)">
+                                            {{ item.formatted_name }}
+                                        </a>
+                                    </td>
+                                    <td class="default-cursor">{{ item.title }}</td>
+                                    <td class="default-cursor">{{ item.email }}</td>
+                                    <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
+                                            :class="{ telephone: mobileCheck, 'telephone-desktop': mobileCheck === false }">
+                                            {{ item.phone_office }} </a> </td>
+                                </tr>
+                            </tbody>
+                        </template>
+
+                    </v-data-table>
+
+                </div>
+
+            </div>
+        </v-container>
     </div>
-
 </template>
 
 <script>
@@ -204,11 +212,26 @@ export default {
                 this.loading = true
                 this.getDataFromApi();
             },
+        },
+        windowWidth: {
+            handler() {
+                if (this.windowWidth > 900) {
+                    this.mobileCheck = false
+                } else this.mobileCheck = true
+            }
         }
 
     },
     emits: ['changeBg'],
     mounted() {
+
+        this.$nextTick(() => {
+            window.addEventListener('resize', this.onResize);
+        })
+        if (this.windowWidth > 900) {
+            this.mobileCheck = false
+        } else this.mobileCheck = true
+
         this.getDataFromApi();
         this.updateBreadCrumbs();
         this.$emit('changeBg');
@@ -228,15 +251,30 @@ export default {
             headers: [
                 { text: "Name", value: "formatted_name" },
                 { text: "Position", value: "title" },
-                { text: "E-Mail Address", value: "email" },
-                { text: "Phone Number", value: "phone_office" },
+                { text: "E-mail address", value: "email" },
+                { text: "Phone number", value: "phone_office" },
             ],
             loading: false,
             searchTitle: '',
+            windowWidth: window.innerWidth,
+            mobilecheck: false,
         }
     },
 
     methods: {
+        getPhone(number) {
+            const find = "-";
+            const reg = new RegExp(find, "g");
+            const numberFormatted = number.replace(reg, "");
+            const link = "tel:" + numberFormatted;
+
+            if (this.mobileCheck === false) {
+                return
+            } else { return String(link); }
+        },
+        onResize() {
+            this.windowWidth = window.innerWidth
+        },
         urlEmployee(department, name) {
             var find = ' ';
             var reg = new RegExp(find, 'g');

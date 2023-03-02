@@ -1,7 +1,5 @@
 <template>
-  
   <div class="books">
-
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
@@ -9,55 +7,56 @@
 
     <DepartmentHeader :title="title" :image="department" />
 
+    <v-container class="px-0">
+      <v-breadcrumbs class="mt-6 breadcrumbs px-0" :items="breadcrumbsList">
+        <template v-slot:item="{ item }">
+          <v-breadcrumbs-item :href="item.link">
+            {{ item.name }}
+          </v-breadcrumbs-item>
+        </template>
+      </v-breadcrumbs>
+      <v-row class="mt-16"></v-row>
+      <v-row>
+        <v-col col="6">
 
-    <v-breadcrumbs class="mt-6 breadcrumbs" :items="breadcrumbsList">
-      <template v-slot:item="{ item }">
-        <v-breadcrumbs-item :href="item.link">
-          {{ item.name }}
-        </v-breadcrumbs-item>
-      </template>
-    </v-breadcrumbs>
-    <v-row class="mt-16"></v-row>
-    <v-row>
-      <v-col col="6">
+          <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
+            max-width="1180" min-height="542" outlined>
 
-        <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
-          max-width="1180" min-height="542" outlined>
+            <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
+              max-width="590">
+              <div class="py-4 d-flex align-center justify-center" style="width: 200px">
+                <IconLoader :image="department" :color="'purple'" />
+              </div>
+              <div class="d-flex align-center justify-center" style="width:80%">
+                <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
+              </div>
+            </v-card-actions>
 
-          <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
-            max-width="590">
-            <div class="py-4 d-flex align-center justify-center" style="width: 200px">
-              <IconLoader :image="department" :color="'purple'" />
-            </div>
-            <div class="d-flex align-center justify-center" style="width:80%">
-              <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
-            </div>
-          </v-card-actions>
-
-          <v-card outlined color="transparent" class="flex-column py-10">
-            <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" :key="item.full_name" class="px-8">
-              <v-card outlined color="transparent">
-                <li>
-                  <a @click="activateBranches(parent_item)" :key="id" class="division">{{
+            <v-card outlined color="transparent" class="flex-column py-10">
+              <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" :key="item.full_name"
+                class="px-8">
+                <v-card outlined color="transparent">
+                  <li>
+                    <a @click="activateBranches(parent_item)" :key="id" class="division">{{
                       parent_item
-                  }}</a>
-                </li>
-                <v-expand-transition>
-                  <ul v-if="check === parent_item.toLowerCase()">
-                    <li v-for="(item, index, id) in item" :key="id" class="py-2">
-                      <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
-                      }}</a>
-                    </li>
-                  </ul>
-                </v-expand-transition>
+                    }}</a>
+                  </li>
+                  <v-expand-transition>
+                    <ul v-if="check === parent_item.toLowerCase()">
+                      <li v-for="(item, index, id) in item" :key="id" class="py-2">
+                        <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
+                        }}</a>
+                      </li>
+                    </ul>
+                  </v-expand-transition>
+                </v-card>
               </v-card>
             </v-card>
           </v-card>
-        </v-card>
-        <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
-      </v-col>
-    </v-row>
-
+          <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -92,7 +91,7 @@ export default {
     loading: true,
 
   }),
-  emits:['changeBg'],
+  emits: ['changeBg'],
   created() {
 
   },
@@ -120,8 +119,8 @@ export default {
   },
   methods: {
 
-    checkError(){
-      if(this.error === true){
+    checkError() {
+      if (this.error === true) {
         window.location.href = this.url + '/page-not-found'
       }
     },
@@ -195,10 +194,6 @@ export default {
       } else
         this.show = param;
     },
-    divisionMethod() {
-      let department = req.params.department
-      this.title = department
-    },
     getDataFromApi() {
       var find = '-';
       var reg = new RegExp(find, 'g');
@@ -219,6 +214,7 @@ export default {
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
           this.loading = false;
+          this.title = resp.data.meta.department
         })
         .catch((err) => console.error(err))
         .finally(() => {
