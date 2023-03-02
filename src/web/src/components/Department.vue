@@ -351,7 +351,7 @@ export default {
           data: {
             groupBy: this.selection,
           },
-          url: `${urls.FIND_EMPLOYEE_URL}${department}/not-division/all-branches?search=`
+          url: `${urls.FIND_EMPLOYEE_URL}${department}/only-department/only-department?search=`
         })
         .then((resp) => {
           this.employees = resp.data.data;

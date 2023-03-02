@@ -262,26 +262,3 @@ a {
   color: black !important;
   cursor: default !important;
 }
-
-
-.full-name {
-  cursor: pointer;
-  margin-left: 3px;
-}
-
-.table-header {
-  height: 300px !important;
-}
-
-.overf {
-  z-index: 1;
-  overflow: hidden;
-}
-
-.angle-right {
-  width: 6px;
-}
-
-.angle-right-multiple {
-  width: 5px;
-}

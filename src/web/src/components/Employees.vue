@@ -23,9 +23,9 @@
                 <v-list-item three-line class="icon-list">
                   <v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
                     :style="{ 'background-color': hover ? '#DC4001' : '#512A44' }">
-                    <v-avatar tile>
-                      <IconLoader :image="index.toLowerCase().replace(/\//g, '')" :color="'white'" />
-                    </v-avatar>
+                    <div>
+                      <IconLoader :image="'icon'" style="height:100%;" :color="'white'" />
+                    </div>
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title class="text-h6 mb-1">

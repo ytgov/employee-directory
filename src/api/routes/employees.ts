@@ -286,6 +286,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
     var notDivision = paramDivision === 'not-division';
 
+    var onlyDept = paramDivision === 'only-department' && paramBranch === 'only-department'
+
     if (paramDivision === 'not-division') {
         paramDivision = ''
     } else {
@@ -334,22 +336,21 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let employeesByDivision = employeesByDept
 
             //Filter by Division  
-            if (notDivision) {
+            if(onlyDept){
+
+            } else if (notDivision) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
             } else {
                 employeesByDivision = employeesByDept.filter(item => { return item.division.indexOf(paramDivision) >= 0 })
             }
 
-            // Getting the division with correct punctuation
-            const division = _.uniqBy(employeesByDivision, function (e: any) {
-                return e.division;
-            });
-
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
 
             //Filter by Branch
-            if (notBranch) {
+            if(onlyDept) {
+
+            } else if (notBranch) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
             } else if (paramBranch !== '') {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
@@ -512,7 +513,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division , meta: { count: 0, error } });
+            res.send({ data: division, meta: { count: 0, error } });
 
         })
         .catch((error: any) => {

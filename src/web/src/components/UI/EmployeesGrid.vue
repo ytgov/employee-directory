@@ -12,9 +12,9 @@
                     <td>
                         <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
                             :href="urlEmployee(item.department, item.full_name_url)">
-                            <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right">
+                            <IconLoader style="width:10px !important;" v-if="item.level === 1" :color2="'blue'" :image="'circle'" class="angle-right">
                             </IconLoader>
-                            <IconLoader v-if="item.level > 1" v-for='n in item.level' :color="'blue'" image="1"
+                            <IconLoader style="width:10px !important;" v-if="item.level > 1" :size="item.level" :color2="'white'" :color="'blue'" :image="'circle'"
                                 class="angle-right-multiple"></IconLoader>
                             <label class="full-name">{{ item.full_name }}</label>
                         </a>
@@ -114,5 +114,26 @@ export default {
 
 <style scoped>
 
+.full-name {
+  cursor: pointer;
+  margin-left: 3px;
+}
+
+.table-header {
+  height: 300px !important;
+}
+
+.overf {
+  z-index: 1;
+  overflow: hidden;
+}
+
+.angle-right {
+  width: 6px;
+}
+
+.angle-right-multiple {
+  width: 5px;
+}
 
 </style>
