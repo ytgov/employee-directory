@@ -2,31 +2,25 @@
     <div class="full-width yellow-border white-bg pl-0 pt-5 find-employee">
         <v-container class="container-content px-md-0 px-lg-3">
             <h1 v-if="title !== null">Find a government employee</h1>
-
-            <v-banner v-if="info" class="mb-2 mt-8 info_find-employee">
-                <strong>
-                    I know who I am looking for
-                </strong>
-                <ol type="1" class="mb-3">
-                    <li>
-                        Enter the employee's name, position title, email address or phone number in the search box. You can
-                        also select their department from the drop down, but this is optional.
-                    </li>
-                    <li>
-                        Select the "Search' button to display the results.
-                    </li>
-                </ol>
-                <strong>
-                    I am not sure who I need to contact - I want to browse
-                </strong>
                 <p>
+                    <strong>I know who I am looking for</strong>
+                    <ol>
+                        <li>
+                            Enter the employee's name, position title, email address or phone number in the search box. You can also select their department from the drop down, but this is optional.
+                        </li>
+                        <li>
+                        Select the "Search' button to display the results.
+                        </li>
+                    </ol>
+                </p>
+                <p>
+                    <strong>I am not sure who I need to contact - I want to browse</strong>
+                    <br>
                     Scroll down the page and select the department you want to browse.
                 </p>
             </v-banner>
 
             <v-form @submit.prevent="updateSearch">
-
-
                 <v-row>
                     <v-col class="mb-n6" sm="6" cols="12">
                         <v-text-field label="Keywords" v-model="nameSearch" dense="" background-color="#F1F1F1"
