@@ -76,9 +76,9 @@
             </v-chip-group>
           </v-col>
         </v-row>
-        <div class="pt-6 pb-n12 mt-5 d-flex flex-column align-start justify-center">
 
-        </div>
+        <h2 class="mt-3" style="font-size: 30px;" > {{ divisionLength }} Results </h2>
+
         <div class="text-center loading" v-show="loading">
           <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
         </div>
