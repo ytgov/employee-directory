@@ -1,4 +1,5 @@
-version: '3.7'
+version: '3'
+
 services:
   web:
     build: .
@@ -7,6 +8,5 @@ services:
       - 'NODE_ENV=production'
     env_file:
       - .env
-      ports:
-          - "${HOST_PORT:-8088}:3000"
-
+    ports:
+      - '${HOST_PORT:-27639}:3000'
