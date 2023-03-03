@@ -31,8 +31,8 @@
       </v-row>
 
       <v-row>
-        <DivisionsCard :division="this.div" :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()"
-          :department="this.department.toLowerCase()" class="mt-6" />
+        <DivisionsCard :division="this.div" :checkClass="this.branch" :checkHover="this.div" :department="this.department"
+          class="mt-6" />
       </v-row>
 
       <div class="pt-6 pb-n12 mt-10 d-flex flex-column align-start justify-center">
@@ -50,38 +50,7 @@
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
       <div v-if="itemsValue === 0" class="mb-6 mt-2">
-
-        <v-data-table dense class="py-5 px-0 d-table" hide-default-footer :items="items" :headers="headers"
-          :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" hide-default-header
-          mobile-breakpoint="0">
-          <template v-slot:header="{ props }">
-            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-            </th>
-          </template>
-          <template v-slot:body="{ items }">
-            <tbody class="table-body">
-              <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }"
-                class="table-border" v-for='(item, index, id ) in items' :key="id">
-                <td>
-                  <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
-                    :href="urlEmployee(item.department, item.full_name_url)">
-                    <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right">
-                    </IconLoader>
-                    <IconLoader v-if="item.level > 1" v-for='n in item.level' :color="'blue'" image="1"
-                      class="angle-right-multiple"></IconLoader>
-                    <label class="full-name">{{ item.formatted_name }}</label>
-                  </a>
-                </td>
-                <td class="default-cursor"> {{ item.title }} </td>
-                <td class="default-cursor"> {{ item.email }}</td>
-                <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a>
-                </td>
-              </tr>
-            </tbody>
-          </template>
-
-        </v-data-table>
-
+        <EmployeesGrid :check="mobileCheck" :items="items" :department="department" />
       </div>
 
       <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
@@ -91,28 +60,7 @@
           </div>
         </v-row>
         <div class="mt-4 d-flex align-center">
-          <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
-            :loading="loading" hide-default-header mobile-breakpoint="0">
-            <template v-slot:header="{ props }">
-              <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-              </th>
-            </template>
-            <template v-slot:body="{ items }">
-              <tbody class="table-body">
-                <tr class="table-border" v-for='item in value'>
-                  <td>
-                    <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
-                      :href="urlEmployee(item.department, item.full_name_url)">
-                      {{ item.formatted_name }}
-                    </a>
-                  </td>
-                  <td class="default-cursor">{{ item.title }}</td>
-                  <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a></td>
-                </tr>
-              </tbody>
-            </template>
-          </v-data-table>
+          <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
         </div>
       </div>
 
@@ -123,28 +71,7 @@
           </div>
         </v-row>
         <div class="mt-8 d-flex align-center">
-          <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
-            :loading="loading" hide-default-header mobile-breakpoint="0">
-            <template v-slot:header="{ props }">
-              <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-              </th>
-            </template>
-            <template v-slot:body="{ items }">
-              <tbody class="table-body">
-                <tr class="table-border" v-for='item in value'>
-                  <td>
-                    <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
-                      :href="urlEmployee(item.department, item.full_name_url)">
-                      {{ item.formatted_name }}
-                    </a>
-                  </td>
-                  <td class="default-cursor">{{ item.title }}</td>
-                  <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor"> <a :href="getPhone(item.phone_office)" :class="{ telephone: mobileCheck, 'telephone-desktop' : mobileCheck === false }"> {{ item.phone_office }} </a> </td>
-                </tr>
-              </tbody>
-            </template>
-          </v-data-table>
+          <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
         </div>
       </div>
     </v-container>
@@ -158,6 +85,7 @@ import DivisionsCard from "./UI/DivisionsCard.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
+import EmployeesGrid from "./UI/EmployeesGrid.vue";
 
 export default {
   name: "Grid",
@@ -166,6 +94,7 @@ export default {
     DivisionsCard,
     IconLoader,
     SearchBarHeader,
+    EmployeesGrid
   },
   data: () => ({
     itemsValue: null,
@@ -185,14 +114,14 @@ export default {
     headers: [
       { text: "Name", value: "formatted_name" },
       { text: "Position", value: "title" },
-      { text: "E-mail address", value: "email" },
+      { text: "Email address", value: "email" },
       { text: "Phone number", value: "phone_office" },
     ],
     page: 1,
     pageCount: 0,
     itemsPerPage: 9999,
     windowWidth: window.innerWidth,
-    mobilecheck: false,
+    mobileCheck: false,
   }),
   watch: {
     '$route'() {
@@ -219,12 +148,12 @@ export default {
     windowWidth: {
       handler() {
         if (this.windowWidth > 900) {
+
           this.mobileCheck = false
         } else this.mobileCheck = true
       }
     }
   },
-  emits: ['changeBg'],
   mounted() {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
@@ -234,24 +163,27 @@ export default {
     } else this.mobileCheck = true
     this.getDataFromApi();
     this.updateBreadCrumbs();
-    this.$emit('changeBg');
   },
   methods: {
-    getPhone(number) {
-      const find = "-";
-      const reg = new RegExp(find, "g");
-      const numberFormatted = number.replace(reg, "");
-      const link = "tel:" + numberFormatted;
+    cleanParam(param) {
 
-      if(this.mobileCheck === false) {
-        return
-      } else { return String(link); }
+      if (param === '-') {
+        param = 'N/A'
+      }
+
+      return param;
+    },
+    cleanLocation(location) {
+
+      if (location[0] === ',') {
+        let link = location.slice(1);
+        return link.replace(/['"]+/g, '')
+      } else {
+        return location.replace(/['"]+/g, '')
+      }
     },
     onResize() {
       this.windowWidth = window.innerWidth
-    },
-    checkPageWidth() {
-
     },
     cleanParam(param) {
       if (param === '-') {
@@ -259,19 +191,7 @@ export default {
       }
       return param;
     },
-    cleanLocation(location) {
-      if (location[0] === ',') {
-        let link = location.slice(1);
-        return link.replace(/['"']+/g, '')
-      } else {
-        return location.replace(/['"']+/g, '')
-      }
-    },
-    urlEmployee(department, name) {
-      var find = ' ';
-      var reg = new RegExp(find, 'g');
-      return '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
-    },
+
     capitalizeString(param) {
       const string = param
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -284,17 +204,24 @@ export default {
       dynamicBreadcrumb.forEach((element => {
         if (element.name == 'Department') {
           element.name = this.department;
-          element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
+          element.link = '/find-employee/' + this.department.replace(reg, '-')
         } else if (element.name == 'Division') {
-          element.name = this.div;
-          if (this.branch !== 'all-branches') {
-            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-').toLowerCase() + '/all-branches'
+          console.log(this.div)
+          if(this.div === 'Not division'){
+            element.name = 'Employees who are not assigned a division'
+            element.link = null
+          } else element.name = this.div;
+
+          if (this.branch !== 'All branches') {
+
+            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-') + '/all-branches'
           } else {
+          
             element.link = null
           }
         } else if (element.name == 'Branch') {
-          if (this.branch === 'all-branches') {
-            element.name = null
+          if (this.branch === 'All branches') {
+            element.name = 'Employees who are not assigned a branch'
           } else {
             element.name = this.branch;
           }
@@ -317,6 +244,7 @@ export default {
         formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
       }
       this.title = this.capitalizeString(department.replace(reg, ' '))
+
       this.department = this.capitalizeString(department.replace(reg, ' '))
       this.div = this.capitalizeString(division.replace(reg, ' '))
       this.branch = this.capitalizeString(branch.replace(reg, ' '))
@@ -330,7 +258,6 @@ export default {
           url: `${urls.FIND_EMPLOYEE_URL}${department}/${division}/${branch}?search=`
         })
         .then((resp) => {
-          this.title = resp.data.meta.department
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
@@ -348,26 +275,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.full-name {
-  cursor: pointer;
-  margin-left: 3px;
-}
-
-.table-header {
-  height: 300px !important;
-}
-
-.overf {
-  z-index: 1;
-  overflow: hidden;
-}
-
-.angle-right {
-  width: 6px;
-}
-
-.angle-right-multiple {
-  width: 5px;
-}
-</style>
+<style scoped></style>

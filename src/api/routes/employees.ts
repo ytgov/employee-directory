@@ -4,6 +4,10 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
 
+import nodemailer from "nodemailer";
+import Mail from "nodemailer/lib/mailer";
+
+
 import { EmployeeTable } from './interface';
 
 let path;
@@ -135,7 +139,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             });
 
             if (paramDepartment !== '') {
-                employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
+                employeesByDept = employeesByDept.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
             }
 
             employeesByDept = _.orderBy(employeesByDept, [employee => employee.full_name], ['asc'])
@@ -230,30 +234,31 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 employeeArr.push(employee);
 
             });
-            let employeeFilteredByDpt = employeeArr.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
+            let employeeFilteredByDpt = employeeArr.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
 
-            let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.toLowerCase().indexOf(paramFullName) >= 0 })
+            let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.indexOf(paramFullName) >= 0 })
 
             if (employeeFiltered.length === 0) {
                 return res.send({ data: true })
             }
 
 
-            if (employeeFiltered[0].latitude !== null) {
-                employeeFiltered[0].center.lat = employeeFiltered[0].latitude
-                employeeFiltered[0].center.lng = employeeFiltered[0].longitude
-            } else {
+            if (employeeFiltered[0].community && employeeFiltered[0].address !== '' || null) {
+                if (employeeFiltered[0].latitude !== null) {
+                    employeeFiltered[0].center.lat = employeeFiltered[0].latitude
+                    employeeFiltered[0].center.lng = employeeFiltered[0].longitude
+                } else {
 
-                await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
-                    .then((response: any) => {
-                        const center = response.data.candidates[0].location
-                        employeeFiltered[0].center.lat = center.y
-                        employeeFiltered[0].center.lng = center.x
-                    }).catch((error: any) => {
-                        console.log(error)
-                    })
-
-            }
+                    await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
+                        .then((response: any) => {
+                            const center = response.data.candidates[0].location
+                            employeeFiltered[0].center.lat = center.y
+                            employeeFiltered[0].center.lng = center.x
+                        }).catch((error: any) => {
+                            console.log(error)
+                        })
+                }
+            } else employeeFiltered[0].center = null
 
             let managerName: any
 
@@ -282,7 +287,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
+
     var notDivision = paramDivision === 'not-division';
+
+    var onlyDept = paramDivision === 'only-department' && paramBranch === 'only-department'
 
     if (paramDivision === 'not-division') {
         paramDivision = ''
@@ -326,36 +334,30 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             });
 
             employeesByDept = employeesByDept.filter(item => {
-                return item.department.toLowerCase().indexOf(paramDepartment) >= 0
+                return item.department.indexOf(paramDepartment) >= 0
             })
-
-            // Getting the department with correct punctuation
-            const department = _.uniqBy(employeesByDept, function (e: any) {
-                return e.department;
-            });
 
             let employeesByDivision = employeesByDept
 
             //Filter by Division  
-            if (notDivision) {
+            if(onlyDept){
+
+            } else if (notDivision) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
             } else {
-                employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+                employeesByDivision = employeesByDept.filter(item => { return item.division.indexOf(paramDivision) >= 0 })
             }
-
-            // Getting the division with correct punctuation
-            const division = _.uniqBy(employeesByDivision, function (e: any) {
-                return e.division;
-            });
 
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
 
             //Filter by Branch
-            if (notBranch) {
+            if(onlyDept) {
+
+            } else if (notBranch) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
             } else if (paramBranch !== '') {
-                employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
             }
 
             //Get all the Managers' name
@@ -464,7 +466,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     break;
             }
 
-            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength, department: department[0].department , division: division[0].division } });
+            res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -486,32 +488,25 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
             var resultEmployees = response.data.employees;
 
             employeesByDept = resultEmployees.filter(function (e: any) {
-                return e.department.toLowerCase().indexOf(paramDepartment) >= 0
+                return e.department.indexOf(paramDepartment) >= 0
             })
 
-            // Getting the department with correct punctuation
-            const department = _.uniqBy(employeesByDept, function (e: any) {
-                return e.paramDepartment;
-            });
-
             if (employeesByDept.length == 0) {
-                error = true
+                res.send({ meta: { count: 0, error } });
             }
 
             let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
 
             employeesByDept.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'Not Division'
+                    element.division = 'Employees who are not assigned a division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'Not Branch'
+                    element.branch = 'Employees who are not assigned a branch'
                 }
             })
 
-
             let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
-
 
             for (const [key, value] of Object.entries(division)) {
                 const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
@@ -520,7 +515,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             }
 
-            res.send({ data: division, meta: { count: 0, error, department: department[0].department } });
+            res.send({ data: division, meta: { count: 0, error } });
 
         })
         .catch((error: any) => {
@@ -543,7 +538,7 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
             var resultEmployees = response.data.employees;
 
             employeesByDept = resultEmployees.filter(function (e: any) {
-                return e.department.toLowerCase().indexOf(paramDepartment) >= 0
+                return e.department.indexOf(paramDepartment) >= 0
             })
 
 
@@ -551,10 +546,10 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
 
             employeesByDept.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'Not Division'
+                    element.division = 'Employees who are not assigned a division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'Not Branch'
+                    element.branch = 'Employees who are not assigned a branch'
                 }
             })
 
@@ -596,4 +591,49 @@ employeesRouter.post("/SearchBar", async (req: Request, res: Response) => {
         .catch((error: any) => {
             console.log(error);
         });
+});
+
+employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
+
+    //Content from client
+    let feedbackContentSubject = (req.body.emailSubject);
+    let feedbackFormContent = (req.body.emailBody);
+    let emailDate = (req.body.emailDate);
+    let pageUrl = (req.body.pageUrl)
+
+    const bodyContentFormatted = 
+    `<p><strong>Submited on:</strong> ${emailDate}</p>
+    <p><strong>${feedbackContentSubject} :</strong> ${feedbackFormContent}</p> 
+    <p<strong>Url:</strong> <a href="${pageUrl}">${pageUrl}</a></p>`;
+
+    const subject = 'Feedback from the Find a government employee service'
+
+
+    async function main() {
+        
+        const emailHost = process.env.SMTP_SERVER;
+        const emailPort = process.env.SMTP_PORT;
+        
+        const transporter = nodemailer.createTransport({
+          host: emailHost,
+          port: 2525,
+          requireTLS: false,
+          secure: false,
+        });
+
+    console.log(emailHost)
+
+    const info = await transporter.sendMail({
+        from: process.env.EMAIL_FROM,
+        to: process.env.EMAIL_TO,
+        subject: subject,
+        html: bodyContentFormatted,
+      });
+    
+      console.log("Message sent: %s", info.response);
+      console.log(info)
+    }
+
+    main();
+
 });

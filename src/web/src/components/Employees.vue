@@ -23,9 +23,9 @@
                 <v-list-item three-line class="icon-list">
                   <v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
                     :style="{ 'background-color': hover ? '#DC4001' : '#512A44' }">
-                    <v-avatar tile>
-                      <IconLoader :image="index.toLowerCase().replace(/\//g, '')" :color="'white'" />
-                    </v-avatar>
+                    <div style="height:100%;">
+                      <IconLoader style="transform:scale(1.4)" :image="'icon'" />
+                    </div>
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title class="text-h6 mb-1">
@@ -89,7 +89,7 @@ export default {
     indexUrl(field, value) {
 
       let department = "/find-employee/" + field.replace(/\//g, '')
-      let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
+      let noSpaces = department.replaceAll(/\s/g, '-');
       if (value.length === 0) {
         return "" + noSpaces + '/not-division/all-branches'
       } else {
