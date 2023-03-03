@@ -124,6 +124,7 @@ export default {
           }
           )
           .then((resp) => {
+            console.log(resp)
             if (resp) {
               this.formStatus = false, this.success = true, this.colorCheck = 0, this.feedbackText = ''
             }

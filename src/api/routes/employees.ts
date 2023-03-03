@@ -4,7 +4,9 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
 
-import { Email } from './smtp.js'
+import nodemailer from "nodemailer";
+import Mail from "nodemailer/lib/mailer";
+
 
 import { EmployeeTable } from './interface';
 
@@ -605,29 +607,33 @@ employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
     <p<strong>Url:</strong> <a href="${pageUrl}">${pageUrl}</a></p>`;
 
     const subject = 'Feedback from the Find a government employee service'
+
+
+    async function main() {
+        
+        const emailHost = process.env.SMTP_SERVER;
+        const emailPort = process.env.SMTP_PORT;
+        
+        const transporter = nodemailer.createTransport({
+          host: emailHost,
+          port: 2525,
+          requireTLS: false,
+          secure: false,
+        });
+
+    console.log(emailHost)
+
+    const info = await transporter.sendMail({
+        from: process.env.EMAIL_FROM,
+        to: process.env.EMAIL_TO,
+        subject: subject,
+        html: bodyContentFormatted,
+      });
     
-    console.log(feedbackContentSubject)
-    console.log(feedbackFormContent)
-    console.log(emailDate)
-    console.log(pageUrl)
-    console.log(bodyContentFormatted)
-    console.log(subject)
+      console.log("Message sent: %s", info.response);
+      console.log(info)
+    }
 
-    Email.send({
+    main();
 
-        Host: process.env.SMTP_SERVER,
-        To: process.env.EMAIL_TO,
-        From: process.env.EMAIL_FROM,
-        Port: process.env.SMTP_PORT,
-        Subject: subject,
-        Body: bodyContentFormatted,
-
-      }).then((response: any) => {
-
-        res.send({ data: response });
-    })
-    .catch((error: any) => {
-        console.log(error);
-    });
-    
 });
