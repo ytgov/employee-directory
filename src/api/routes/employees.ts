@@ -5,16 +5,20 @@ import _ from 'lodash';
 import * as dotenv from "dotenv";
 
 import nodemailer from "nodemailer";
-import Mail from "nodemailer/lib/mailer";
-
 
 import { EmployeeTable } from './interface';
 
 let path;
 switch (process.env.NODE_ENV) {
+    case "test":
+      path = `.env.test`;
+      break;
+    case "production":
+      path = `.env.production`;
+      break;
     default:
-        path = `.env.development`;
-}
+      path = `.env.development`;
+  }
 dotenv.config({ path: path });
 
 import employee_json from '../json/employees.json';
