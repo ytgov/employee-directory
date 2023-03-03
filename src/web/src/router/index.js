@@ -78,6 +78,7 @@ const routes = [
     meta: {
       breadcrumb: [
         {name: 'Yukon.ca home', link: 'https://yukon.ca/'},
+        {name: 'Find Employee', link: `/find-employee`},
         {name: 'Page not found'},
       ]
     }
