@@ -22,7 +22,7 @@ const routes = [
     component: EmployeeDetail,
     meta: {
       breadcrumb: [
-        {name: 'Home', link: 'https://yukon.ca/'},
+        {name: 'Yukon.ca home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee', link: '/Find-Employee'},
         {name: 'Department', link: '/find-employee/Department' , dynamic: true},
         {name: 'Division', link: '/find-employee/Department/Division' , dynamic: true},
@@ -37,7 +37,7 @@ const routes = [
     component: EmployeeSearch,
     meta: {
       breadcrumb: [
-        {name: 'Home', link: 'https://yukon.ca/'},
+        {name: 'Yukon.ca home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee', link: '/Find-Employee'},
         {name: 'Department', link: '/find-employee/Department' , dynamic: true},
         {name: 'Search', dynamic: true},
@@ -50,7 +50,7 @@ const routes = [
     component: Grid,
     meta: {
       breadcrumb: [
-        {name: 'Home', link: 'https://yukon.ca/'},
+        {name: 'Yukon.ca home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee', link: '/find-employee'},
         {name: 'Department', link: '/find-employee/Department', dynamic: true},
         {name: 'Division', link: '/find-employee/Department/Division', dynamic: true},
@@ -65,7 +65,7 @@ const routes = [
     
     meta: {
       breadcrumb: [
-        {name: 'Home', link: 'https://yukon.ca/'},
+        {name: 'Yukon.ca home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee', link: '/find-employee'},
         {name: 'Department', dynamic: true}
       ]
@@ -77,7 +77,7 @@ const routes = [
     component: NotFound,
     meta: {
       breadcrumb: [
-        {name: 'Home', link: 'https://yukon.ca/'},
+        {name: 'Yukon.ca home', link: 'https://yukon.ca/'},
         {name: 'Page not found'},
       ]
     }
@@ -91,7 +91,7 @@ const routes = [
     ],
     meta: {
       breadcrumb: [
-        {name: 'Home', link: 'https://yukon.ca/'},
+        {name: 'Yukon.ca home', link: 'https://yukon.ca/'},
         {name: 'Find a government employee'},
       ]
     }

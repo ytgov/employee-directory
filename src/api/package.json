@@ -16,6 +16,7 @@
   "author": "Michael Johnson",
   "license": "ISC",
   "dependencies": {
+    "@types/nodemailer": "^6.4.7",
     "axios": "^0.24.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
@@ -24,7 +25,8 @@
     "express-session": "^1.17.1",
     "express-validator": "^6.14.2",
     "helmet": "^5.1.1",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "nodemailer": "^6.9.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.8",
