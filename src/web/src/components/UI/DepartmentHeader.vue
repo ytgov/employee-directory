@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12" sm="2" class="d-flex align-center justify-center">
           <div class="d-flex align-center justify-center icon-responsive">
-            <IconLoader height="60px" :image="image.toLowerCase()" :color="'purple'" />
+            <IconLoader :image="'icon'" style="transform:scale(2)" :stroke="'purple-stroke'" />
           </div>
         </v-col>
         <v-col cols="12" sm="7" class="align-center justify d-flex">

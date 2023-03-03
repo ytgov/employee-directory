@@ -206,15 +206,22 @@ export default {
           element.name = this.department;
           element.link = '/find-employee/' + this.department.replace(reg, '-')
         } else if (element.name == 'Division') {
-          element.name = this.div;
-          if (this.branch !== 'all-branches') {
+          console.log(this.div)
+          if(this.div === 'Not division'){
+            element.name = 'Employees who are not assigned a division'
+            element.link = null
+          } else element.name = this.div;
+
+          if (this.branch !== 'All branches') {
+
             element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-') + '/all-branches'
           } else {
+          
             element.link = null
           }
         } else if (element.name == 'Branch') {
-          if (this.branch === 'all-branches') {
-            element.name = null
+          if (this.branch === 'All branches') {
+            element.name = 'Employees who are not assigned a branch'
           } else {
             element.name = this.branch;
           }

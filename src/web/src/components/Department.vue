@@ -24,7 +24,7 @@
             <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
               max-width="590">
               <div class="py-4 d-flex align-center justify-center" style="width: 200px">
-                <IconLoader :image="department.toLowerCase()" :color="'purple'" />
+                <IconLoader :image="'icon'" :stroke="'purple-stroke'" />
               </div>
               <div class="d-flex align-center justify-center" style="width:80%">
                 <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
@@ -76,14 +76,14 @@
             </v-chip-group>
           </v-col>
         </v-row>
-        <div class="pt-6 pb-n12 mt-5 d-flex flex-column align-start justify-center">
 
-        </div>
+        <h2 class="mt-3" style="font-size: 30px;" > {{ divisionLength }} Results </h2>
+
         <div class="text-center loading" v-show="loading">
           <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
         </div>
         <div v-if="itemsValue === 0" class="mb-6 mt-2">
-          <EmployeesGrid :check="mobileCheck" :items="employees" :department="department" />
+          <EmployeesGrid :divisions="false" :check="mobileCheck" :items="employees" :department="department" />
         </div>
 
         <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in employees' class="mb-6 mt-2">
@@ -93,7 +93,7 @@
             </div>
           </v-row>
           <div class="mt-4 d-flex align-center">
-            <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
+            <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
           </div>
         </div>
 
@@ -104,7 +104,7 @@
             </div>
           </v-row>
           <div class="mt-8 d-flex align-center">
-            <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
+            <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
           </div>
         </div>
       </div>
