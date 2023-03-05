@@ -4,8 +4,8 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
 
-import nodemailer from "nodemailer";
-import Mail from "nodemailer/lib/mailer";
+// import nodemailer from "nodemailer";
+// import Mail from "nodemailer/lib/mailer";
 
 
 import { EmployeeTable } from './interface';
