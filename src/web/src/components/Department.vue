@@ -60,7 +60,7 @@
         </v-col>
       </v-row>
       <div class="mt-7" v-if="checkGrid">
-        <v-row>
+        <v-row v-if="!results">
           <v-col cols="12" md="2" class="d-flex align-center justify-start">
             <h4 class="">Group by: </h4>
           </v-col>
@@ -76,13 +76,17 @@
             </v-chip-group>
           </v-col>
         </v-row>
-
-        <h2 class="mt-3" style="font-size: 30px;" > {{ divisionLength }} Results </h2>
+        
+        <h2 v-if="results" class="px-0" style="font-size: 34px !important;">There are no results</h2>
+        
+        <h2 v-else class="mt-3" style="font-size: 30px;" > {{ divisionLength }} Results </h2>
 
         <div class="text-center loading" v-show="loading">
           <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
         </div>
-        <div v-if="itemsValue === 0" class="mb-6 mt-2">
+
+        <div v-if="!results">
+          <div v-if="itemsValue === 0" class="mb-6 mt-2">
           <EmployeesGrid :divisions="false" :check="mobileCheck" :items="employees" :department="department" />
         </div>
 
@@ -107,6 +111,8 @@
             <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
           </div>
         </div>
+        </div> 
+        
       </div>
     </v-container>
   </div>
@@ -130,6 +136,7 @@ export default {
   },
   name: "Department",
   data: () => ({
+    results: false,
     itemsValue: null,
     employees: [],
     error: false,
@@ -355,6 +362,9 @@ export default {
         })
         .then((resp) => {
           this.employees = resp.data.data;
+          if(this.employees.length === 0) {
+            this.results = true
+          }
           this.checkAPIStatus = true;
           this.checkGrid = true;
           this.totalLength = resp.data.meta.branchCount;
