@@ -41,11 +41,12 @@
 
 <script>
 
-import { Email } from '@/assets/smtp/smtp.js'
+const axios = require("axios");
+
+import * as urls from "../../urls";
 
 import IconLoader from '../icons/IconLoader.vue';
 
-import { emailConfig } from '@/config.js'
 
 
 export default {
@@ -104,28 +105,31 @@ export default {
 
         let emailSubject = '';
 
-        const url = window.location.href;
+        const pageUrl = window.location.href;
 
         if (this.feedbackCheck === 1) {
           emailSubject = 'How did this page help you?'
         } else emailSubject = 'How can we improve this page?'
 
-        Email.send({
-
-
-          SecureToken: emailConfig[0].SecureToken,
-          To: emailConfig[0].To,
-          From: emailConfig[0].From,
-          Subject: emailConfig[0].Subject,
-          Body: `
-
-          <h2>Submited on: ${convertedDate}</h2> <br>
-          <h3>${emailSubject}</h3> <br>
-          <p>${this.feedbackText}</p> <br>
-          <p>Url: ${url}</p>
-
-          `
-        }).then(() => this.formStatus = false, this.success = true, this.colorCheck = 0, this.feedbackText = '');
+        axios
+          .request({
+            method: 'POST',
+            data: {
+              emailSubject: emailSubject,
+              emailBody: this.feedbackText,
+              emailDate: convertedDate,
+              pageUrl: pageUrl
+            },
+            url: `${urls.EMPLOYEES_URL}feedbackForm`
+          }
+          )
+          .then((resp) => {
+            console.log(resp)
+            if (resp) {
+              this.formStatus = false, this.success = true, this.colorCheck = 0, this.feedbackText = ''
+            }
+          })
+          .catch((err) => console.error(err));
       }
     }
   },

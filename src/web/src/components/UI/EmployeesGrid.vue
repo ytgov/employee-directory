@@ -10,19 +10,22 @@
                 <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }"
                     class="table-border" v-for='(item, index, id ) in items' :key="id">
                     <td>
-                        <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
-                            :href="urlEmployee(item.department, item.full_name_url)">
-                            <IconLoader style="width:10px !important;" v-if="item.level === 1" :color2="'blue'" :image="'circle'" class="angle-right">
+                        <a class="d-flex flex-wrap align-center" :style="getMargin(8, item.level)"
+                            style="word-wrap: normal;" :href="urlEmployee(item.department, item.full_name_url)">
+                            <IconLoader style="width:10px !important;" v-if="item.level === 1" :color2="'blue'"
+                                :image="'circle'" class="angle-right">
                             </IconLoader>
-                            <IconLoader style="width:10px !important;" v-if="item.level > 1" :size="item.level" :color2="'white'" :color="'blue'" :image="'circle'"
-                                class="angle-right-multiple"></IconLoader>
-                            <label class="full-name">{{ item.full_name }}</label>
+                            <IconLoader style="width:10px !important;" v-if="item.level > 1" :size="item.level"
+                                :color2="'white'" :color="'blue'" :image="'circle'" class="angle-right-multiple">
+                            </IconLoader>
+                            <label class="full-name">{{ item.formatted_name }}</label>
                         </a>
                     </td>
+                    <td v-if="divisions === false" class="default-cursor"> {{ item.division }} </td>
                     <td class="default-cursor"> {{ item.title }} </td>
                     <td class="default-cursor"> {{ item.email }}</td>
                     <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
-                            :class="{ telephone: check=== true, 'telephone-desktop': check === false }"> {{
+                            :class="{ telephone: check === true, 'telephone-desktop': check === false }"> {{
                                 item.phone_office
                             }} </a>
                     </td>
@@ -42,9 +45,12 @@ export default {
         IconLoader
     },
 
-    props: ['items','department','check'],
+    props: ['items', 'department', 'check', 'divisions'],
     mounted() {
         
+        if (this.divisions === false) {
+            this.headers.splice(2,0,{ text: "Division", value: "division" },)
+        }
     },
     data() {
         return {
@@ -53,6 +59,7 @@ export default {
                 { text: "Position", value: "title" },
                 { text: "Email address", value: "email" },
                 { text: "Phone number", value: "phone_office" },
+                
             ],
             page: 1,
             pageCount: 0,
@@ -72,6 +79,16 @@ export default {
         }
     },
     methods: {
+
+        getMargin(baseMarginValue, level) {
+
+            const total = baseMarginValue * level
+            const object = {
+                marginLeft: total + 'px'
+            }
+            return object
+        },
+
         getPhone(number) {
             const find = "-";
             const reg = new RegExp(find, "g");
@@ -113,27 +130,25 @@ export default {
 
 
 <style scoped>
-
 .full-name {
-  cursor: pointer;
-  margin-left: 3px;
+    cursor: pointer;
+    margin-left: 3px;
 }
 
 .table-header {
-  height: 300px !important;
+    height: 300px !important;
 }
 
 .overf {
-  z-index: 1;
-  overflow: hidden;
+    z-index: 1;
+    overflow: hidden;
 }
 
 .angle-right {
-  width: 6px;
+    width: 6px;
 }
 
 .angle-right-multiple {
-  width: 5px;
+    width: 5px;
 }
-
 </style>
