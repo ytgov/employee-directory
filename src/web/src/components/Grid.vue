@@ -207,8 +207,11 @@ export default {
           element.link = '/find-employee/' + this.department.replace(reg, '-')
         } else if (element.name == 'Division') {
           element.name = this.div;
+          if(this.div == 'Not division') {
+            element.link = null
+          }
           if (this.branch !== 'all-branches') {
-            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-') + '/all-branches'
+            element.link = ('/find-employee/' + this.department + '/' + element.name.toLowerCase()).replace(reg, '-') + '/all-branches'
           } else {
             element.link = null
           }
