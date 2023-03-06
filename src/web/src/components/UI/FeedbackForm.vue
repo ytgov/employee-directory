@@ -83,11 +83,6 @@ export default {
     }
   },
   methods: {
-    convertTZ(date, tzString) {
-      return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: tzString }));
-    },
-
-
     startForm(type) {
       this.formStatus = true;
       if (type === 1) {
@@ -99,9 +94,6 @@ export default {
         this.feedbackError = true
         return
       } else {
-        const convertedDate = this.convertTZ(new Date())
-
-        convertedDate.getHours();
 
         let emailSubject = '';
 
@@ -117,7 +109,6 @@ export default {
             data: {
               emailSubject: emailSubject,
               emailBody: this.feedbackText,
-              emailDate: convertedDate,
               pageUrl: pageUrl
             },
             url: `${urls.EMPLOYEES_URL}feedbackForm`
@@ -137,7 +128,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style>
 .btn {
   color: white !important;
   border: none !important;

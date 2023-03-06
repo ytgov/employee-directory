@@ -1,9 +1,7 @@
-# YG vue-template
-A template to for Vuejs based web apps for internal services.  
+# YG Find a government employee
+App and service to find the contact information of a person who works for a Government of Yukon organization
 
-## Development from this template
-
-The intent of this template is to evolve over time, so projects should fork this code into a new repository. That will allow the project files to evolve over time and be able to update the child repositories.
+## Development
 
 Before starting the API server, you need to create the appropriate .env file which can be done by running `cp src/api/.env src/api/.env.development`. You must then set the appropriate values
 
@@ -16,14 +14,20 @@ Once both are running, open your browser and navigate to http://localhost:8080 t
 Environment variables should never be checked into the repository! 
 
 - API_PORT=(the port the API will be listening on (doesn't have to match the docker port))
-- FRONTEND_URL=(the url of the service, from browser)
-- AUTH_REDIRECT=(FRONTEND_URL from above)/login-complete
-- VIVVO_CLIENT_ID=(the client id provided for the service)
-- VIVVO_CLIENT_SECRET=(the client secret provided for the service)
-- VIVVO_CALLBACK_URL=(the fully qualified url of the API, must match setup in Vivvo)/authorization-code/callback
+- FRONTEND_URL=(the URL of the service, from browser.)
+- SMTP_SERVER= (The host of your outgoing SMTP server.)
+- SMTP_PORT=(SMTP Port)
+- EMAIL_FROM=(The e-mail address that all e-mails will be from.)
+- NAME_FROM= (The name that all e-mails will be from.)
+- EMAIL_SUBJECT= (The  e-mail subject.)
+- EMAIL_TO= (The e-mail address that all e-mails will be to.)
+- SMTP_PASS= (The password of the service)
+- DIVISIONSJSON= (URL of the API to get the information of the divisions)
+- EMPLOYEEJSON= (URL of the API to get the information of the employees)
+- ESRI_KEY= (Key for esri)
 
 ## Building the container image
-docker build -t vue-template .
+
 
 ## Running the container in test or production
 

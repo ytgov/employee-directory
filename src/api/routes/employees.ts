@@ -4,7 +4,7 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
 
-// import nodemailer from "nodemailer";
+import nodemailer from "nodemailer";
 // import Mail from "nodemailer/lib/mailer";
 
 
@@ -594,44 +594,46 @@ employeesRouter.post("/SearchBar", async (req: Request, res: Response) => {
         });
 });
 
-// employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
+employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
+    try {
+        //Content from client
+        let feedbackContentSubject = (req.body.emailSubject);
+        let feedbackFormContent = (req.body.emailBody);
+        let emailDate = new Date();;
+        let pageUrl = (req.body.pageUrl)
 
-//     //Content from client
-//     let feedbackContentSubject = (req.body.emailSubject);
-//     let feedbackFormContent = (req.body.emailBody);
-//     let emailDate = (req.body.emailDate);
-//     let pageUrl = (req.body.pageUrl)
-
-//     const bodyContentFormatted = 
-//     `<p><strong>Submited on:</strong> ${emailDate}</p>
-//     <p><strong>${feedbackContentSubject} :</strong> ${feedbackFormContent}</p> 
-//     <p<strong>Url:</strong> <a href="${pageUrl}">${pageUrl}</a></p>`;
-
-//     const subject = 'Feedback from the Find a government employee service'
+        const bodyContentFormatted = 
+        `<p><strong>Submited on:</strong> ${emailDate.toLocaleString()}</p>
+        <p><strong>${feedbackContentSubject} :</strong> ${feedbackFormContent}</p> 
+        <p<strong>URL:</strong> <a href="${pageUrl}">${pageUrl}</a></p>`;
 
 
-//     async function main() {
+        const emailHost = process.env.SMTP_SERVER;
+        const emailPort:string = process.env.SMTP_PORT!;
+        const emailFrom = process.env.EMAIL_FROM;
+        const emailPass = process.env.SMTP_PASS;
+        const nameFrom = process.env.NAME_FROM;
+        const subject =  process.env.EMAIL_SUBJECT;
+        const transporter = nodemailer.createTransport({
+            host: emailHost,
+            port: parseInt(emailPort),
+            requireTLS: false,
+            secure: false,
+            auth: {
+                user: emailFrom,
+                pass: emailPass+'--',
+            },
+            });
+
+        const info = await transporter.sendMail({
+            from: nameFrom +' ' + emailFrom,
+            to: process.env.EMAIL_TO,
+            subject: subject,
+            html: bodyContentFormatted,
+        });
         
-//         const emailHost = process.env.SMTP_SERVER;
-//         const emailPort = process.env.SMTP_PORT;
-        
-//         const transporter = nodemailer.createTransport({
-//           host: emailHost,
-//           port: 2525,
-//           requireTLS: false,
-//           secure: false,
-//         });
-
-//     const info = await transporter.sendMail({
-//         from: process.env.EMAIL_FROM,
-//         to: process.env.EMAIL_TO,
-//         subject: subject,
-//         html: bodyContentFormatted,
-//       });
-    
-//       console.log("Message sent: %s", info.response);
-//     }
-
-//     main();
-
-// });
+        res.send({ data: 'Sent' });
+    } catch (error) {
+        console.log(error);
+    }
+});
