@@ -33,6 +33,7 @@ COPY --chown=node:node src/web /home/node/web/
 RUN npm run build:docker
 
 EXPOSE 3000
+EXPOSE 8080
 
 WORKDIR /home/node/app
 
