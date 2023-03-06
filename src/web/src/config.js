@@ -1,14 +1,6 @@
 export const applicationName = "Find a government employee | Government of Yukon eServices";
 export const applicationIcon = "mdi-cash-register";
 
-export const emailConfig = [
-    {
-        SecureToken: process.env.VUE_APP_EMAIL_SECURE_TOKEN,
-        To: process.env.VUE_APP_EMAIL_TO,
-        From: process.env.VUE_APP_EMAIL_FROM,
-        Subject:'Feedback from the Find a government employee service',
-    }
-]
 
 export const sections = [
     {

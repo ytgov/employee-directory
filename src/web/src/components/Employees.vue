@@ -86,15 +86,12 @@ export default {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
 
-    indexUrl(field, value) {
+    indexUrl(field) {
 
       let department = "/find-employee/" + field.replace(/\//g, '')
       let noSpaces = department.replaceAll(/\s/g, '-');
-      if (value.length === 0) {
-        return "" + noSpaces + '/not-division/all-branches'
-      } else {
-        return String(noSpaces)
-      }
+
+      return String(noSpaces)
 
     },
     getEmployeesData() {

@@ -12,10 +12,10 @@
                 </template>
             </v-breadcrumbs>
 
-
-            <h2 class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
+            <h2 v-if="results" class="px-0" style="font-size: 34px !important;">There are no results</h2>
+            <h2 v-else class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
             </h2>
-            <v-row>
+            <v-row v-if="!results">
                 <v-col cols="12" md="2" class="d-flex align-center justify-start">
                     <h4 class="">Group by: </h4>
                 </v-col>
@@ -37,8 +37,8 @@
             <div class="text-center loading" v-show="loading">
                 <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
             </div>
-
-            <div v-if="itemsValue === 0">
+            <div v-if="!results">
+                <div v-if="itemsValue === 0">
                 <EmployeesGrid :check="mobileCheck" :items="items" :department="department" />
             </div>
             <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
@@ -75,6 +75,7 @@
                 <div class="mt-8 d-flex align-center">
                     <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
                 </div>
+            </div>
             </div>
         </v-container>
     </div>
@@ -138,7 +139,7 @@ export default {
     },
     data() {
         return {
-
+            results: false,
             itemsPerPage: null,
             selection: 0,
             itemsValue: null,
@@ -243,6 +244,9 @@ export default {
                 .then((resp) => {
 
                     this.items = resp.data.data;
+                    if(this.items.length === 0) {
+                        this.results = true
+                    }
                     this.itemsLength = resp.data.meta.count
                     this.itemsPerPage = resp.data.meta.count
 
