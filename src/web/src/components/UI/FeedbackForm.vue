@@ -125,7 +125,7 @@ export default {
               emailBody: this.feedbackText,
               pageUrl: pageUrl
             },
-            url: `${urls.EMPLOYEES_URL}feebackForm`
+            url: `${urls.EMPLOYEES_URL}feedbackForm`
           }
           )
           .then((resp) => {
@@ -136,7 +136,7 @@ export default {
           })
           .catch((err) => {
             this.requestError = true;
-            this.errorMessage = err
+            this.errorMessage = err;
             console.error(err)
           });
       }
