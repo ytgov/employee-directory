@@ -36,6 +36,11 @@
         field is required.
       </p>
     </v-card>
+    <v-card class="feedback-form form-error my-4 pa-4 help d-flex align-center" v-if="requestError">
+      <p class="ma-0">
+        {{ errorMessage }}. Please try again later!
+      </p>
+    </v-card>
   </v-container>
 </template>
 
@@ -58,6 +63,8 @@ export default {
       feedbackText: '',
       feedbackError: false,
       success: false,
+      requestError: false,
+      errorMessage: '',
     }
   },
   components: {
@@ -79,6 +86,13 @@ export default {
         setTimeout(() => {
           this.success = false
         }, "3000")
+      }
+    },
+    requestError() {
+      if (this.requestError === true) {
+        setTimeout(() => {
+          this.requestError = false
+        }, "10000")
       }
     }
   },
@@ -111,7 +125,7 @@ export default {
               emailBody: this.feedbackText,
               pageUrl: pageUrl
             },
-            url: `${urls.EMPLOYEES_URL}feedbackForm`
+            url: `${urls.EMPLOYEES_URL}feebackForm`
           }
           )
           .then((resp) => {
@@ -120,7 +134,11 @@ export default {
               this.formStatus = false, this.success = true, this.colorCheck = 0, this.feedbackText = ''
             }
           })
-          .catch((err) => console.error(err));
+          .catch((err) => {
+            this.requestError = true;
+            this.errorMessage = err
+            console.error(err)
+          });
       }
     }
   },
