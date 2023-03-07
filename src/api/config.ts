@@ -13,6 +13,8 @@ switch (process.env.NODE_ENV) {
 }
 dotenv.config({ path: path });
 
-export const API_PORT = parseInt(process.env.API_PORT || "8080");
-export const FRONTEND_URL = process.env.FRONTEND_URL || "";
+console.log(`Loading config from ${process.env.NODE_ENV}`);
+
+export const API_PORT = parseInt(process.env.API_PORT || "3000");
+export const FRONTEND_URL = process.env.FRONTEND_URL || "localhost:8080";
 export const NODE_ENV = process.env.NODE_ENV;

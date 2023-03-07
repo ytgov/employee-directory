@@ -3,25 +3,28 @@ import axios from "axios";
 import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
-
 import nodemailer from "nodemailer";
-// import Mail from "nodemailer/lib/mailer";
-
 
 import { EmployeeTable } from './interface';
 
 let path;
 switch (process.env.NODE_ENV) {
+    case "test":
+      path = `.env.test`;
+      break;
+    case "production":
+      path = `.env.production`;
+      break;
     default:
-        path = `.env.development`;
-}
+      path = `.env.development`;
+  }
 dotenv.config({ path: path });
 
 import employee_json from '../json/employees.json';
 import division_json from '../json/division.json';
 
-export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
-export const DIVISIONSJSON = process.env.DIVISIONSJSON;
+export const EMPLOYEEJSON = process.env.EMPLOYEEJSON_local;
+export const DIVISIONSJSON = process.env.DIVISIONSJSON_local;
 
 export const ESRI_KEY = process.env.ESRI_KEY;
 
@@ -674,7 +677,7 @@ employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
             secure: false,
             auth: {
                 user: emailFrom,
-                pass: emailPass + '--',
+                pass: emailPass,
             },
         });
 
