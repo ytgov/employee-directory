@@ -31,8 +31,13 @@
               </div>
             </v-card-actions>
 
-            <v-card outlined color="transparent" class="flex-column py-10">
-              <h2 style="color:#522A44!important; font-size: 30px;">Browse employees by these divisions</h2>
+            <v-card outlined color="transparent" class="flex-column pa-10">
+              <h2 v-if="!employeesNotFound" style="color:#522A44!important; font-size: 30px;">Browse employees by these
+                divisions</h2>
+                <div width="100%" v-else>
+                <h2 style="color:#522A44!important; font-size: 30px; text-align: center!important; width: 100%;">There are
+                  not results.</h2>
+              </div>
               <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" :key="item.full_name"
                 class="px-8">
                 <v-card outlined color="transparent">
@@ -52,8 +57,9 @@
                 </v-card>
               </v-card>
               <div style="height:20px;"></div>
-              <a @click="toggleApiSearch" class="mb-2" style="font-size: 22px; font-weight: 700;"
-                :class="{ colorOnClick: checkGrid }">View a list of all Department of {{ title }}</a>
+              <a v-if="!employeesNotFound" @click="toggleApiSearch" class="mb-2"
+                style="font-size: 22px; font-weight: 700;" :class="{ colorOnClick: checkGrid }">View a list of all
+                Department of {{ title }}</a>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
@@ -76,10 +82,10 @@
             </v-chip-group>
           </v-col>
         </v-row>
-        
+
         <h2 v-if="results" class="px-0" style="font-size: 34px !important;">There are no results</h2>
-        
-        <h2 v-else class="mt-3" style="font-size: 30px;" > {{ divisionLength }} Results </h2>
+
+        <h2 v-else class="mt-3" style="font-size: 30px;"> {{ divisionLength }} Results </h2>
 
         <div class="text-center loading" v-show="loading">
           <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
@@ -87,32 +93,32 @@
 
         <div v-if="!results">
           <div v-if="itemsValue === 0" class="mb-6 mt-2">
-          <EmployeesGrid :divisions="false" :check="mobileCheck" :items="employees" :department="department" />
-        </div>
+            <EmployeesGrid :divisions="false" :check="mobileCheck" :items="employees" :department="department" />
+          </div>
 
-        <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in employees' class="mb-6 mt-2">
-          <v-row class="px-3">
-            <div class="mt-8 d-flex align-center">
-              <h3 class="division-text ">{{ cleanLocation(parent_array) }}</h3>
+          <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in employees' class="mb-6 mt-2">
+            <v-row class="px-3">
+              <div class="mt-8 d-flex align-center">
+                <h3 class="division-text ">{{ cleanLocation(parent_array) }}</h3>
+              </div>
+            </v-row>
+            <div class="mt-4 d-flex align-center">
+              <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
             </div>
-          </v-row>
-          <div class="mt-4 d-flex align-center">
-            <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
+          </div>
+
+          <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in employees' class="mb-6 mt-2">
+            <v-row>
+              <div class="mt-8 d-flex align-center">
+                <h3 class="division-text px-3">{{ cleanParam(parent_array) }}</h3>
+              </div>
+            </v-row>
+            <div class="mt-8 d-flex align-center">
+              <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
+            </div>
           </div>
         </div>
 
-        <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in employees' class="mb-6 mt-2">
-          <v-row>
-            <div class="mt-8 d-flex align-center">
-              <h3 class="division-text px-3">{{ cleanParam(parent_array) }}</h3>
-            </div>
-          </v-row>
-          <div class="mt-8 d-flex align-center">
-            <EmployeesGrid :divisions="false" :check="mobileCheck" :items="value" :department="department" />
-          </div>
-        </div>
-        </div> 
-        
       </div>
     </v-container>
   </div>
@@ -157,12 +163,9 @@ export default {
     mobileCheck: false,
     windowWidth: window.innerWidth,
     checkAPIStatus: false,
+    employeesNotFound: false,
 
   }),
-  emits: ['changeBg'],
-  created() {
-
-  },
   watch: {
     '$route'() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
@@ -206,8 +209,8 @@ export default {
   },
   methods: {
 
-    toggleApiSearch(){
-      if(this.checkAPIStatus !== false) {
+    toggleApiSearch() {
+      if (this.checkAPIStatus !== false) {
         this.checkGrid = !this.checkGrid
         return
       } else this.getEmployeeData()
@@ -332,6 +335,7 @@ export default {
           this.options
         )
         .then((resp) => {
+          this.employeesNotFound = resp.data.meta.notFound
           this.error = resp.data.meta.error;
           this.checkError();
           this.items = resp.data.data;
@@ -362,7 +366,7 @@ export default {
         })
         .then((resp) => {
           this.employees = resp.data.data;
-          if(this.employees.length === 0) {
+          if (this.employees.length === 0) {
             this.results = true
           }
           this.checkAPIStatus = true;
@@ -414,5 +418,4 @@ export default {
 
 .directions-board {
   margin-bottom: 0 !important;
-}
-</style>
+}</style>

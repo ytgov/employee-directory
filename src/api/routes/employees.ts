@@ -343,7 +343,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let employeesByDivision = employeesByDept
 
             //Filter by Division  
-            if(onlyDept){
+            if (onlyDept) {
 
             } else if (notDivision) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
@@ -355,7 +355,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let divLength = employeesByDivision.length
 
             //Filter by Branch
-            if(onlyDept) {
+            if (onlyDept) {
 
             } else if (notBranch) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
@@ -481,9 +481,62 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var find = '-';
     var reg = new RegExp(find, 'g');
     var _ = require("lodash");
-    let paramDepartment = (req.params.department.replace(reg, ' ').replace(/\--/g, '-/-'))
+    let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
     var employeesByDept = Object();
     let error = false
+    
+    
+    axios.get(String(DIVISIONSJSON), { params: { department: paramDepartment } })
+        .then(async (response: any) => {
+            
+            if (response.data.divisions.length === 0) {
+                    return res.send({ meta: { error: true } })
+            } else {
+                axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
+                    .then((response: any) => {
+
+                        var resultEmployees = response.data.employees;
+
+                        employeesByDept = resultEmployees.filter(function (e: any) {
+                            return e.department.indexOf(paramDepartment) >= 0
+                        })
+
+                        if (employeesByDept.length == 0) {
+                            return res.send({ meta: { count: 0, notFound: true } });
+                        }
+
+                        let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
+
+                        employeesByDept.forEach((element: any) => {
+                            if (element.division === null) {
+                                element.division = 'Employees who are not assigned a division'
+                            }
+                            if (element.branch === null) {
+                                element.branch = 'Employees who are not assigned a branch'
+                            }
+                        })
+
+                        let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
+
+                        for (const [key, value] of Object.entries(division)) {
+                            const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
+
+                            division[key] = groupByDivision;
+
+                        }
+
+                        return res.send({ data: division, meta: { count: 0 } });
+
+                    })
+                    .catch((error: any) => {
+                        console.log(error);
+                    });
+
+            }
+
+        }).catch((error: any) => {
+            console.log(error);
+        });
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
@@ -495,7 +548,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
             })
 
             if (employeesByDept.length == 0) {
-                res.send({  meta: { count: 0, error: true } });
+                res.send({ meta: { count: 0, notFound: true } });
                 return
             }
 
@@ -605,18 +658,18 @@ employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
         let emailDate = new Date();;
         let pageUrl = (req.body.pageUrl)
 
-        const bodyContentFormatted = 
-        `<p><strong>Submited on:</strong> ${emailDate.toLocaleString()}</p>
+        const bodyContentFormatted =
+            `<p><strong>Submited on:</strong> ${emailDate.toLocaleString()}</p>
         <p><strong>${feedbackContentSubject} :</strong> ${feedbackFormContent}</p> 
         <p<strong>URL:</strong> <a href="${pageUrl}">${pageUrl}</a></p>`;
 
 
         const emailHost = process.env.SMTP_SERVER;
-        const emailPort:string = process.env.SMTP_PORT!;
+        const emailPort: string = process.env.SMTP_PORT!;
         const emailFrom = process.env.EMAIL_FROM;
         const emailPass = process.env.SMTP_PASS;
         const nameFrom = process.env.NAME_FROM;
-        const subject =  process.env.EMAIL_SUBJECT;
+        const subject = process.env.EMAIL_SUBJECT;
         const transporter = nodemailer.createTransport({
             host: emailHost,
             port: parseInt(emailPort),
@@ -624,17 +677,17 @@ employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
             secure: false,
             auth: {
                 user: emailFrom,
-                pass: emailPass + 'pp',
+                pass: emailPass,
             },
-            });
+        });
 
         const info = await transporter.sendMail({
-            from: nameFrom +' ' + emailFrom,
+            from: nameFrom + ' ' + emailFrom,
             to: process.env.EMAIL_TO,
             subject: subject,
             html: bodyContentFormatted,
         });
-        
+
         res.send({ data: 'Sent' });
     } catch (error) {
         console.log(error);

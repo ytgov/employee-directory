@@ -36,7 +36,7 @@
         <p>You may have typed the address (URL) wrong. Check to make sure you’ve got the exact right spelling or
           capitalization.</p>
       </v-card>
-      <v-btn class="my-8" @click="sendTo('https://yukon.ca/')" height="40px" color="#00616D">Home</v-btn>
+      <v-btn class="my-8" @click="$router.push('/')" height="40px" color="#00616D">Home</v-btn>
     </v-container>
   </div>
 </template>
@@ -73,9 +73,6 @@ export default {
     this.$emit('changeBg');
   },
   methods: {
-    sendTo(direction){
-      location.href = direction
-    },
     updateBreadCrumbs() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
