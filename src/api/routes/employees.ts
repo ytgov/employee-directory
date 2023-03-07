@@ -3,24 +3,27 @@ import axios from "axios";
 import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
+import nodemailer from "nodemailer";
 
 import { EmployeeTable } from './interface';
 
 let path;
 switch (process.env.NODE_ENV) {
+    case "test":
+      path = `.env.test`;
+      break;
+    case "production":
+      path = `.env.production`;
+      break;
     default:
-        path = `.env.development`;
-}
+      path = `.env.development`;
+  }
 dotenv.config({ path: path });
 
-export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
-export const DIVISIONSJSON = process.env.DIVISIONSJSON;
-
-
 export const ESRI_KEY = process.env.ESRI_KEY;
-
-
 export const employeesRouter = express.Router();
+export const DIVISIONSJSON = process.env.DIVISIONSJSON;
+export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
 
 employeesRouter.post("/", async (req: Request, res: Response) => {
 
@@ -45,8 +48,6 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
             resultEmployees.forEach(function (element: any) {
                 departments.push(element.department);
             });
-
-
 
             departmentsUq.forEach((elementDept: any) => {
                 var keyDept = elementDept;
@@ -124,9 +125,9 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
             });
 
-            if (paramDepartment !== '') {
-                employeesByDept = employeesByDept.filter(item => { return item.department.toLowerCase().indexOf(paramDepartment) >= 0 })
-            }
+            // if (paramDepartment !== '') {
+            //     employeesByDept = employeesByDept.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
+            // }
 
             employeesByDept = _.orderBy(employeesByDept, [employee => employee.full_name], ['asc'])
 
@@ -139,8 +140,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
             }
 
-            let location = _.groupBy(employeesByDept, item => `${item.address}, ${item.community}`);
-            let position = _.groupBy(employeesByDept, item => `${item.title}`);
             let finalResult: any
             switch (groupBy) {
                 case 0:
@@ -150,10 +149,10 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                     finalResult = departments
                     break;
                 case 2:
-                    finalResult = location
+                    finalResult = _.groupBy(employeesByDept, item => `${item.address}, ${item.community}`);
                     break;
                 case 3:
-                    finalResult = position
+                    finalResult = _.groupBy(employeesByDept, item => `${item.title}`);
                     break;
             }
 
@@ -175,20 +174,21 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     let paramFullName = (req.params.full_name)
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
-        .then( async (response: any) => {
+        .then(async (response: any) => {
             var resultEmployees = response.data.employees;
 
             resultEmployees.forEach(function (element: any) {
                 var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
 
                 interface EmployeeDetail extends EmployeeTable {
-
                     unit: String
                     fax_office: String
                     postal_code: String
                     mailcode: string
                     full_name_url: string
                     center: any
+                    latitude: Number
+                    longitude: Number
                 }
 
                 var employee: EmployeeDetail = {
@@ -209,6 +209,8 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                     'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
                     'division_url': division_url,
                     'full_name_url': element.full_name,
+                    'latitude': element.latitude,
+                    'longitude': element.longitude,
                     'value': 0,
                     'center': { "lat": 0, "lng": 0 }
                 };
@@ -217,28 +219,40 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
             });
 
-            let employeeFiltered =  employeeArr;
-            
-            if(employeeFiltered.length === 0) {
-                return res.send( {data: true})
+            // let employeeFilteredByDpt = employeeArr.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
+
+            // let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.indexOf(paramFullName) >= 0 })
+
+            if (employeeArr.length === 0) {
+                return res.send({ data: true })
             }
 
-            await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeFiltered[0].community},${employeeFiltered[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
-            .then((response: any) => {
-                const center = response.data.candidates[0].location
-                employeeFiltered[0].center.lat = center.y
-                employeeFiltered[0].center.lng = center.x
-            })
+
+            if (employeeArr[0].community && employeeArr[0].address !== '' || null) {
+                if (employeeArr[0].latitude !== null) {
+                    employeeArr[0].center.lat = employeeArr[0].latitude
+                    employeeArr[0].center.lng = employeeArr[0].longitude
+                } else {
+
+                    await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeArr[0].community},${employeeArr[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
+                        .then((response: any) => {
+                            const center = response.data.candidates[0].location
+                            employeeArr[0].center.lat = center.y
+                            employeeArr[0].center.lng = center.x
+                        }).catch((error: any) => {
+                            console.log(error)
+                        })
+                }
+            } else employeeArr[0].center = null
 
             let managerName: any
 
-            employeeFiltered.forEach((element) => {
+            employeeArr.forEach((element) => {
                 managerName = element.manager
             })
 
             let managerFilter: any[] = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
-            let firstRow = [_.head(employeeFiltered)];
-            res.send({ data: firstRow, meta: { manager: managerFilter } });
+            res.send({ data: employeeArr, meta: { manager: managerFilter } });
         })
         .catch((error: any) => {
             console.log(error);
@@ -258,7 +272,10 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
     let paramDivision = (req.params.division)
     let paramBranch = (req.params.branch)
+
     var notDivision = paramDivision === 'not-division';
+
+    var onlyDept = paramDivision === 'only-department' && paramBranch === 'only-department'
 
     if (paramDivision === 'not-division') {
         paramDivision = ''
@@ -301,21 +318,31 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                 employeesByDept.push(employee);
             });
 
-            let employeesByDivision = [];
+            // employeesByDept = employeesByDept.filter(item => {
+            //     return item.department.indexOf(paramDepartment) >= 0
+            // })
+
+            let employeesByDivision = employeesByDept
+
             //Filter by Division  
-            if (notDivision) {
-              employeesByDivision = employeesByDept.filter(item => {return item.division === '-'|| _.isUndefined(item.division) || _.isEmpty(item.division)  }) 
-            }else{
-              employeesByDivision = employeesByDept.filter(item => { return item.division.toLowerCase().indexOf(paramDivision) >= 0 })
+            if (onlyDept) {
+
+            } else if (notDivision) {
+                employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
+            } else {
+                employeesByDivision = employeesByDept.filter(item => { return item.division.indexOf(paramDivision) >= 0 })
             }
+
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
 
             //Filter by Branch
-            if (notBranch) {
+            if (onlyDept) {
+
+            } else if (notBranch) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
             } else if (paramBranch !== '') {
-                employeesByDivision = employeesByDivision.filter(item => { return item.branch.toLowerCase().indexOf(paramBranch) >= 0 })
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
             }
 
             //Get all the Managers' name
@@ -359,16 +386,16 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             });
 
             //Obtain all objects from managers
-            let managersByDivision = employeesByDivision.filter((item: { manager: string; full_name: any; level: number; }) => {
-                if( _.isEmpty(item.manager) || item.manager === '-' ||  item.manager === item.full_name){
-                     item.level = 0;
-                     return true;
+            let managersByDivision = employeesByDivision.filter(item => {
+                if (_.isEmpty(item.manager) || item.manager === '-' || item.manager === item.full_name) {
+                    item.level = 0;
+                    return true;
                 }
             });
 
             //Obtain all employee objects not in Manager's array.
-            let employeesByManager = employeesByDivision.filter(function (e: { full_name: any; }) {
-                return !_.find(managersByDivision, {full_name:e.full_name})
+            let employeesByManager = employeesByDivision.filter(function (e) {
+                return !_.find(managersByDivision, { full_name: e.full_name })
             })
 
             const getEmployeesByManager = (employeesArray: any, currentManager: any, level: any) => {
@@ -436,33 +463,89 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var find = '-';
     var reg = new RegExp(find, 'g');
     var _ = require("lodash");
-    let paramDepartment = (req.params.department.replace(reg, ' ').replace(/\--/g, '-/-'))
+    let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
     var employeesByDept = Object();
     let error = false
+    
+    
+    axios.get(String(DIVISIONSJSON), { params: { department: paramDepartment } })
+        .then(async (response: any) => {
+            
+            if (response.data.divisions.length === 0) {
+                    return res.send({ meta: { error: true } })
+            } else {
+                axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
+                    .then((response: any) => {
+
+                        var resultEmployees = response.data.employees;
+
+                        // employeesByDept = resultEmployees.filter(function (e: any) {
+                        //     return e.department.indexOf(paramDepartment) >= 0
+                        // })
+
+                        if (resultEmployees.length == 0) {
+                            return res.send({ meta: { count: 0, notFound: true } });
+                        }
+
+                        let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc'])
+
+                        resultEmployees.forEach((element: any) => {
+                            if (element.division === null) {
+                                element.division = 'Employees who are not assigned a division'
+                            }
+                            if (element.branch === null) {
+                                element.branch = 'Employees who are not assigned a branch'
+                            }
+                        })
+
+                        let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
+
+                        for (const [key, value] of Object.entries(division)) {
+                            const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
+
+                            division[key] = groupByDivision;
+
+                        }
+
+                        return res.send({ data: division, meta: { count: 0 } });
+
+                    })
+                    .catch((error: any) => {
+                        console.log(error);
+                    });
+
+            }
+
+        }).catch((error: any) => {
+            console.log(error);
+        });
 
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
-            var employeesByDept = response.data.employees;
+            var resultEmployees = response.data.employees;
 
-            if (employeesByDept.length == 0) {
-                error = true
+            // employeesByDept = resultEmployees.filter(function (e: any) {
+            //     return e.department.indexOf(paramDepartment) >= 0
+            // })
+
+            if (resultEmployees.length == 0) {
+                res.send({ meta: { count: 0, notFound: true } });
+                return
             }
 
-            let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
+            let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc'])
 
-            employeesByDept.forEach((element: any) => {
+            resultEmployees.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'Not Division'
+                    element.division = 'Employees who are not assigned a division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'Not Branch'
+                    element.branch = 'Employees who are not assigned a branch'
                 }
             })
 
-
             let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
-
 
             for (const [key, value] of Object.entries(division)) {
                 const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
@@ -491,16 +574,21 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
-            var employeesByDept = response.data.employees;
+            var resultEmployees = response.data.employees;
 
-            let employeesByDeptSorted = _.sortBy(employeesByDept, ['null', 'division', 'branch'], ['desc', 'asc'])
+            // employeesByDept = resultEmployees.filter(function (e: any) {
+            //     return e.department.indexOf(paramDepartment) >= 0
+            // })
 
-            employeesByDept.forEach((element: any) => {
+
+            let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc'])
+
+            resultEmployees.forEach((element: any) => {
                 if (element.division === null) {
-                    element.division = 'Not Division'
+                    element.division = 'Employees who are not assigned a division'
                 }
                 if (element.branch === null) {
-                    element.branch = 'Not Branch'
+                    element.branch = 'Employees who are not assigned a branch'
                 }
             })
 
@@ -542,4 +630,48 @@ employeesRouter.post("/SearchBar", async (req: Request, res: Response) => {
         .catch((error: any) => {
             console.log(error);
         });
+});
+
+employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
+    try {
+        //Content from client
+        let feedbackContentSubject = (req.body.emailSubject);
+        let feedbackFormContent = (req.body.emailBody);
+        let emailDate = new Date();;
+        let pageUrl = (req.body.pageUrl)
+
+        const bodyContentFormatted =
+            `<p><strong>Submited on:</strong> ${emailDate.toLocaleString()}</p>
+        <p><strong>${feedbackContentSubject} :</strong> ${feedbackFormContent}</p> 
+        <p<strong>URL:</strong> <a href="${pageUrl}">${pageUrl}</a></p>`;
+
+
+        const emailHost = process.env.SMTP_SERVER;
+        const emailPort: string = process.env.SMTP_PORT!;
+        const emailFrom = process.env.EMAIL_FROM;
+        const emailPass = process.env.SMTP_PASS;
+        const nameFrom = process.env.NAME_FROM;
+        const subject = process.env.EMAIL_SUBJECT;
+        const transporter = nodemailer.createTransport({
+            host: emailHost,
+            port: parseInt(emailPort),
+            requireTLS: false,
+            secure: false,
+            auth: {
+                user: emailFrom,
+                pass: emailPass,
+            },
+        });
+
+        const info = await transporter.sendMail({
+            from: nameFrom + ' ' + emailFrom,
+            to: process.env.EMAIL_TO,
+            subject: subject,
+            html: bodyContentFormatted,
+        });
+
+        res.send({ data: 'Sent' });
+    } catch (error) {
+        console.log(error);
+    }
 });

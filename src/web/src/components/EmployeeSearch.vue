@@ -12,10 +12,10 @@
                 </template>
             </v-breadcrumbs>
 
-
-            <h2 class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
+            <h2 v-if="results" class="px-0" style="font-size: 34px !important;">There are no results</h2>
+            <h2 v-else class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
             </h2>
-            <v-row>
+            <v-row v-if="!results">
                 <v-col cols="12" md="2" class="d-flex align-center justify-start">
                     <h4 class="">Group by: </h4>
                 </v-col>
@@ -37,33 +37,9 @@
             <div class="text-center loading" v-show="loading">
                 <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
             </div>
-
-            <div v-if="itemsValue === 0">
-
-                <v-data-table dense class="py-5 d-table" hide-default-footer :items="items" :headers="headers"
-                    :loading="loading" hide-default-header :items-per-page="itemsPerPage" mobile-breakpoint="0">
-                    <template v-slot:header="{ props }">
-                        <th class="data-header py-3 pl-3 " v-for="head in props.headers" :key="head.id">{{ head.text }}
-                        </th>
-                    </template>
-                    <template v-slot:body="{ items }">
-                        <tbody class="table-body">
-                            <tr class="table-border" v-for='item in items' :key="item.full_name">
-                                <td>
-                                    <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                        :href="urlEmployee(item.department, item.full_name_url)">
-
-                                        {{ item.formatted_name }}
-                                    </a>
-                                </td>
-                                <td class="default-cursor">{{ item.title }}</td>
-                                <td class="default-cursor">{{ item.email }}</td>
-                                <td class="default-cursor">{{ item.phone_office }}</td>
-                            </tr>
-                        </tbody>
-                    </template>
-
-                </v-data-table>
+            <div v-if="!results">
+                <div v-if="itemsValue === 0">
+                <EmployeesGrid :check="mobileCheck" :items="items" :department="department" />
             </div>
             <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
                 <h2 class="mt-8 department-text">{{ cleanParam(parent_array) }}</h2>
@@ -73,32 +49,7 @@
                         <h3 class="division-text">{{ cleanParam(index) }}</h3>
                         <h3 class="py-1 px-3 division-length">{{ item.length }}</h3>
                     </div>
-
-                    <v-data-table dense class="py-5 d-table" hide-default-footer :items="item" :headers="headers"
-                        :loading="loading" hide-default-header mobile-breakpoint="0">
-                        <template v-slot:header="{ props }">
-                            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-                            </th>
-                        </template>
-                        <template v-slot:body="{ items }">
-                            <tbody class="table-body">
-                                <tr class="table-border" v-for='item in item'>
-                                    <td>
-                                        <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                            :href="urlEmployee(item.department, item.full_name_url)">
-
-                                            {{ item.formatted_name }}
-                                        </a>
-                                    </td>
-                                    <td class="default-cursor">{{ item.title }}</td>
-                                    <td class="default-cursor">{{ item.email }}</td>
-                                    <td class="default-cursor">{{ item.phone_office }}</td>
-                                </tr>
-                            </tbody>
-                        </template>
-
-                    </v-data-table>
-
+                    <EmployeesGrid :check="mobileCheck" :items="item" :department="department" />
                 </div>
 
             </div>
@@ -110,29 +61,7 @@
                     </div>
                 </v-row>
                 <div class="mt-4 d-flex align-center">
-                    <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
-                        :loading="loading" hide-default-header mobile-breakpoint="0">
-                        <template v-slot:header="{ props }">
-                            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-                            </th>
-                        </template>
-                        <template v-slot:body="{ items }">
-                            <tbody class="table-body">
-                                <tr class="table-border" v-for='item in value'>
-                                    <td>
-                                        <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                            :href="urlEmployee(item.department, item.full_name_url)">
-                                            {{ item.formatted_name }}
-                                        </a>
-                                    </td>
-                                    <td class="default-cursor">{{ item.title }}</td>
-                                    <td class="default-cursor">{{ item.email }}</td>
-                                    <td class="default-cursor">{{ item.phone_office }}</td>
-                                </tr>
-                            </tbody>
-                        </template>
-                    </v-data-table>
-
+                    <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
                 </div>
 
             </div>
@@ -144,32 +73,9 @@
                     </div>
                 </v-row>
                 <div class="mt-8 d-flex align-center">
-                    <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
-                        :loading="loading" hide-default-header mobile-breakpoint="0">
-                        <template v-slot:header="{ props }">
-                            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-                            </th>
-                        </template>
-                        <template v-slot:body="{ items }">
-                            <tbody class="table-body">
-                                <tr class="table-border" v-for='item in value'>
-                                    <td>
-                                        <a class="d-flex flex-wrap align-center" style="word-wrap: normal"
-                                            :href="urlEmployee(item.department, item.full_name_url)">
-                                            {{ item.formatted_name }}
-                                        </a>
-                                    </td>
-                                    <td class="default-cursor">{{ item.title }}</td>
-                                    <td class="default-cursor">{{ item.email }}</td>
-                                    <td class="default-cursor">{{ item.phone_office }}</td>
-                                </tr>
-                            </tbody>
-                        </template>
-
-                    </v-data-table>
-
+                    <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
                 </div>
-
+            </div>
             </div>
         </v-container>
     </div>
@@ -180,10 +86,13 @@ const axios = require("axios");
 import SearchBarHeader from './UI/SearchBarHeader.vue'
 import DepartmentHeader from './UI/DepartmentHeader.vue';
 import IconLoader from "./icons/IconLoader.vue";
+import EmployeesGrid from './UI/EmployeesGrid.vue';
+
 import * as urls from "../urls";
 
 export default {
     components: {
+        EmployeesGrid,
         SearchBarHeader,
         IconLoader,
         DepartmentHeader
@@ -204,18 +113,33 @@ export default {
                 this.loading = true
                 this.getDataFromApi();
             },
+        },
+        windowWidth: {
+            handler() {
+                if (this.windowWidth > 900) {
+                    this.mobileCheck = false
+                } else this.mobileCheck = true
+            }
         }
 
     },
     emits: ['changeBg'],
     mounted() {
+
+        this.$nextTick(() => {
+            window.addEventListener('resize', this.onResize);
+        })
+        if (this.windowWidth > 900) {
+            this.mobileCheck = false
+        } else this.mobileCheck = true
+
         this.getDataFromApi();
         this.updateBreadCrumbs();
         this.$emit('changeBg');
     },
     data() {
         return {
-
+            results: false,
             itemsPerPage: null,
             selection: 0,
             itemsValue: null,
@@ -228,15 +152,20 @@ export default {
             headers: [
                 { text: "Name", value: "formatted_name" },
                 { text: "Position", value: "title" },
-                { text: "E-Mail Address", value: "email" },
-                { text: "Phone Number", value: "phone_office" },
+                { text: "Email address", value: "email" },
+                { text: "Phone number", value: "phone_office" },
             ],
             loading: false,
             searchTitle: '',
+            windowWidth: window.innerWidth,
+            mobileCheck: false,
         }
     },
 
     methods: {
+        onResize() {
+            this.windowWidth = window.innerWidth
+        },
         urlEmployee(department, name) {
             var find = ' ';
             var reg = new RegExp(find, 'g');
@@ -315,6 +244,9 @@ export default {
                 .then((resp) => {
 
                     this.items = resp.data.data;
+                    if(this.items.length === 0) {
+                        this.results = true
+                    }
                     this.itemsLength = resp.data.meta.count
                     this.itemsPerPage = resp.data.meta.count
 

@@ -31,16 +31,19 @@
       </v-row>
 
       <v-row>
-        <DivisionsCard :division="this.div" :checkClass="this.branch.toLowerCase()" :checkHover="this.div.toLowerCase()"
-          :department="this.department.toLowerCase()" class="mt-6" />
+        <DivisionsCard :division="this.div" :checkClass="this.branch" :checkHover="this.div" :department="this.department"
+          class="mt-6" />
       </v-row>
 
       <div class="pt-6 pb-n12 mt-10 d-flex flex-column align-start justify-center">
-
-        <div class="d-flex align-center justify-start">
+        <div v-if="results">
+          <h2 class="px-0" style="font-size: 34px !important;">There are no results</h2>
+        </div>
+        <div v-else class="d-flex align-center justify-start">
           <h2 class="px-0" style="font-size: 34px !important;">{{ div }}</h2>
           <h3 class="ml-4">( {{ divisionLength }} Results )</h3>
         </div>
+
         <div v-if="branch !== 'All branches'" class=" d-flex align-center justify-start">
           <h2 style="font-size: 25px !important;">{{ branch }}</h2>
           <h3 style="font-size: 16px !important;" class="ml-4">( {{ totalLength }} Results )</h3>
@@ -49,38 +52,10 @@
       <div class="text-center loading" v-show="loading">
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
-      <div v-if="itemsValue === 0" class="mb-6 mt-2">
 
-        <v-data-table dense class="py-5 px-0 d-table" hide-default-footer :items="items" :headers="headers"
-          :options.sync="options" :loading="loading" :items-per-page="itemsPerPage" hide-default-header
-          mobile-breakpoint="0">
-          <template v-slot:header="{ props }">
-            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-            </th>
-          </template>
-          <template v-slot:body="{ items }">
-            <tbody class="table-body">
-              <tr :class="{ 'table-body-managers': item.level === 0, 'table-body-second-managers': item.level === 1 }"
-                class="table-border" v-for='(item, index, id ) in items' :key="id">
-                <td>
-                  <a class="d-flex flex-wrap align-center" :class="'ml-' + item.level" style="word-wrap: normal;"
-                    :href="urlEmployee(item.department, item.full_name_url)">
-                    <IconLoader v-if="item.level === 1" :color="'blue'" :image="item.level" class="angle-right">
-                    </IconLoader>
-                    <IconLoader v-if="item.level > 1" v-for='n in item.level' :color="'blue'" image="1"
-                      class="angle-right-multiple"></IconLoader>
-                    <label class="full-name">{{ item.formatted_name }}</label>
-                  </a>
-                </td>
-                <td class="default-cursor"> {{ item.title }} </td>
-                <td class="default-cursor"> {{ item.email }}</td>
-                <td class="default-cursor">{{ item.phone_office }}</td>
-              </tr>
-            </tbody>
-          </template>
-
-        </v-data-table>
-
+      <div v-if="!results">
+        <div v-if="itemsValue === 0" class="mb-6 mt-2">
+        <EmployeesGrid :check="mobileCheck" :items="items" :department="department" />
       </div>
 
       <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
@@ -90,28 +65,7 @@
           </div>
         </v-row>
         <div class="mt-4 d-flex align-center">
-          <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
-            :loading="loading" hide-default-header mobile-breakpoint="0">
-            <template v-slot:header="{ props }">
-              <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-              </th>
-            </template>
-            <template v-slot:body="{ items }">
-              <tbody class="table-body">
-                <tr class="table-border" v-for='item in value'>
-                  <td>
-                    <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
-                      :href="urlEmployee(item.department, item.full_name_url)">
-                      {{ item.formatted_name }}
-                    </a>
-                  </td>
-                  <td class="default-cursor">{{ item.title }}</td>
-                  <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor">{{ item.phone_office }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-data-table>
+          <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
         </div>
       </div>
 
@@ -122,29 +76,9 @@
           </div>
         </v-row>
         <div class="mt-8 d-flex align-center">
-          <v-data-table dense class="py-5 d-table" hide-default-footer :items="value" :headers="headers"
-            :loading="loading" hide-default-header mobile-breakpoint="0">
-            <template v-slot:header="{ props }">
-              <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
-              </th>
-            </template>
-            <template v-slot:body="{ items }">
-              <tbody class="table-body">
-                <tr class="table-border" v-for='item in value'>
-                  <td>
-                    <a class="d-flex flex-wrap align-center full-name" style="word-wrap: normal"
-                      :href="urlEmployee(item.department, item.full_name_url)">
-                      {{ item.formatted_name }}
-                    </a>
-                  </td>
-                  <td class="default-cursor">{{ item.title }}</td>
-                  <td class="default-cursor">{{ item.email }}</td>
-                  <td class="default-cursor">{{ item.phone_office }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-data-table>
+          <EmployeesGrid :check="mobileCheck" :items="value" :department="department" />
         </div>
+      </div>
       </div>
     </v-container>
   </div>
@@ -157,6 +91,7 @@ import DivisionsCard from "./UI/DivisionsCard.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
+import EmployeesGrid from "./UI/EmployeesGrid.vue";
 
 export default {
   name: "Grid",
@@ -165,8 +100,10 @@ export default {
     DivisionsCard,
     IconLoader,
     SearchBarHeader,
+    EmployeesGrid
   },
   data: () => ({
+    results: false,
     itemsValue: null,
     selection: '',
     dataTableParam: 0,
@@ -184,12 +121,14 @@ export default {
     headers: [
       { text: "Name", value: "formatted_name" },
       { text: "Position", value: "title" },
-      { text: "E-Mail Address", value: "email" },
-      { text: "Phone Number", value: "phone_office" },
+      { text: "Email address", value: "email" },
+      { text: "Phone number", value: "phone_office" },
     ],
     page: 1,
     pageCount: 0,
     itemsPerPage: 9999,
+    windowWidth: window.innerWidth,
+    mobileCheck: false,
   }),
   watch: {
     '$route'() {
@@ -212,34 +151,55 @@ export default {
         this.loading = true
         this.getDataFromApi();
       },
+    },
+
+    windowWidth: {
+      handler() {
+        if (this.windowWidth > 900) {
+
+          this.mobileCheck = false
+        } else this.mobileCheck = true
+      }
     }
   },
-  emits: ['changeBg'],
   mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    })
+    if (this.windowWidth > 900) {
+      this.mobileCheck = false
+    } else this.mobileCheck = true
     this.getDataFromApi();
     this.updateBreadCrumbs();
-    this.$emit('changeBg');
   },
   methods: {
+    cleanParam(param) {
+
+      if (param === '-') {
+        param = 'N/A'
+      }
+
+      return param;
+    },
+    cleanLocation(location) {
+
+      if (location[0] === ',') {
+        let link = location.slice(1);
+        return link.replace(/['"]+/g, '')
+      } else {
+        return location.replace(/['"]+/g, '')
+      }
+    },
+    onResize() {
+      this.windowWidth = window.innerWidth
+    },
     cleanParam(param) {
       if (param === '-') {
         param = 'N/A'
       }
       return param;
     },
-    cleanLocation(location) {
-      if (location[0] === ',') {
-        let link = location.slice(1);
-        return link.replace(/['"']+/g, '')
-      } else {
-        return location.replace(/['"']+/g, '')
-      }
-    },
-    urlEmployee(department, name) {
-      var find = ' ';
-      var reg = new RegExp(find, 'g');
-      return '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
-    },
+
     capitalizeString(param) {
       const string = param
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -252,17 +212,23 @@ export default {
       dynamicBreadcrumb.forEach((element => {
         if (element.name == 'Department') {
           element.name = this.department;
-          element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
+          element.link = '/find-employee/' + this.department.replace(reg, '-')
         } else if (element.name == 'Division') {
-          element.name = this.div;
-          if (this.branch !== 'all-branches') {
-            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-').toLowerCase() + '/all-branches'
+          if (this.div === 'Not division') {
+            element.name = 'Employees who are not assigned a division'
+            element.link = null
+          } else element.name = this.div;
+
+          if (this.branch !== 'All branches') {
+
+            element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-') + '/all-branches'
           } else {
+
             element.link = null
           }
         } else if (element.name == 'Branch') {
-          if (this.branch === 'all-branches') {
-            element.name = null
+          if (this.branch === 'All branches') {
+            element.name = 'Employees who are not assigned a branch'
           } else {
             element.name = this.branch;
           }
@@ -285,6 +251,7 @@ export default {
         formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
       }
       this.title = this.capitalizeString(department.replace(reg, ' '))
+
       this.department = this.capitalizeString(department.replace(reg, ' '))
       this.div = this.capitalizeString(division.replace(reg, ' '))
       this.branch = this.capitalizeString(branch.replace(reg, ' '))
@@ -299,6 +266,10 @@ export default {
         })
         .then((resp) => {
           this.items = resp.data.data;
+
+          if (this.items.length === 0) {
+            this.results = true
+          }
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
           this.itemsPerPage = resp.data.meta.divisionCount;
@@ -315,26 +286,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.full-name {
-  cursor: pointer;
-  margin-left: 3px;
-}
-
-.table-header {
-  height: 300px !important;
-  background-color: green;
-}
-
-.overf {
-  z-index: 1;
-  overflow: hidden;
-}
-
-.angle-right {
-  width: 6px;
-}
-
-.angle-right-multiple {
-  width: 5px;
-}</style>
+<style scoped></style>

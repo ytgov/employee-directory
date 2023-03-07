@@ -1,6 +1,7 @@
 export const applicationName = "Find a government employee | Government of Yukon eServices";
 export const applicationIcon = "mdi-cash-register";
 
+
 export const sections = [
     {
         name: "Dashboard",
@@ -19,6 +20,5 @@ export const sections = [
     }
 ];
 
-export const GMAPS_KEY = process.env.VUE_APP_GMAPS_KEY || '';
 export const environment = process.env.NODE_ENV;
 export const apiBaseUrl = process.env.VUE_APP_API_URL || "http://localhost:3000";

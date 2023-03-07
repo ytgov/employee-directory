@@ -1,6 +1,9 @@
 <template>
   <div class="books">
     <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
+    
+    <Aurora/>
+
     <v-container class="px-0">
       <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-16 mb-n8 px-0" :items="breadcrumbsList">
 
@@ -12,15 +15,6 @@
 
         </template>
       </v-breadcrumbs>
-
-      <div class="aurora-town">
-        <span class="aurora--main"></span>
-      </div>
-
-      <div class="text-center loading" v-show="loading">
-        <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-      </div>
-
       <v-row class="mb-6 mt-16">
         <v-col cols="12" md="4" sm="6" xs="12" v-for='(items, index, id) in item' :key="id">
           <v-hover v-slot="{ hover }">
@@ -29,9 +23,9 @@
                 <v-list-item three-line class="icon-list">
                   <v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
                     :style="{ 'background-color': hover ? '#DC4001' : '#512A44' }">
-                    <v-avatar tile>
-                      <IconLoader :image="index.toLowerCase().replace(/\//g, '')" :color="'white'" />
-                    </v-avatar>
+                    <div style="height:100%;">
+                      <IconLoader style="transform:scale(1.4)" :image="'icon'" />
+                    </div>
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title class="text-h6 mb-1">
@@ -52,13 +46,15 @@
 import IconLoader from './icons/IconLoader.vue'
 import SearchBarHeader from './UI/SearchBarHeader.vue'
 import * as urls from "../urls";
+import Aurora from './UI/Aurora.vue';
 
 const axios = require("axios");
 export default {
   components: {
     IconLoader,
     SearchBarHeader,
-  },
+    Aurora
+},
   name: "Employees",
   data: () => ({
     noBgImg: true,
@@ -90,15 +86,12 @@ export default {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
 
-    indexUrl(field, value) {
+    indexUrl(field) {
 
       let department = "/find-employee/" + field.replace(/\//g, '')
-      let noSpaces = department.replaceAll(/\s/g, '-').toLowerCase();
-      if (value.length === 0) {
-        return "" + noSpaces + '/not-division/all-branches'
-      } else {
-        return String(noSpaces)
-      }
+      let noSpaces = department.replaceAll(/\s/g, '-');
+
+      return String(noSpaces)
 
     },
     getEmployeesData() {
@@ -122,23 +115,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-body .aurora--main:before {
-  top: 590px !important;
-
-}
-
-@media(min-width:600px) {
-  body .aurora--main:before {
-    top: 430px !important;
-  }
-}
-
-@media(min-width:767px) {
-  body .aurora--main:before {
-    right: -53%;
-    top: 380px !important;
-  }
-}
-</style>
