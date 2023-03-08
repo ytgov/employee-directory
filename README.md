@@ -28,9 +28,11 @@ Environment variables should never be checked into the repository!
 
 ## Building the container image
 
+`docker-compose -f docker-compose.production.yml up --build -d`
 
 ## Running the container in test or production
 
 By default, the container will run in development mode, but following the step above, you can create the appropriate environment files for the instance you are targetting. Depending, the application will look for either `src/api/.env.test` or `src/api/.env.production`. To tell the API which instance to use, add the environment variable `NODE_ENV` to the docker run command like below.
 
-`docker run -p 8222:3000 -e NODE_ENV=production --restart=on-failure vue-template`
+
+`docker run -p 8080:3000 -e NODE_ENV=production --restart=on-failure Find-employee"`

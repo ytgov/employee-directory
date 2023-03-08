@@ -4,7 +4,6 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
 import nodemailer from "nodemailer";
-
 import { EmployeeTable } from './interface';
 
 let path;
@@ -33,8 +32,6 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
         .then((response: any) => {
 
             var resultEmployees = response.data.divisions;
-            var search = req.query.search;
-            var searchTerm = "";
             var departments = Array();
 
             resultEmployees.forEach(function (element: any) {
@@ -313,11 +310,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let employeesByDivision = employeesByDept
 
             //Filter by Division  
-            if (onlyDept) {
-
-            } else if (notDivision) {
+            if (notDivision) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
-            } else {
+            } else if (!onlyDept) {
                 employeesByDivision = employeesByDept.filter(item => { return item.division.indexOf(paramDivision) >= 0 })
             }
 
@@ -325,11 +320,9 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             let divLength = employeesByDivision.length
 
             //Filter by Branch
-            if (onlyDept) {
-
-            } else if (notBranch) {
+            if (notBranch) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
-            } else if (paramBranch !== '') {
+            } else if (paramBranch !== '' && !onlyDept) {
                 employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
             }
 
