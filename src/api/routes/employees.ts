@@ -125,10 +125,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
             });
 
-            // if (paramDepartment !== '') {
-            //     employeesByDept = employeesByDept.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
-            // }
-
             employeesByDept = _.orderBy(employeesByDept, [employee => employee.full_name], ['asc'])
 
             let departments = _.groupBy(employeesByDept, item => `${item.department}`);
@@ -218,10 +214,6 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
                 employeeArr.push(employee);
 
             });
-
-            // let employeeFilteredByDpt = employeeArr.filter(item => { return item.department.indexOf(paramDepartment) >= 0 })
-
-            // let employeeFiltered = employeeFilteredByDpt.filter(item => { return item.full_name_url.indexOf(paramFullName) >= 0 })
 
             if (employeeArr.length === 0) {
                 return res.send({ data: true })
@@ -317,10 +309,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
                 employeesByDept.push(employee);
             });
-
-            // employeesByDept = employeesByDept.filter(item => {
-            //     return item.department.indexOf(paramDepartment) >= 0
-            // })
 
             let employeesByDivision = employeesByDept
 
@@ -464,9 +452,7 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var reg = new RegExp(find, 'g');
     var _ = require("lodash");
     let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
-    var employeesByDept = Object();
     let error = false
-    
     
     axios.get(String(DIVISIONSJSON), { params: { department: paramDepartment } })
         .then(async (response: any) => {
@@ -478,11 +464,6 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
                     .then((response: any) => {
 
                         var resultEmployees = response.data.employees;
-
-                        // employeesByDept = resultEmployees.filter(function (e: any) {
-                        //     return e.department.indexOf(paramDepartment) >= 0
-                        // })
-
                         if (resultEmployees.length == 0) {
                             return res.send({ meta: { count: 0, notFound: true } });
                         }
@@ -525,10 +506,6 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 
             var resultEmployees = response.data.employees;
 
-            // employeesByDept = resultEmployees.filter(function (e: any) {
-            //     return e.department.indexOf(paramDepartment) >= 0
-            // })
-
             if (resultEmployees.length == 0) {
                 res.send({ meta: { count: 0, notFound: true } });
                 return
@@ -567,20 +544,10 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
     var find = '-';
     var reg = new RegExp(find, 'g');
     const paramDepartment = req.body.department.replace(/\--/g, '-/-')
-
-    var employeesByDept = Object();
-
-
     axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
         .then((response: any) => {
 
             var resultEmployees = response.data.employees;
-
-            // employeesByDept = resultEmployees.filter(function (e: any) {
-            //     return e.department.indexOf(paramDepartment) >= 0
-            // })
-
-
             let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc'])
 
             resultEmployees.forEach((element: any) => {
