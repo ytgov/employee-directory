@@ -11,9 +11,9 @@ switch (process.env.NODE_ENV) {
   default:
     path = `.env.development`;
 }
-dotenv.config({ path: path });
 
-console.log(`Loading config from ${process.env.NODE_ENV}`);
+dotenv.config({ path: path });
+console.log(`Loading config from ${process.env.NODE_ENV || 'dev'}`);
 
 export const API_PORT = parseInt(process.env.API_PORT || "3000");
 export const FRONTEND_URL = process.env.FRONTEND_URL || "localhost:8080";
