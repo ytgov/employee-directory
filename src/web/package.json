@@ -1,0 +1,66 @@
+{
+  "name": "Find-employee",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start:dev": "vue-cli-service serve",
+    "build:web": "vue-cli-service build",
+    "build:docker": "vue-cli-service build --dest ../app/dist/web",
+    "lint": "vue-cli-service lint",
+    "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint"
+  },
+  "dependencies": {
+    "axios": "0.24.0",
+    "core-js": "3.24.1",
+    "glob-parent": ">=5.1.2",
+    "leaflet-control-geocoder": "2.4.0",
+    "vue": "2.6.14",
+    "vue-matomo": "4.2.0",
+    "vue-router": "3.5.3",
+    "vue2-leaflet": "2.7.1",
+    "vuetify": "2.6.10",
+    "vuex": "3.4.0",
+    "webpack": "5.76.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-plugin-vuex": "~5.0.0",
+    "@vue/cli-service": "5.0.8",
+    "@vue/eslint-config-prettier": "7.0.0",
+    "babel-eslint": "10.1.0",
+    "eslint": "8.21.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-vue": "9.3.0",
+    "vue-template-compiler": "2.6.14"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "vue/multi-word-component-names": [
+        "error",
+        {
+          "ignores": [
+            "Home",
+            "Grid"
+          ]
+        }
+      ]
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

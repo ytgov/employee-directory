@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "find-your-employee"
+  },
+  "targets": {
+    "find-your-employee": {
+      "hosting": {
+        "fye": [
+          "find-your-employee"
+        ]
+      }
+    }
+  }
+}
