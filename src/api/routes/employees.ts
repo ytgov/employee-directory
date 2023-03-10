@@ -4,9 +4,9 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import * as dotenv from "dotenv";
 import nodemailer from "nodemailer";
-import sanitizeHtml from 'sanitize-html';
-
 import { EmployeeTable } from './interface';
+
+const sanitizeHtml = require('sanitize-html');
 
 let path;
 switch (process.env.NODE_ENV) {

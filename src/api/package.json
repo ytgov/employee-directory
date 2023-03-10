@@ -17,7 +17,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/nodemailer": "6.4.7",
-    "@types/sanitize-html": "2.8.1",
     "axios": "0.24.0",
     "cors": "2.8.5",
     "dotenv": "16.0.1",
