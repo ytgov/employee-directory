@@ -14,7 +14,7 @@
     "core-js": "3.24.1",
     "glob-parent": ">=5.1.2",
     "leaflet-control-geocoder": "2.4.0",
-    "vue": "2.6.14",
+    "vue": "2.7.14",
     "vue-matomo": "4.2.0",
     "vue-router": "3.5.3",
     "vue2-leaflet": "2.7.1",
@@ -32,7 +32,7 @@
     "eslint": "8.21.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-vue": "9.3.0",
-    "vue-template-compiler": "2.6.14"
+    "vue-template-compiler": "2.7.14"
   },
   "eslintConfig": {
     "root": true,
