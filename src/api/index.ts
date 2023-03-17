@@ -32,10 +32,14 @@ app.use(
         'script-src-attr': [ "'none'" ],
         'style-src': [ "'self'", 'https:', "'unsafe-inline'" ],
         'worker-src': ["'self'", 'blob:'],
-        'connect-src': ["'self'"],
+        'connect-src': [
+          "'self'",
+          'https://test.find-employee.ynet.gov.yk.ca',
+          'https://eservices.gov.yk.ca',
+        ],
       },
     })
-  );
+);
 
 // very basic CORS setup
 app.use(cors({
