@@ -21,4 +21,4 @@ export const sections = [
 ];
 
 export const environment = process.env.NODE_ENV;
-export const apiBaseUrl = process.env.VUE_APP_API_URL || "http://localhost:8080";
+export const apiBaseUrl = process.env.VUE_APP_API_URL || "https://test.find-employee.ynet.gov.yk.ca";
