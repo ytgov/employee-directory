@@ -29,7 +29,7 @@ export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
 employeesRouter.post("/", async (req: Request, res: Response) => {
 
     var employeesByDept = Object();
-
+    console.log(DIVISIONSJSON);
     axios.get(String(DIVISIONSJSON))
         .then((response: any) => {
 
@@ -67,7 +67,7 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
 
                 employeesByDept[elementDept] = arrayElements;
             });
-
+            console.log(employeesByDept);
             res.send({ data: employeesByDept, meta: { count: 0 } });
 
         })
