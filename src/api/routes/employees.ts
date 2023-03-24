@@ -14,7 +14,7 @@ switch (process.env.NODE_ENV) {
       path = `.env.test`;
       break;
     case "production":
-      path = `.env.production`;
+      path = `.env`;
       break;
     default:
       path = `.env.development`;
@@ -25,6 +25,9 @@ export const ESRI_KEY = process.env.ESRI_KEY;
 export const employeesRouter = express.Router();
 export const DIVISIONSJSON = process.env.DIVISIONSJSON;
 export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
+
+console.log("API NODE_ENV", process.env.NODE_ENV);
+console.log("API ENV", process.env);
 
 employeesRouter.post("/", async (req: Request, res: Response) => {
 
