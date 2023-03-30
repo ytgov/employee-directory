@@ -21,7 +21,7 @@
       <v-textarea v-model="feedbackText" outlined class="mt-4 area" background-color="#f1f1f1" rows="5">
 
       </v-textarea>
-      <v-btn type="submit" class="btn px-7" tonal elevation="0" height="60px" color="#00616D">Submit feedback</v-btn>
+      <v-btn id="submit-feedback" type="submit" class="btn px-7" tonal elevation="0" height="60px" color="#00616D">Submit feedback</v-btn>
     </v-form>
 
     <v-card class="feedback-form form-success my-4 pa-4 help d-flex align-center" v-if="success">
@@ -147,6 +147,9 @@ export default {
 </script>
 
 <style>
+.v-btn#submit-feedback{
+  text-transform: none;
+}
 .btn {
   color: white !important;
   border: none !important;

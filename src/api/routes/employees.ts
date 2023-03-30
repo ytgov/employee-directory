@@ -26,13 +26,9 @@ export const employeesRouter = express.Router();
 export const DIVISIONSJSON = process.env.DIVISIONSJSON;
 export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
 
-console.log("API NODE_ENV", process.env.NODE_ENV);
-console.log("API ENV", process.env);
-
 employeesRouter.post("/", async (req: Request, res: Response) => {
 
     var employeesByDept = Object();
-    console.log(DIVISIONSJSON);
     axios.get(String(DIVISIONSJSON))
         .then((response: any) => {
 
@@ -70,7 +66,6 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
 
                 employeesByDept[elementDept] = arrayElements;
             });
-            console.log(employeesByDept);
             res.send({ data: employeesByDept, meta: { count: 0 } });
 
         })

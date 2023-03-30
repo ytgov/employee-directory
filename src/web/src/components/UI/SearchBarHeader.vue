@@ -10,7 +10,7 @@
                             Enter the employee's name, position title, email address or phone number in the search box. You can also select their department from the drop down, but this is optional.
                         </li>
                         <li>
-                        Select the "Search' button to display the results.
+                        Select the Search button to display the results.
                         </li>
                     </ol>
                 </p>

@@ -57,13 +57,13 @@
             <v-row>
               <v-col class="mb-1 detail-columns">
                 <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
-                  Phone Office:
+                  Phone office:
                   <a :href="getPhone(item.phone_office)">{{
                     item.phone_office
                   }}</a>
                 </h3>
                 <h3 v-if="checkStatus(item.email)" class="mb-0">
-                  E-mail Address:
+                  Email address:
                   <a :href="getMail(item.email)">{{ item.email }}</a>
                 </h3>
                 <h3 v-if="checkStatus(item.fax_office)" class="mb-0">
@@ -73,7 +73,7 @@
             </v-row>
           </v-card>
           <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-            <h2 class="mt-4 mb-2">Position Information</h2>
+            <h2 class="mt-4 mb-2">Position information</h2>
             <v-row>
               <v-col class="mb-1">
                 <h3 class="mb-0">
@@ -96,10 +96,10 @@
                   Community: <span>{{ item.community }}</span>
                 </h3>
                 <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
-                  Postal Code: <span>{{ item.postal_code }}</span>
+                  Postal code: <span>{{ item.postal_code }}</span>
                 </h3>
                 <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
-                  Mail Code: <span>{{ item.mailcode }}</span>
+                  Mail code: <span>{{ item.mailcode }}</span>
                 </h3>
               </v-col>
               <v-col v-if="center !== null" cols="12" md="6">

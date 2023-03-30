@@ -20,8 +20,5 @@ export const sections = [
     }
 ];
 
-console.log("API ENV", process.env);
-console.log("FRONTEND NODE_ENV", process.env.NODE_ENV);
-console.log("FRONTEND apiBaseUrl", process.env.VUE_APP_API_URL);
 export const environment = process.env.NODE_ENV;
 export const apiBaseUrl = process.env.VUE_APP_API_URL || "https://test.find-employee.ynet.gov.yk.ca";
