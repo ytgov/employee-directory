@@ -67,7 +67,7 @@
                   <a :href="getMail(item.email)">{{ item.email }}</a>
                 </h3>
                 <h3 v-if="checkStatus(item.fax_office)" class="mb-0">
-                  Fax Office: <span>{{ item.fax_office }}</span>
+                  Fax office: <span>{{ item.fax_office }}</span>
                 </h3>
               </v-col>
             </v-row>
