@@ -10,7 +10,7 @@
     "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint"
   },
   "dependencies": {
-    "axios": "0.24.0",
+    "axios": "1.4.0",
     "core-js": "3.24.1",
     "glob-parent": ">=5.1.2",
     "leaflet-control-geocoder": "2.4.0",
