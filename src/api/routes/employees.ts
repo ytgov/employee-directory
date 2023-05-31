@@ -606,32 +606,22 @@ employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
         <p<strong>URL:</strong> <a href="${pageUrl}">${pageUrl}</a></p>`;
 
         const sanitizedBody = sanitizeHtml(bodyContentFormatted)
-
         const emailHost = process.env.SMTP_SERVER;
         const emailPort: string = process.env.SMTP_PORT!;
         const emailFrom = process.env.EMAIL_FROM;
-        const emailPass = process.env.SMTP_PASS;
         const nameFrom = process.env.NAME_FROM;
         const subject = process.env.EMAIL_SUBJECT;
-
-        const transporter = nodemailer.createTransport({
+        const selfSignedConfig = {
             host: emailHost,
-            port: parseInt(emailPort),
-            requireTLS: false,
-            secure: false,
-            auth: {
-                user: emailFrom,
-                pass: emailPass,
-            },
-        });
-
+            port: parseInt(emailPort)
+        };
+        var transporter = nodemailer.createTransport(selfSignedConfig);
         const info = await transporter.sendMail({
             from: nameFrom + ' ' + emailFrom,
             to: process.env.EMAIL_TO,
             subject: subject,
             html: sanitizedBody,
         });
-
         res.send({ data: 'Sent' });
     } catch (error) {
         console.log(error);
