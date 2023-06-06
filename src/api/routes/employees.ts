@@ -167,12 +167,12 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
     let paramDepartment = (req.params.department).replace(/\--/g, '-/-').replace(reg, ' ')
     let paramFullName = (req.params.full_name)
     var resultEmployees = await employeeService.getEmployee(paramDepartment, paramFullName);
-    if(resultEmployees && _.isArray(resultEmployees) && !_.isEmpty(resultEmployees[0]) ){
+    if(resultEmployees){
             if (resultEmployees.length === 0) {
                 return res.send({ data: true })
             }
 
-            if (resultEmployees[0].community && resultEmployees[0].address !== '' || null) {
+            if (resultEmployees[0] && resultEmployees[0].community && resultEmployees[0].address !== '' || null) {
                 if (resultEmployees[0].latitude !== null) {
                     resultEmployees[0].center.lat = resultEmployees[0].latitude
                     resultEmployees[0].center.lng = resultEmployees[0].longitude
@@ -191,12 +191,16 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
             let managerName: any
             var managerFilter = [];
-            managerName = resultEmployees[0].manager;
-            if(managerName){
-                managerFilter = await employeeService.getEmployee(paramDepartment, managerName);
+            if (resultEmployees[0] && resultEmployees[0].manager){
+                managerName = resultEmployees[0].manager;
+                if(managerName){
+                    managerFilter = await employeeService.getEmployee(paramDepartment, managerName);
+                }
             }
             res.send({ data: resultEmployees, meta: { manager: managerFilter } });
       
+    }else{
+        return res.send({ data: true });
     }
 });
 
