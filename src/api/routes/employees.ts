@@ -5,8 +5,10 @@ import _ from 'lodash';
 import * as dotenv from "dotenv";
 import nodemailer from "nodemailer";
 import { EmployeeTable } from './interface';
+import { EmployeeService } from "../services";
 
 const sanitizeHtml = require('sanitize-html');
+const employeeService = new EmployeeService();
 
 let path;
 switch (process.env.NODE_ENV) {
@@ -159,93 +161,43 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [param("full_name", "department").notEmpty()], async (req: Request, res: Response) => {
 
     var employeeArr: any[] = Array();
-
     var find = '-';
     var reg = new RegExp(find, 'g');
 
     let paramDepartment = (req.params.department).replace(/\--/g, '-/-').replace(reg, ' ')
     let paramFullName = (req.params.full_name)
-
-    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
-        .then(async (response: any) => {
-            var resultEmployees = response.data.employees;
-
-            resultEmployees.forEach(function (element: any) {
-                var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
-
-                interface EmployeeDetail extends EmployeeTable {
-                    unit: String
-                    fax_office: String
-                    postal_code: String
-                    mailcode: string
-                    full_name_url: string
-                    center: any
-                    latitude: Number
-                    longitude: Number
-                }
-
-                var employee: EmployeeDetail = {
-                    'full_name': element.full_name.replace(".", " "),
-                    'formatted_name': element.first_name + ' ' + element.last_name,
-                    'department': element.department,
-                    'division': element.division,
-                    'branch': element.branch,
-                    'unit': element.unit,
-                    'title': element.title,
-                    'email': element.email.toLowerCase(),
-                    'phone_office': element.phone_office,
-                    'fax_office': element.fax_office,
-                    'address': element.address,
-                    'community': element.community,
-                    'postal_code': element.postal_code,
-                    'mailcode': element.mailcode,
-                    'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
-                    'division_url': division_url,
-                    'full_name_url': element.full_name,
-                    'latitude': element.latitude,
-                    'longitude': element.longitude,
-                    'value': 0,
-                    'center': { "lat": 0, "lng": 0 }
-                };
-
-                employeeArr.push(employee);
-
-            });
-
-            if (employeeArr.length === 0) {
+    var resultEmployees = await employeeService.getEmployee(paramDepartment, paramFullName);
+    if(resultEmployees && _.isArray(resultEmployees) && !_.isEmpty(resultEmployees[0]) ){
+            if (resultEmployees.length === 0) {
                 return res.send({ data: true })
             }
 
-
-            if (employeeArr[0].community && employeeArr[0].address !== '' || null) {
-                if (employeeArr[0].latitude !== null) {
-                    employeeArr[0].center.lat = employeeArr[0].latitude
-                    employeeArr[0].center.lng = employeeArr[0].longitude
+            if (resultEmployees[0].community && resultEmployees[0].address !== '' || null) {
+                if (resultEmployees[0].latitude !== null) {
+                    resultEmployees[0].center.lat = resultEmployees[0].latitude
+                    resultEmployees[0].center.lng = resultEmployees[0].longitude
                 } else {
 
-                    await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${employeeArr[0].community},${employeeArr[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
+                    await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${resultEmployees[0].community},${resultEmployees[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
                         .then((response: any) => {
                             const center = response.data.candidates[0].location
-                            employeeArr[0].center.lat = center.y
-                            employeeArr[0].center.lng = center.x
+                            resultEmployees[0].center.lat = center.y
+                            resultEmployees[0].center.lng = center.x
                         }).catch((error: any) => {
                             console.log(error)
                         })
                 }
-            } else employeeArr[0].center = null
+            } else resultEmployees[0].center = null
 
             let managerName: any
-
-            employeeArr.forEach((element) => {
-                managerName = element.manager
-            })
-
-            let managerFilter: any[] = employeeArr.filter(item => { return item.full_name.indexOf(managerName) >= 0 })
-            res.send({ data: employeeArr, meta: { manager: managerFilter } });
-        })
-        .catch((error: any) => {
-            console.log(error);
-        });
+            var managerFilter = [];
+            managerName = resultEmployees[0].manager;
+            if(managerName){
+                managerFilter = await employeeService.getEmployee(paramDepartment, managerName);
+            }
+            res.send({ data: resultEmployees, meta: { manager: managerFilter } });
+      
+    }
 });
 
 employeesRouter.post("/find-employee/:department/:division/:branch?", [param("department", "division"), param('branch').notEmpty()], async (req: Request, res: Response) => {
