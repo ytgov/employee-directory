@@ -36,7 +36,7 @@
                 divisions</h2>
                 <div width="100%" v-else>
                 <h2 style="color:#522A44!important; font-size: 30px; text-align: center!important; width: 100%;">There are
-                  not results.</h2>
+                  no results.</h2>
               </div>
               <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" :key="item.full_name"
                 class="px-8">

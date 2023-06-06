@@ -13,6 +13,7 @@
             </v-breadcrumbs>
             <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">Your search for {{ this.searchTitle.replace(/-/g, " ") }} in the department {{this.department}} had no results.</h2>
             <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">Your search for {{ this.searchTitle.replace(/-/g, " ") }}  has no results.</h2>
+            <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">Your search for {{ this.searchTitle.replace(/-/g, " ") }} in the department {{this.department}} found {{ this.itemsLength }} results.</h2>
             <h2 v-else class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
             </h2>
             <v-row v-if="!results">
