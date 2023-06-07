@@ -90,7 +90,7 @@
             <v-row>
               <v-col class="mb-1" cols="12" md="6">
                 <h3 v-if="checkStatus(item.address)" class="mb-0">
-                  Address: <a>{{ item.address }}</a>
+                  Address: <span>{{ item.address }}</span>
                 </h3>
                 <h3 v-if="checkStatus(item.community)" class="mb-0">
                   Community: <span>{{ item.community }}</span>
