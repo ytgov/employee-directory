@@ -34,7 +34,7 @@ app.use(
         'worker-src': ["'self'", 'blob:'],
         'connect-src': [
           "'self'",
-          'https://test.find-employee.ynet.gov.yk.ca',
+          'https://find-employee.service.yukon.ca',
           'https://eservices.gov.yk.ca',
         ],
       },
