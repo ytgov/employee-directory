@@ -29,24 +29,29 @@
           <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Organization</h2>
             <v-row>
-              <v-col class="mb-1 detail-columns">
-                <h3 v-if="checkStatus(item.department)" class="mb-0">
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.department)">
+                <h3 class="mb-0">
                   Department:
                   <a :href="generateUrl('department', 'n/a', 'n/a')">{{
                     item.department
                   }}</a>
                 </h3>
-                <h3 v-if="checkStatus(item.division)" class="mb-0">
+              </v-col>
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.division)" >
+                <h3 class="mb-0">
                   Division: {{ item.division }}
                 </h3>
-
-                <h3 v-if="checkStatus(item.branch)" class="mb-0">
+              </v-col>
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.branch)">
+                <h3 class="mb-0">
                   Branch:
                   <a :href="generateUrl('branch', item.branch, item.division)">{{
                     item.branch
                   }}</a>
                 </h3>
-                <h3 v-if="checkStatus(item.unit)" class="mb-0">
+              </v-col>
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.unit)">
+                <h3 class="mb-0">
                   Unit: <span>{{ item.unit }}</span>
                 </h3>
               </v-col>
@@ -55,18 +60,22 @@
           <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Contact:</h2>
             <v-row>
-              <v-col class="mb-1 detail-columns">
-                <h3 v-if="checkStatus(item.phone_office)" class="mb-0">
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.phone_office)">
+                <h3  class="mb-0">
                   Phone office:
                   <a :href="getPhone(item.phone_office)">{{
                     item.phone_office
                   }}</a>
                 </h3>
-                <h3 v-if="checkStatus(item.email)" class="mb-0">
+              </v-col>
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.email)">
+                <h3 class="mb-0">
                   Email address:
                   <a :href="getMail(item.email)">{{ item.email }}</a>
                 </h3>
-                <h3 v-if="checkStatus(item.fax_office)" class="mb-0">
+              </v-col>
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.fax_office)">
+                <h3  class="mb-0">
                   Fax office: <span>{{ item.fax_office }}</span>
                 </h3>
               </v-col>
@@ -75,7 +84,7 @@
           <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Position information</h2>
             <v-row>
-              <v-col class="mb-1">
+              <v-col class="mb-0 pt-2 pb-0">
                 <h3 class="mb-0">
                   Manager:
                   <a :href="generateUrl('manager', item.manager, 'n/a')">{{
@@ -88,17 +97,23 @@
           <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Location</h2>
             <v-row>
-              <v-col class="mb-1" cols="12" md="6">
-                <h3 v-if="checkStatus(item.address)" class="mb-0">
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.address)">
+                <h3  class="mb-0">
                   Address: <span>{{ item.address }}</span>
                 </h3>
-                <h3 v-if="checkStatus(item.community)" class="mb-0">
+              </v-col>
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.community)">
+                <h3  class="mb-0">
                   Community: <span>{{ item.community }}</span>
                 </h3>
-                <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
+              </v-col>
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.postal_code)">
+                <h3 class="mb-0">
                   Postal code: <span>{{ item.postal_code }}</span>
                 </h3>
-                <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
+              </v-col>
+              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.mailcode)">
+                <h3  class="mb-0">
                   Mail code: <span>{{ item.mailcode }}</span>
                 </h3>
               </v-col>
@@ -421,17 +436,5 @@ export default {
 
 .employee-detail h3 {
   font-size: 22px;
-}
-
-.detail-columns {
-  overflow-wrap: break-word;
-  columns: 1;
-}
-
-
-@media (min-width:800px) {
-  .detail-columns {
-    columns: 2;
-  }
 }
 </style>
