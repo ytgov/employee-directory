@@ -262,3 +262,13 @@ a {
   color: black !important;
   cursor: default !important;
 }
+
+a{
+  color:#005a65 !important;
+}
+a:visited{
+  color:#643f5d !important;
+}
+a:hover{
+  color:#008392 !important;
+}
