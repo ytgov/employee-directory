@@ -3,7 +3,7 @@
         <v-col>
             <v-card elevation="1" width="100%" class="py-10">
                 <v-row>
-                    <v-col cols="6" v-for="(item, parent_item, id) in items" :key="id" class="px-8 py-1">
+                    <v-col cols="12" md="6" v-for="(item, parent_item, id) in items" :key="id" class="px-8 py-1">
 
                         <v-card outlined color="transparent">
                             <li>

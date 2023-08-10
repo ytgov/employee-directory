@@ -180,9 +180,16 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 
                     await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${resultEmployees[0].community},${resultEmployees[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
                         .then((response: any) => {
-                            const center = response.data.candidates[0].location
-                            resultEmployees[0].center.lat = center.y
-                            resultEmployees[0].center.lng = center.x
+                            
+                            if(response.data.candidates){
+                                const center = response.data.candidates[0].location
+                                resultEmployees[0].center.lat = center.y;
+                                resultEmployees[0].center.lng = center.x;
+                            }
+                            else{
+                                console.log('Error in ESRI:' + JSON.stringify(response.data));
+                                resultEmployees[0].center = null;
+                            }
                         }).catch((error: any) => {
                             console.log(error)
                         })
