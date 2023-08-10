@@ -97,23 +97,17 @@
           <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
             <h2 class="mt-4 mb-2">Location</h2>
             <v-row>
-              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.address)">
-                <h3  class="mb-0">
+              <v-col class="mb-1" cols="12" md="6">
+                <h3 v-if="checkStatus(item.address)" class="mb-0">
                   Address: <span>{{ item.address }}</span>
                 </h3>
-              </v-col>
-              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.community)">
-                <h3  class="mb-0">
+                <h3 v-if="checkStatus(item.community)" class="mb-0">
                   Community: <span>{{ item.community }}</span>
                 </h3>
-              </v-col>
-              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.postal_code)">
-                <h3 class="mb-0">
+                <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
                   Postal code: <span>{{ item.postal_code }}</span>
                 </h3>
-              </v-col>
-              <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.mailcode)">
-                <h3  class="mb-0">
+                <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
                   Mail code: <span>{{ item.mailcode }}</span>
                 </h3>
               </v-col>
