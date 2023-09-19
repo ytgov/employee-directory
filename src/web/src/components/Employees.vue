@@ -5,7 +5,7 @@
     <Aurora/>
 
     <v-container class="px-0">
-      <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-16 mb-n8 px-0" :items="breadcrumbsList">
+      <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-2 mb-n8 px-0" :items="breadcrumbsList">
 
         <template v-slot:item="{ item }">
 
@@ -15,13 +15,18 @@
 
         </template>
       </v-breadcrumbs>
-      <!--v-row >
-        <v-col>
-          <h3>Browse the employee directory by department</h3>
-        </v-col>
-      </v-row-->
-      
-      <v-row class="mb-6 mt-16">
+      <div class="full-width pt-6 bg-img">
+        <v-container class="small-container">
+          <v-row>
+            <v-col cols="12" sm="12" class="align-center justify d-flex">
+              <h2 class="mb-n1 text-responsive" style="color: #522a44 !important; font-size: 32px !important">
+                Browse the employee directory by department
+              </h2>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <v-row class="mb-6 mt-8">
         <v-col cols="12" md="4" sm="6" xs="12" v-for='(items, index, id) in item' :key="id">
           <v-hover v-slot="{ hover }">
             <v-card :href="indexUrl(index, items)" class="mx-auto employee-division-card" max-width="344" outlined>
@@ -34,7 +39,7 @@
                     </div>
                   </v-list-item-avatar-->
                   <v-list-item-content>
-                    <v-list-item-title class="text-h6 mb-1 pa-2 center-items">
+                    <v-list-item-title class="text-h6  ma-2 center-items">
                       <a class="index-text department-link">{{ index }}</a>
                     </v-list-item-title>
                   </v-list-item-content>
@@ -125,6 +130,7 @@ export default {
 .center-items{
   display: flex;
   justify-content: center;
+  text-align: center;
 }
 a.department-link{
   color:#005a65;

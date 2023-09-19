@@ -20,14 +20,8 @@
                     Scroll down the page and select the department you want to browse.
                 </p-->
                 <p>
-                    <ul>
-                        <li>
-                            Enter keywords (name, position title, email address or phone number) in the search OR
-                        </li>
-                        <li>Browse the directory by department.</li>
-                    </ul>
+                    Enter a person's name, position title, email or phone number in the search bar.
                 </p>
-               
             </v-banner>
 
             <v-form @submit.prevent="updateSearch">
