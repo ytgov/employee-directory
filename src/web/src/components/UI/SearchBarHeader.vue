@@ -3,7 +3,7 @@
         <v-container class="container-content px-md-0 px-lg-3">
             <h1 v-if="title !== null">Find a government employee</h1>
             <v-banner v-if="info" class="info_find-employee">
-                <p>
+                <!--p>
                     <strong>I know who I am looking for</strong>
                     <ol>
                         <li>
@@ -18,12 +18,28 @@
                     <strong>I am not sure who I need to contact - I want to browse</strong>
                     <br>
                     Scroll down the page and select the department you want to browse.
+                </p-->
+                <p>
+                    Enter a person's name, position title, email or phone number in the search bar.
                 </p>
             </v-banner>
 
             <v-form @submit.prevent="updateSearch">
                 <v-row>
-                    <v-col class="mb-n6" sm="6" cols="12">
+                        <v-row no-gutters class="center-search-bar">
+                            <v-col cols="9" md="5" sm="8" xs="9">
+                                <v-text-field class="input-with-button" :items="item" v-model="nameSearch" dense=""
+                                    background-color="#F1F1F1" outlined="outlined" flat="" label="Keywords" solo>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="1"  md="1" sm="2">
+                                <v-btn width="100%" class="mt-0 py-2" height="40px" type="submit" color="#ffcd57">
+                                    <IconLoader height="20px" :image="'magnifying-glass'" :color="'black'" />
+                                </v-btn>
+                            </v-col>
+                        </v-row>
+
+                    <!--v-col class="mb-n6" sm="6" cols="12">
                         <v-text-field label="Keywords" v-model="nameSearch" dense="" background-color="#F1F1F1"
                             outlined="outlined" flat="" color="" solo>
                         </v-text-field>
@@ -41,7 +57,7 @@
                                 </v-btn>
                             </v-col>
                         </v-row>
-                    </v-col>
+                    </v-col-->
                 </v-row>
             </v-form>
 
@@ -157,17 +173,22 @@ export default {
 }
 
 .input-with-button>>>fieldset {
-
     border-top-left-radius: 5px !important;
     border-bottom-left-radius: 5px !important;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
 }
 
-button {
+ button {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
     border-top-right-radius: 5px !important;
     border-bottom-right-radius: 5px !important;
+    margin: 26px 0 !important;
+} 
+.center-search-bar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

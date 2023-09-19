@@ -20,12 +20,11 @@
         <v-col col="6">
           <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
             max-width="1180" min-height="542" outlined>
-
-            <v-card-actions class="px-16 pt-16 d-flex flex-column justify-center align-center" height="450"
+            <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
               max-width="590">
-              <div class="py-4 d-flex align-center justify-center" style="width: 200px">
-                <IconLoader :image="'icon'" :stroke="'purple-stroke'" />
-              </div>
+              <!--div class="py-4 d-flex align-center justify-center" style="width: 200px">
+                <IconLoader :image="'icon'" :stroke="'purple-stroke'" >
+              </div-->
               <div class="d-flex align-center justify-center" style="width:80%">
                 <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
               </div>

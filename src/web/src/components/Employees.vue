@@ -1,11 +1,11 @@
 <template>
-  <div class="books">
+  <div class="Homepage-departments">
     <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
     
     <Aurora/>
 
     <v-container class="px-0">
-      <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-16 mb-n8 px-0" :items="breadcrumbsList">
+      <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-2 mb-n8 px-0" :items="breadcrumbsList">
 
         <template v-slot:item="{ item }">
 
@@ -15,21 +15,32 @@
 
         </template>
       </v-breadcrumbs>
-      <v-row class="mb-6 mt-16">
+      <div class="full-width pt-6 bg-img">
+        <v-container class="small-container">
+          <v-row>
+            <v-col cols="12" sm="12" class="align-center justify d-flex">
+              <h2 class="mb-n1 text-responsive" style="color: #522a44 !important; font-size: 32px !important">
+                Browse the employee directory by department
+              </h2>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <v-row class="mb-6 mt-8">
         <v-col cols="12" md="4" sm="6" xs="12" v-for='(items, index, id) in item' :key="id">
           <v-hover v-slot="{ hover }">
             <v-card :href="indexUrl(index, items)" class="mx-auto employee-division-card" max-width="344" outlined>
               <v-card class="d-flex">
                 <v-list-item three-line class="icon-list">
-                  <v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
+                  <!--v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
                     :style="{ 'background-color': hover ? '#DC4001' : '#512A44' }">
                     <div style="height:100%;">
                       <IconLoader style="transform:scale(1.4)" :image="'icon'" />
                     </div>
-                  </v-list-item-avatar>
+                  </v-list-item-avatar-->
                   <v-list-item-content>
-                    <v-list-item-title class="text-h6 mb-1">
-                      <a class="index-text">{{ index }}</a>
+                    <v-list-item-title class="text-h6  ma-2 center-items">
+                      <a class="index-text department-link">{{ index }}</a>
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
@@ -115,3 +126,19 @@ export default {
   },
 };
 </script>
+<style>
+.center-items{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+a.department-link{
+  color:#005a65;
+}
+a.department-link:visited{
+  color:#643f5d;
+}
+a.department-link:hover{
+  color:#008392;
+}
+</style>
