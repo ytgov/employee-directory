@@ -280,22 +280,8 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
             let employeesByDivision = employeesByDept
 
-            //Filter by Division  
-            // if (notDivision) {
-            //     employeesByDivision = employeesByDivision.filter(item => { return item.division === '-' || _.isUndefined(item.division) || _.isEmpty(item.division) })
-            // } else if (!onlyDept) {
-            //     employeesByDivision = employeesByDept.filter(item => { return item.division.indexOf(paramDivision) >= 0 })
-            // }
-
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
-
-            //Filter by Branch
-            // if (notBranch) {
-            //     employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
-            // } else if (paramBranch !== '' && !onlyDept) {
-            //     employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
-            // }
 
             //Get all the Managers' name
             var managersNameByDivision = _.uniq(_.map(employeesByDivision, 'manager'));
@@ -403,7 +389,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     endResult = _.groupBy(finalResult, function (item: any) { return `${item.title}` });
                     break;
             }
-           // endResult = _.orderBy(endResult, ['level', 'full_name'],['asc']);
             res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
         })
         .catch((error: any) => {
