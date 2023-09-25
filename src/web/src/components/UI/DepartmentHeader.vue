@@ -1,13 +1,13 @@
 <template>
   <div class="full-width py-6 gray-bg bg-img">
-    <v-container class="small-container">
+    <v-container class="container container-content">
       <v-row>
         <!--v-col cols="12" sm="2" class="d-flex align-center justify-center">
           <div class="d-flex align-center justify-center icon-responsive">
             <IconLoader :image="'icon'" style="transform:scale(2)" :stroke="'purple-stroke'" />
           </div>
         </v-col-->
-        <v-col cols="12" sm="7" class="align-center justify d-flex">
+        <v-col cols="12" sm="7" class="align-center justify d-flex pl-2">
           <h2 class="mb-n1 text-responsive" style="color: #522a44 !important; font-size: 32px !important">
             {{ title }}
           </h2>

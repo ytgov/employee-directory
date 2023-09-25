@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-6">
+  <v-container class="container-content pl-0 px-6">
     <div class=" mb-5 container text-center">
       <img src="/Aurora-mini.svg" style="margin: 5% 0px 3% 0px" height="44" />
     </div>
