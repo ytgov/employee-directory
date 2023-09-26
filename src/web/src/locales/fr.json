@@ -31,5 +31,23 @@
         "location": "Emplacement",
         "position": "Position",
         "results": "Résultats"
-    }
+    },
+    "EmployeeDetails": {
+        "organization": "Organisation",
+        "department": "Département",
+        "division": "Division",
+        "branch": "Branche",
+        "unit": "Unité",
+        "contact": "Contacter",
+        "phoneOffice": "Bureau téléphonique",
+        "emailAddress": "Adresse email",
+        "faxOffice": "Bureau de fax",
+        "positionInformation": "Informations de position",
+        "manager": "Gérant",
+        "location": "Emplacement",
+        "address": "Aadresse",
+        "community": "Communauté",
+        "postalCode": "Code postal",
+        "mailCode": "Code courrier"
+      }
 }
