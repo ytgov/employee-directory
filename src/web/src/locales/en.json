@@ -31,5 +31,23 @@
     "location": "Location",
     "position": "Position",
     "results": "Results"
+  },
+  "EmployeeDetails": {
+    "organization": "Organization",
+    "department": "Department",
+    "division": "Division",
+    "branch": "Branch",
+    "unit": "Unit",
+    "contact": "Contact",
+    "phoneOffice": "Phone office",
+    "emailAddress": "Email address",
+    "faxOffice": "Fax office",
+    "positionInformation": "Position information",
+    "manager": "Manager",
+    "location": "Location",
+    "address": "Address",
+    "community": "Community",
+    "postalCode": "Postal code",
+    "mailCode": "Mail code"
   }
 }
