@@ -49,5 +49,32 @@
         "community": "Communauté",
         "postalCode": "Code postal",
         "mailCode": "Code courrier"
+      },
+      "EmployeeSearch": {
+        "noResultsByDepartment": {
+          "text1": "Votre recherche",
+          "text2": "dans le département",
+          "text3": "n'a donné aucun résultat."
+        },
+        "noResults": {
+          "text1": "Votre recherche",
+          "text2": "n'a donné aucun résultat."
+        },
+        "resultsByDepartment": {
+          "text1": "Votre recherche",
+          "text2": "dans le département",
+          "text3": "a abouti à",
+          "text4": "résultats."
+        },
+        "results": {
+          "text1": "Votre recherche",
+          "text2": "a abouti à",
+          "text3": "résultats."
+        },
+        "groupBy": "Group by",
+        "seeAll": "Voir tous les employés du gouvernement",
+        "department": "Département",
+        "location": "Emplacement",
+        "position": "Position"
       }
 }

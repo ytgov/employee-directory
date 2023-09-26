@@ -49,5 +49,32 @@
     "community": "Community",
     "postalCode": "Postal code",
     "mailCode": "Mail code"
+  },
+  "EmployeeSearch": {
+    "noResultsByDepartment": {
+      "text1": "Your search for",
+      "text2": "in the department",
+      "text3": "had no results."
+    },
+    "noResults": {
+      "text1": "Your search for",
+      "text2": "has no results."
+    },
+    "resultsByDepartment": {
+      "text1": "Your search for",
+      "text2": "in the department",
+      "text3": "found",
+      "text4": "results."
+    },
+    "results": {
+      "text1": "Your search for",
+      "text2": "found",
+      "text3": "results."
+    },
+    "groupBy": "Group by",
+    "seeAll": "See all government employees",
+    "department": "Department",
+    "location": "Location",
+    "position": "Position"
   }
 }
