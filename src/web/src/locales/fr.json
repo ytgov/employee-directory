@@ -21,5 +21,15 @@
         "thanksFeedback": "Merci d'avoir pris le temps de nous envoyer vos commentaires.",
         "fieldIsRequired": "Champ requis.",
         "tryAgain": "Veuillez réessayer plus tard!"
+    },
+    "Department": {
+        "browseEmployeesByDivisions": "Parcourir les employés par ces divisions",
+        "notResults": "Aucun résultat.",
+        "viewList": "Afficher une liste de tous les départements de",
+        "groupBy:": "Regrouper par :",
+        "seeAll": "Voir tous les employés du gouvernement",
+        "location": "Emplacement",
+        "position": "Position",
+        "results": "Résultats"
     }
 }

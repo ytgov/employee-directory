@@ -21,5 +21,15 @@
     "thanksFeedback": "Thanks for taking the time to send us your feedback.",
     "fieldIsRequired": "field is required.",
     "tryAgain": "Please try again later!"
+  },
+  "Department": {
+    "browseEmployeesByDivisions": "Browse employees by these divisions",
+    "notResults": "There are no results.",
+    "viewList": "View a list of all Department of",
+    "groupBy:": "Group by:",
+    "seeAll": "See all government employees",
+    "location": "Location",
+    "position": "Position",
+    "results": "Results"
   }
 }
