@@ -15,15 +15,15 @@
 
       <v-row>
         <v-col cols="12" md="2" class="d-flex align-center justify-start">
-          <h4 class="">Group by: </h4>
+          <h4 class="">{{ $t("Grid.groupBy") }}: </h4>
         </v-col>
         <v-col cols="12" md="8">
           <v-chip-group v-model="selection" center-active mandatory>
             <v-row>
               <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
-                <v-chip label outlined color="#00616D">See all government employees</v-chip>
-                <v-chip label outlined color="#00616D">Location</v-chip>
-                <v-chip label outlined color="#00616D">Position</v-chip>
+                <v-chip label outlined color="#00616D">{{ $t("Grid.seeAll") }}</v-chip>
+                <v-chip label outlined color="#00616D">{{ $t("Grid.location") }}</v-chip>
+                <v-chip label outlined color="#00616D">{{ $t("Grid.position") }}</v-chip>
               </v-col>
             </v-row>
           </v-chip-group>
@@ -37,16 +37,16 @@
 
       <div class="pt-6 pb-n12 mt-10 d-flex flex-column align-start justify-center">
         <div v-if="results">
-          <h2 class="px-0" style="font-size: 34px !important;">There are no results</h2>
+          <h2 class="px-0" style="font-size: 34px !important;">{{ $t("Grid.noResults") }}</h2>
         </div>
         <div v-else class="d-flex align-center justify-start">
           <h2 class="px-0" style="font-size: 34px !important;">{{ div }}</h2>
-          <h3 class="ml-4">( {{ divisionLength }} Results )</h3>
+          <h3 class="ml-4">( {{ divisionLength }} {{ $t("Grid.results") }} )</h3>
         </div>
 
         <div v-if="branch !== 'All branches'" class=" d-flex align-center justify-start">
           <h2 style="font-size: 25px !important;">{{ branch }}</h2>
-          <h3 style="font-size: 16px !important;" class="ml-4">( {{ totalLength }} Results )</h3>
+          <h3 style="font-size: 16px !important;" class="ml-4">( {{ totalLength }} {{ $t("Grid.results") }} )</h3>
         </div>
       </div>
       <div class="text-center loading" v-show="loading">

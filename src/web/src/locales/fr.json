@@ -71,10 +71,18 @@
           "text2": "a abouti à",
           "text3": "résultats."
         },
-        "groupBy": "Group by",
+        "groupBy": "Par groupe",
         "seeAll": "Voir tous les employés du gouvernement",
         "department": "Département",
         "location": "Emplacement",
         "position": "Position"
+      },
+      "Grid": {
+        "groupBy": "Par groupe",
+        "seeAll": "Voir tous les employés du gouvernement",
+        "location": "Emplacement",
+        "position": "Position",
+        "noResults": "Il n'y a aucun résultat",
+        "results": "Résultats"
       }
 }

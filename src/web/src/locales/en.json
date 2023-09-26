@@ -76,5 +76,13 @@
     "department": "Department",
     "location": "Location",
     "position": "Position"
+  },
+  "Grid": {
+    "groupBy": "Group by",
+    "seeAll": "See all government employees",
+    "location": "Location",
+    "position": "Position",
+    "noResults": "There are no results.",
+    "results": "Results"
   }
 }
