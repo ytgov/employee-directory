@@ -14,6 +14,12 @@
         "privacy": "Déclaration de confidentialité"
     },
     "feedbackForm": {
-        "question": "Cette page vous a été utile?"
+        "question": "Cette page vous a été utile?",
+        "likeQuestion": "Comment cette page vous a-t-elle aidé ?",
+        "dislikeQuestion": "Comment pouvons nous améliorer cette page?",
+        "submitFeedback": "Soumettre des commentaires",
+        "thanksFeedback": "Merci d'avoir pris le temps de nous envoyer vos commentaires.",
+        "fieldIsRequired": "Champ requis.",
+        "tryAgain": "Veuillez réessayer plus tard!"
     }
 }

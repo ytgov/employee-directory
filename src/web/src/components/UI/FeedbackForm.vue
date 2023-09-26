@@ -16,29 +16,29 @@
       </div>
     </div>
     <v-form ref="feedbackForm" @submit.prevent="sendEmail" v-if="formStatus" class="pt-8">
-      <h4 class="help">{{ feedbackCheck === 1 ? 'How did this page help you? *' : 'How can we improve this page? * ' }}
+      <h4 class="help">{{ feedbackCheck === 1 ? $t("feedbackForm.likeQuestion") + ' *' : $t("feedbackForm.dislikeQuestion") + ' * ' }}
       </h4>
       <v-textarea v-model="feedbackText" outlined class="mt-4 area" background-color="#f1f1f1" rows="5">
 
       </v-textarea>
-      <v-btn id="submit-feedback" type="submit" class="btn px-7" tonal elevation="0" height="60px" color="#00616D">Submit feedback</v-btn>
+      <v-btn id="submit-feedback" type="submit" class="btn px-7" tonal elevation="0" height="60px" color="#00616D">{{ $t("feedbackForm.submitFeedback") }}</v-btn>
     </v-form>
 
     <v-card class="feedback-form form-success my-4 pa-4 help d-flex align-center" v-if="success">
       <IconLoader @click="startForm(2)" :color="'success'" class="icon mr-3" height="16" :image="'success'" />
       <p class="ma-0">
-        Thanks for taking the time to send us your feedback.
+        {{ $t("feedbackForm.thanksFeedback") }}
       </p>
     </v-card>
     <v-card class="feedback-form form-error my-4 pa-4 help d-flex align-center" v-if="feedbackError">
       <p class="ma-0">
-        {{ feedbackCheck === 1 ? 'How did this page help you? ' : 'How can we improve this page? ' }}
-        field is required.
+        {{ feedbackCheck === 1 ? $t("feedbackForm.likeQuestion") + ' *' : $t("feedbackForm.dislikeQuestion") + ' * ' }}
+        {{ $t("feedbackForm.fieldIsRequired") }}
       </p>
     </v-card>
     <v-card class="feedback-form form-error my-4 pa-4 help d-flex align-center" v-if="requestError">
       <p class="ma-0">
-        {{ errorMessage }}. Please try again later!
+        {{ errorMessage }}.  {{ $t("feedbackForm.tryAgain") }}
       </p>
     </v-card>
   </v-container>

@@ -14,6 +14,12 @@
     "privacy": "Privacy statement"
   },
   "feedbackForm": {
-    "question": "Was this page helpful?"
+    "question": "Was this page helpful?",
+    "likeQuestion": "How did this page help you?",
+    "dislikeQuestion": "How can we improve this page?",
+    "submitFeedback": "Submit feedback",
+    "thanksFeedback": "Thanks for taking the time to send us your feedback.",
+    "fieldIsRequired": "field is required.",
+    "tryAgain": "Please try again later!"
   }
 }
