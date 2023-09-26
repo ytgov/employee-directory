@@ -13,7 +13,7 @@
     "disclaimer": "Disclaimer",
     "privacy": "Privacy statement"
   },
-  "feedbackForm": {
+  "FeedbackForm": {
     "question": "Was this page helpful?",
     "likeQuestion": "How did this page help you?",
     "dislikeQuestion": "How can we improve this page?",

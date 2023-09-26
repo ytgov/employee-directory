@@ -13,7 +13,7 @@
         "disclaimer": "Clause de non-responsabilité",
         "privacy": "Déclaration de confidentialité"
     },
-    "feedbackForm": {
+    "FeedbackForm": {
         "question": "Cette page vous a été utile?",
         "likeQuestion": "Comment cette page vous a-t-elle aidé ?",
         "dislikeQuestion": "Comment pouvons nous améliorer cette page?",
