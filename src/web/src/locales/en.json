@@ -1,0 +1,19 @@
+{
+  "SearchBarHeader": {
+    "title": "Find a government employee",
+    "search": "Enter a person's name, position title, email or phone number in the search bar.",
+    "keywords": "Keywords"
+  },
+  "Employees": {
+    "directoryByDepartment": "Browse the employee directory by department"
+  },
+  "footer": {
+    "government": "Government of Yukon",
+    "copyright": "Copyright",
+    "disclaimer": "Disclaimer",
+    "privacy": "Privacy statement"
+  },
+  "feedbackForm": {
+    "question": "Was this page helpful?"
+  }
+}

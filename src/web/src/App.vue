@@ -9,15 +9,24 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     " color="#fff" flat height="77" max-height="77" class="shadow">
     <v-container class="px-0">
       <div class="header-container">
-        <v-row align-content="space-between" align="center">
+        <v-row align-content="space-between" justify="space-between" align="center">
           <a href="https://yukon.ca/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
-              class="ml-4"></v-progress-circular>
+            class="ml-4"></v-progress-circular>
           </v-toolbar-title>
           
-          <div>
-          </div>
+          
+          <v-btn 
+          text
+          @click="e => {
+            changeLocale();
+            $i18n.locale = locale;
+          }"
+          class="text-capitalize"
+          >
+            {{ locale === 'en' ? 'Français' : 'English' }}
+          </v-btn>
         </v-row>
       </div>
       </v-container>
@@ -49,13 +58,13 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
           <div class="d-flex justify-space-between">
 
             <div class="d-flex flex-column pa-2">
-              <a target="_blank" href="https://yukon.ca/">Government of Yukon</a>
-              <a target="_blank" href="https://yukon.ca/en/copyright">Copyright</a>
-              <a target="_blank" href="https://yukon.ca/en/disclaimer">Disclaimer</a>
-              <a target="_blank" href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
+              <a target="_blank" href="https://yukon.ca/">{{ $t("footer.government") }}</a>
+              <a target="_blank" href="https://yukon.ca/en/copyright">{{ $t("footer.copyright") }}</a>
+              <a target="_blank" href="https://yukon.ca/en/disclaimer">{{ $t("footer.disclaimer") }}</a>
+              <a target="_blank" href="https://yukon.ca/en/privacy-statement">{{ $t("footer.privacy") }}</a>
             </div>
             <v-card-text class="white--text text-right">
-              <span>© {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
+              <span>© {{ new Date().getFullYear() }} <a href="/">{{ $t("footer.government") }}</a></span>
             </v-card-text>
           </div>
         </v-container>
@@ -75,6 +84,7 @@ import * as config from "./config";
 import { mapState } from "vuex";
 import IconLoader from "./components/icons/IconLoader.vue";
 import FeedbackForm from "./components/UI/FeedbackForm.vue";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
     name: "App",
@@ -94,6 +104,10 @@ export default {
     },
     watch: {},
     methods: {
+        ...mapActions({
+          loadLocale: "setLocale",
+          changeLocale: "setCookieLocale"
+        }),
         changeBackground() {
             this.noBgImg = false;
         },
@@ -107,7 +121,26 @@ export default {
             this.menuShow = !this.menuShow;
         },
     },
-    components: { IconLoader, FeedbackForm }
+    components: { IconLoader, FeedbackForm },
+    computed: {
+      ...mapGetters(["locale"]),
+    },
+    mounted() {
+      const cookie = {};
+
+      document.cookie.split(';').forEach(function(el) {
+        let [key,value] = el.split('=');
+        cookie[key.trim()] = value;
+      })
+
+      if (!cookie["locale"]) {
+        document.cookie = "locale=en"
+      } else {
+        this.loadLocale(cookie["locale"]);
+        this.$i18n.locale = cookie["locale"];
+      }
+
+    },
 };
 </script>
 

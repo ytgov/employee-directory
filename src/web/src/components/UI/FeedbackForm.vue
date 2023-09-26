@@ -5,7 +5,7 @@
     </div>
     <div class="pt-6 z-i" style="border-top:1px solid #d4c7cf;">
       <div class="d-flex align-center">
-        <h4 class="mr-4 help" style="font-weight:500;">Was this page helpful? *</h4>
+        <h4 class="mr-4 help" style="font-weight:500;">{{ $t("feedbackForm.question")}} *</h4>
         <div @click="startForm(1)" class="icon mr-4">
           <IconLoader :color="colorCheck === 1 ? 'selected' : 'unselected'" height="33" :image="'thumbs up'" />
         </div>
