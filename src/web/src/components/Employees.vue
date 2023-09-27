@@ -20,7 +20,7 @@
           <v-row>
             <v-col cols="12" sm="12" class="align-center justify d-flex">
               <h2 class="mb-n1 text-responsive" style="color: #522a44 !important; font-size: 32px !important">
-                Browse the employee directory by department
+                {{ $t("Employees.directoryByDepartment") }}
               </h2>
             </v-col>
           </v-row>

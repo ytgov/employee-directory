@@ -1,0 +1,88 @@
+{
+  "SearchBarHeader": {
+    "title": "Find a government employee",
+    "search": "Enter a person's name, position title, email or phone number in the search bar.",
+    "keywords": "Keywords"
+  },
+  "Employees": {
+    "directoryByDepartment": "Browse the employee directory by department"
+  },
+  "footer": {
+    "government": "Government of Yukon",
+    "copyright": "Copyright",
+    "disclaimer": "Disclaimer",
+    "privacy": "Privacy statement"
+  },
+  "FeedbackForm": {
+    "question": "Was this page helpful?",
+    "likeQuestion": "How did this page help you?",
+    "dislikeQuestion": "How can we improve this page?",
+    "submitFeedback": "Submit feedback",
+    "thanksFeedback": "Thanks for taking the time to send us your feedback.",
+    "fieldIsRequired": "field is required.",
+    "tryAgain": "Please try again later!"
+  },
+  "Department": {
+    "browseEmployeesByDivisions": "Browse employees by these divisions",
+    "notResults": "There are no results.",
+    "viewList": "View a list of all Department of",
+    "groupBy:": "Group by:",
+    "seeAll": "See all government employees",
+    "location": "Location",
+    "position": "Position",
+    "results": "Results"
+  },
+  "EmployeeDetails": {
+    "organization": "Organization",
+    "department": "Department",
+    "division": "Division",
+    "branch": "Branch",
+    "unit": "Unit",
+    "contact": "Contact",
+    "phoneOffice": "Phone office",
+    "emailAddress": "Email address",
+    "faxOffice": "Fax office",
+    "positionInformation": "Position information",
+    "manager": "Manager",
+    "location": "Location",
+    "address": "Address",
+    "community": "Community",
+    "postalCode": "Postal code",
+    "mailCode": "Mail code"
+  },
+  "EmployeeSearch": {
+    "noResultsByDepartment": {
+      "text1": "Your search for",
+      "text2": "in the department",
+      "text3": "had no results."
+    },
+    "noResults": {
+      "text1": "Your search for",
+      "text2": "has no results."
+    },
+    "resultsByDepartment": {
+      "text1": "Your search for",
+      "text2": "in the department",
+      "text3": "found",
+      "text4": "results."
+    },
+    "results": {
+      "text1": "Your search for",
+      "text2": "found",
+      "text3": "results."
+    },
+    "groupBy": "Group by",
+    "seeAll": "See all government employees",
+    "department": "Department",
+    "location": "Location",
+    "position": "Position"
+  },
+  "Grid": {
+    "groupBy": "Group by",
+    "seeAll": "See all government employees",
+    "location": "Location",
+    "position": "Position",
+    "noResults": "There are no results.",
+    "results": "Results"
+  }
+}

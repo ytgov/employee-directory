@@ -1,0 +1,88 @@
+{
+	"SearchBarHeader": {
+		"title": "Trouver un employé du gouvernement",
+		"search": "Saisissez le nom, le titre du poste, l'e-mail ou le numéro de téléphone d'une personne dans la barre de recherche.",
+		"keywords": "mots clés"
+	},
+	"Employees": {
+		"directoryByDepartment": "Parcourez l'annuaire des employés par département"
+	},
+	"footer": {
+		"government": "Gouvernement du Yukon",
+		"copyright": "Droits d'auteur",
+		"disclaimer": "Clause de non-responsabilité",
+		"privacy": "Déclaration de confidentialité"
+	},
+	"FeedbackForm": {
+		"question": "Cette page vous a été utile?",
+		"likeQuestion": "Comment cette page vous a-t-elle aidé ?",
+		"dislikeQuestion": "Comment pouvons nous améliorer cette page?",
+		"submitFeedback": "Soumettre des commentaires",
+		"thanksFeedback": "Merci d'avoir pris le temps de nous envoyer vos commentaires.",
+		"fieldIsRequired": "Champ requis.",
+		"tryAgain": "Veuillez réessayer plus tard!"
+	},
+	"Department": {
+		"browseEmployeesByDivisions": "Parcourir les employés par ces divisions",
+		"notResults": "Aucun résultat.",
+		"viewList": "Afficher une liste de tous les départements de",
+		"groupBy:": "Regrouper par :",
+		"seeAll": "Voir tous les employés du gouvernement",
+		"location": "Emplacement",
+		"position": "Position",
+		"results": "Résultats"
+	},
+	"EmployeeDetails": {
+		"organization": "Organisation",
+		"department": "Département",
+		"division": "Division",
+		"branch": "Branche",
+		"unit": "Unité",
+		"contact": "Contacter",
+		"phoneOffice": "Bureau téléphonique",
+		"emailAddress": "Adresse email",
+		"faxOffice": "Bureau de fax",
+		"positionInformation": "Informations de position",
+		"manager": "Gérant",
+		"location": "Emplacement",
+		"address": "Aadresse",
+		"community": "Communauté",
+		"postalCode": "Code postal",
+		"mailCode": "Code courrier"
+	},
+	"EmployeeSearch": {
+		"noResultsByDepartment": {
+			"text1": "Votre recherche",
+			"text2": "dans le département",
+			"text3": "n'a donné aucun résultat."
+		},
+		"noResults": {
+			"text1": "Votre recherche",
+			"text2": "n'a donné aucun résultat."
+		},
+		"resultsByDepartment": {
+			"text1": "Votre recherche",
+			"text2": "dans le département",
+			"text3": "a abouti à",
+			"text4": "résultats."
+		},
+		"results": {
+			"text1": "Votre recherche",
+			"text2": "a abouti à",
+			"text3": "résultats."
+		},
+		"groupBy": "Par groupe",
+		"seeAll": "Voir tous les employés du gouvernement",
+		"department": "Département",
+		"location": "Emplacement",
+		"position": "Position"
+	},
+	"Grid": {
+		"groupBy": "Par groupe",
+		"seeAll": "Voir tous les employés du gouvernement",
+		"location": "Emplacement",
+		"position": "Position",
+		"noResults": "Il n'y a aucun résultat",
+		"results": "Résultats"
+	}
+}

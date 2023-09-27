@@ -11,24 +11,24 @@
                     </v-breadcrumbs-item>
                 </template>
             </v-breadcrumbs>
-            <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">Your search for {{ this.searchTitle.replace(/-/g, " ") }} in the department {{this.department}} had no results.</h2>
-            <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">Your search for {{ this.searchTitle.replace(/-/g, " ") }}  has no results.</h2>
-            <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">Your search for {{ this.searchTitle.replace(/-/g, " ") }} in the department {{this.department}} found {{ this.itemsLength }} results.</h2>
-            <h2 v-else class="mt-8">Your search for {{ this.searchTitle.replace(/-/g, " ") }} found {{ this.itemsLength }} results.
+            <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("EmployeeSearch.noResultsByDepartment.text1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("EmployeeSearch.noResultsByDepartment.text2") }} {{this.department}} {{ $t("EmployeeSearch.noResultsByDepartment.text3") }}</h2>
+            <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("EmployeeSearch.noResults.text1") }} {{ this.searchTitle.replace(/-/g, " ") }}  {{ $t("EmployeeSearch.noResults.text2") }}</h2>
+            <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("EmployeeSearch.resultsByDepartment.text1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("EmployeeSearch.resultsByDepartment.text2") }} {{this.department}} {{ $t("EmployeeSearch.resultsByDepartment.text3") }} {{ this.itemsLength }} {{ $t("EmployeeSearch.resultsByDepartment.text4") }}</h2>
+            <h2 v-else class="mt-8">{{ $t("EmployeeSearch.results.text1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("EmployeeSearch.results.text3") }} {{ this.itemsLength }} {{ $t("EmployeeSearch.results.text3") }}
             </h2>
             <v-row v-if="!results">
                 <v-col cols="12" md="2" class="d-flex align-center justify-start">
-                    <h4 class="">Group by: </h4>
+                    <h4 class="">{{ $t("EmployeeSearch.groupBy") }}: </h4>
                 </v-col>
                 <v-col cols="12" md="8">
                     <v-chip-group v-model="selection" center-active mandatory>
                         <v-row>
                             <v-col
                                 class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
-                                <v-chip label outlined color="#00616D">See all government employees</v-chip>
-                                <v-chip label outlined color="#00616D">Department</v-chip>
-                                <v-chip label outlined color="#00616D">Location</v-chip>
-                                <v-chip label outlined color="#00616D">Position</v-chip>
+                                <v-chip label outlined color="#00616D">{{ $t("EmployeeSearch.groupBy") }}</v-chip>
+                                <v-chip label outlined color="#00616D">{{ $t("EmployeeSearch.department") }}</v-chip>
+                                <v-chip label outlined color="#00616D">{{ $t("EmployeeSearch.location") }}</v-chip>
+                                <v-chip label outlined color="#00616D">{{ $t("EmployeeSearch.position") }}</v-chip>
                             </v-col>
                         </v-row>
                     </v-chip-group>
