@@ -84,5 +84,16 @@
     "position": "Position",
     "noResults": "There are no results.",
     "results": "Results"
+  },
+  "Router": {
+    "home": "Yukon.ca home",
+    "FindAGovernmentEmployee": "Find a government employee",
+    "department": "Department",
+    "search": "Search",
+    "division": "Division",
+    "branch": "Branch",
+    "username": "Username",
+    "findEmployee": "Find Employee",
+    "pageNotFound": "Page not found"
   }
 }

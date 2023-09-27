@@ -10,7 +10,7 @@
         <template v-slot:item="{ item }">
 
           <v-breadcrumbs-item :href="item.link">
-            {{ item.name }}
+            {{ $t(item.name) }}
           </v-breadcrumbs-item>
 
         </template>

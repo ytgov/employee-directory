@@ -84,5 +84,16 @@
 		"position": "Position",
 		"noResults": "Il n'y a aucun résultat",
 		"results": "Résultats"
+	},
+	"Router": {
+		"home": "Accueil Yukon.ca",
+		"FindAGovernmentEmployee": "Trouver un employé du gouvernement",
+		"department": "Département",
+		"search": "Recherche",
+		"division": "Division",
+		"branch": "Branche",
+		"username": "Nom d'utilisateur",
+		"findEmployee": "Trouver un employé",
+		"pageNotFound": "Page non trouvée"
 	}
 }

@@ -9,7 +9,7 @@
       <v-breadcrumbs class="mt-6 breadcrumbs ml-n5" :items="breadcrumbsList">
         <template v-slot:item="{ item }">
           <v-breadcrumbs-item class="z-indx" :href="item.link">
-            {{ item.name }}
+            {{ $t(item.name) }}
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
