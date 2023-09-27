@@ -16,7 +16,7 @@
         </template>
       </v-breadcrumbs>
       <div class="full-width pt-6 bg-img">
-        <v-container class="small-container">
+        <v-container class="container-content">
           <v-row>
             <v-col cols="12" sm="12" class="align-center justify d-flex">
               <h2 class="mb-n1 text-responsive" style="color: #522a44 !important; font-size: 32px !important">

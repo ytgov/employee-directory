@@ -46,14 +46,14 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     <v-footer class="mt-16" flat style="z-index: 10" padless height="70">
       <v-card class="flex " flat tile>
         <v-card-title class="py-16 header-container full-width" id="footer-bg">
-          <v-container class="small-container">
+          <v-container class="container-content">
             <img src="/logo-white.svg" style="margin: -8px 155px 0 0" height="44" />
           </v-container>
         </v-card-title>
         <v-divider></v-divider>
         
         <v-card class="footer-details">
-          <v-container class="px-3 px-md-0">
+          <v-container class="container container-content">
 
           <div class="d-flex justify-space-between">
 

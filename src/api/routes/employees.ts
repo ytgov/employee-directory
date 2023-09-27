@@ -247,8 +247,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     var params_var = {
         department: paramDepartment,
         ...(paramDivision != '' &&  !onlyDept && { division: paramDivision }),
-        ...(paramBranch != '' &&  !onlyDept && { keyword: paramBranch }),
-      };
+    };
 
     axios.get(String(EMPLOYEEJSON), { params: params_var })
         .then((response: any) => {
@@ -277,9 +276,14 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
                 employeesByDept.push(employee);
             });
-
+            
             let employeesByDivision = employeesByDept
 
+             if (notBranch) {
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
+            } else if (paramBranch !== '' && !onlyDept) {
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
+            }
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
 
@@ -293,7 +297,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
 
             if (!_.isEmpty(namesMissing)) {
                 managersMissing = namesMissing.map(function (name: string) {
-                    let managerMissing = _.find(employeesByDept, { full_name: name });
+                    let managerMissing = _.find(employeesByDivision, { full_name: name });
                     if (!_.isUndefined(managerMissing)) {
                         managerMissing.manager = managerMissing.full_name;
                         return managerMissing;

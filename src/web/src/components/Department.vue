@@ -25,7 +25,7 @@
               <!--div class="py-4 d-flex align-center justify-center" style="width: 200px">
                 <IconLoader :image="'icon'" :stroke="'purple-stroke'" >
               </div-->
-              <div class="d-flex align-center justify-center" style="width:80%">
+              <div class="d-flex align-center justify-center" style="width:100%">
                 <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
               </div>
             </v-card-actions>
