@@ -95,5 +95,24 @@
 		"username": "Nom d'utilisateur",
 		"findEmployee": "Trouver un employé",
 		"pageNotFound": "Page non trouvée"
+	},
+	"NotFound": {
+		"pageNotFound": "Page non trouvée",
+		"isNotHere": "Désolé, cette page n'est pas ici.",
+		"mayHaveMoved": "Vous n'avez rien fait de mal. Nous avons peut-être déplacé la page que vous recherchez ailleurs.",
+		"followALinkIn": "Avez-vous suivi un lien à partir d'ici?",
+		"leaveAMessageIn": {
+			"text1": "Les liens provenant d'autres sites peuvent parfois être anciens ou mal orthographiés.",
+			"text2": "faites-le-nous savoir ",
+			"text3": "afin que nous puissions corriger notre erreur."
+		},
+		"followALinkOut": "Avez-vous suivi un lien d'un autre site?",
+		"leaveAMessageOut": {
+			"text1": "Les liens provenant d'autres sites peuvent parfois être anciens ou mal orthographiés. ",
+			"text2": "Faites-nous savoir ",
+			"text3": "d'où vous venez et nous pourrons essayer de contacter l'autre site pour résoudre le problème."
+		},
+		"typeUrl": "Avez-vous tapé l'URL?",
+		"typedAddressWrong": "Vous avez peut-être mal saisi l'adresse (URL). Vérifiez que vous avez exactement la bonne orthographe ou la bonne majuscule."
 	}
 }

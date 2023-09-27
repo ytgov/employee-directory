@@ -95,5 +95,24 @@
     "username": "Username",
     "findEmployee": "Find Employee",
     "pageNotFound": "Page not found"
+  },
+  "NotFound": {
+    "pageNotFound": "Page non trouvée",
+    "isNotHere": "Sorry, that page isn't here.",
+    "mayHaveMoved": "You didn't do anything wrong. We may have moved the page you're looking for somewhere else.",
+    "followALinkIn": "Did you follow a link from here?",
+    "leaveAMessageIn": {
+      "text1": "If you reached this page from another part of Yukon.ca, ",
+      "text2": "let us know ",
+      "text3": "so we can correct our mistake."
+    },
+    "followALinkOut": "Did you follow a link from another site?",
+    "leaveAMessageOut": {
+      "text1": "Links from other sites can sometimes be old or misspelled. ",
+      "text2": "Let us know ",
+      "text3": "where you came from and we can try to contact the other site to fix the problem."
+    },
+    "typeUrl": "Did you type the URL?",
+    "typedAddressWrong": "You may have typed the address (URL) wrong. Check to make sure you've got the exact right spelling or capitalization."
   }
 }
