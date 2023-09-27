@@ -43,7 +43,7 @@
     "emailAddress": "Email address",
     "faxOffice": "Fax office",
     "positionInformation": "Position information",
-    "manager": "Manager",
+    "manager": "Reports to",
     "location": "Location",
     "address": "Address",
     "community": "Community",
