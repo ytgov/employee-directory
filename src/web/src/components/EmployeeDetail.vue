@@ -113,7 +113,7 @@
               </v-col>
               <v-col v-if="center !== null" cols="12" md="6">
 
-                <l-map style="height: 300px" :zoom="zoom" :center="center">
+                <l-map style="height: 300px" :zoom="zoom" :center="center" :options="{attributionControl: false}">
 
                   <l-tile-layer :url="mapUrl"></l-tile-layer>
                   <l-marker :lat-lng="center"></l-marker>
