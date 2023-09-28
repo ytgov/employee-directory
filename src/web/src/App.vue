@@ -10,7 +10,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     <v-container class="px-0">
       <div class="header-container">
         <v-row align-content="space-between" justify="space-between" align="center">
-          <a href="https://yukon.ca/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
+          <a :href="$t('YukonHome.home')"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
             class="ml-4"></v-progress-circular>
@@ -19,10 +19,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
           
           <v-btn 
           text
-          @click="e => {
-            changeLocale();
-            $i18n.locale = locale;
-          }"
+          @click="toggleLocale"
           class="text-capitalize"
           >
             {{ locale === 'en' ? 'Français' : 'English' }}
@@ -58,10 +55,10 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
           <div class="d-flex justify-space-between">
 
             <div class="d-flex flex-column pa-2">
-              <a target="_blank" href="https://yukon.ca/">{{ $t("footer.government") }}</a>
-              <a target="_blank" href="https://yukon.ca/en/copyright">{{ $t("footer.copyright") }}</a>
-              <a target="_blank" href="https://yukon.ca/en/disclaimer">{{ $t("footer.disclaimer") }}</a>
-              <a target="_blank" href="https://yukon.ca/en/privacy-statement">{{ $t("footer.privacy") }}</a>
+              <a target="_blank" :href="$t('YukonHome.home')">{{ $t("footer.government") }}</a>
+              <a target="_blank" :href="$t('YukonHome.copyright')">{{ $t("footer.copyright") }}</a>
+              <a target="_blank" :href="$t('YukonHome.disclaimer')">{{ $t("footer.disclaimer") }}</a>
+              <a target="_blank" :href="$t('YukonHome.privacyStatement')">{{ $t("footer.privacy") }}</a>
             </div>
             <v-card-text class="white--text text-right">
               <span>© {{ new Date().getFullYear() }} <a href="/">{{ $t("footer.government") }}</a></span>
@@ -120,26 +117,29 @@ export default {
         toggleMenu: function () {
             this.menuShow = !this.menuShow;
         },
+        toggleLocale: function () {
+          const currentLocale = this.$cookies.get("locale");
+
+          const newLocale = currentLocale === "en" ? "fr" : "en";
+
+          this.$cookies.set("locale", newLocale);
+          this.loadLocale(newLocale);
+          this.$i18n.locale = newLocale;
+        },
     },
     components: { IconLoader, FeedbackForm },
     computed: {
       ...mapGetters(["locale"]),
     },
     mounted() {
-      const cookie = {};
-
-      document.cookie.split(';').forEach(function(el) {
-        let [key,value] = el.split('=');
-        cookie[key.trim()] = value;
-      })
-
-      if (!cookie["locale"]) {
-        document.cookie = "locale=en"
+      if(this.$cookies.isKey("locale")) {
+        const locale = this.$cookies.get("locale");
+        this.loadLocale(locale);
+        this.$i18n.locale = locale;
       } else {
-        this.loadLocale(cookie["locale"]);
-        this.$i18n.locale = cookie["locale"];
+        this.$cookies.set("locale", "en");
+        this.$i18n.locale = "en";
       }
-
     },
 };
 </script>

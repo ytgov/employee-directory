@@ -22,12 +22,12 @@
       <v-card class="not-found-card mb-6" color="transparent" outlined>
         <h2>{{ $t("NotFound.followALinkIn") }}</h2>
         <p>{{ $t("NotFound.leaveAMessageIn.text1") }}<a
-            href="https://yukon.ca/en/your-government/contact-and-follow-government/contact-government">{{ $t("NotFound.leaveAMessageIn.text2") }}</a>{{ $t("NotFound.leaveAMessageIn.text3") }}</p>
+            :href="$t('YukonHome.contactGovernment')">{{ $t("NotFound.leaveAMessageIn.text2") }}</a>{{ $t("NotFound.leaveAMessageIn.text3") }}</p>
       </v-card>
       <v-card class="not-found-card mb-6" color="transparent" outlined>
         <h2>{{ $t("NotFound.followALinkIn") }}</h2>
         <p>{{ $t("NotFound.leaveAMessageOut.text1") }}<a
-            href="https://yukon.ca/en/your-government/contact-and-follow-government/contact-government">{{ $t("NotFound.leaveAMessageOut.text2") }}</a>{{ $t("NotFound.leaveAMessageOut.text3") }}</p>
+            :href="$t('YukonHome.contactGovernment')">{{ $t("NotFound.leaveAMessageOut.text2") }}</a>{{ $t("NotFound.leaveAMessageOut.text3") }}</p>
       </v-card>
       <v-card class="not-found-card mb-6" color="transparent" outlined>
         <h2>{{ $t("NotFound.typedAddressWrong") }}</h2>
