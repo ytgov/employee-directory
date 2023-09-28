@@ -67,7 +67,7 @@ const routes = [
       breadcrumb: [
         {name: 'Router.home', link: 'https://yukon.ca/'},
         {name: 'Router.FindAGovernmentEmployee', link: '/find-employee'},
-        {name: 'DeRouter.departmentpartment', dynamic: true}
+        {name: 'Router.department', dynamic: true}
       ]
     }
   },

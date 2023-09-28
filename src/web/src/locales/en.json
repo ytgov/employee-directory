@@ -114,5 +114,12 @@
     },
     "typeUrl": "Did you type the URL?",
     "typedAddressWrong": "You may have typed the address (URL) wrong. Check to make sure you've got the exact right spelling or capitalization."
+  },
+  "YukonHome": {
+    "home": "https://yukon.ca/en",
+    "copyright": "https://yukon.ca/en/copyright",
+    "disclaimer": "https://yukon.ca/en/disclaimer",
+    "privacyStatement": "https://yukon.ca/en/privacy-statement",
+    "contactGovernment": "https://yukon.ca/en/your-government/contact-and-follow-government/contact-government"
   }
 }

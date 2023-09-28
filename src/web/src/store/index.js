@@ -20,17 +20,5 @@ export default new Vuex.Store({
     setLocale: ({ commit, getters }, locale) => {
       commit("SET_LOCALE", locale);
     },
-    setCookieLocale: ({ commit, getters }, locale) => {
-      
-      const cookie = {};
-
-      document.cookie.split(';').forEach(function(el) {
-        let [key,value] = el.split('=');
-        cookie[key.trim()] = value;
-      })
-
-      commit("SET_LOCALE", cookie["locale"] === "en" ? "fr" : "en");
-      document.cookie = `locale=${ cookie["locale"] === "en" ? "fr" : "en" }`;
-    },
   }
 });

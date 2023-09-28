@@ -88,13 +88,13 @@
 	"Router": {
 		"home": "Accueil Yukon.ca",
 		"FindAGovernmentEmployee": "Trouver un employé du gouvernement",
-		"department": "Département",
-		"search": "Recherche",
+		"department": "Department",
+		"search": "Search",
 		"division": "Division",
-		"branch": "Branche",
-		"username": "Nom d'utilisateur",
-		"findEmployee": "Trouver un employé",
-		"pageNotFound": "Page non trouvée"
+		"branch": "Branch",
+		"username": "Username",
+		"findEmployee": "Find Employee",
+		"pageNotFound": "Page not found"
 	},
 	"NotFound": {
 		"pageNotFound": "Page non trouvée",
@@ -114,5 +114,12 @@
 		},
 		"typeUrl": "Avez-vous tapé l'URL?",
 		"typedAddressWrong": "Vous avez peut-être mal saisi l'adresse (URL). Vérifiez que vous avez exactement la bonne orthographe ou la bonne majuscule."
-	}
+	},
+	"YukonHome": {
+		"home": "https://yukon.ca/fr",
+		"copyright": "https://yukon.ca/fr/droit-dauteur",
+		"disclaimer": "https://yukon.ca/fr/avertissement",
+		"privacyStatement": "https://yukon.ca/fr/avis-de-confidentialite",
+		"contactGovernment": "https://yukon.ca/fr/contacter-le-gouvernement"
+	  }
 }
