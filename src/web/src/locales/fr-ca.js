@@ -156,10 +156,10 @@ export const fr = {
     }
   },
   yukon_urls: {
-    home: "https://yukon.ca/en",
-    copyright: "https://yukon.ca/en/copyright",
-    disclaimer: "https://yukon.ca/en/disclaimer",
-    privacy_statement: "https://yukon.ca/en/privacy-statement",
-    contact_government: "https://yukon.ca/en/your-government/contact-and-follow-government/contact-government"
+    home: "https://yukon.ca/fr",
+		copyright: "https://yukon.ca/fr/droit-dauteur",
+		disclaimer: "https://yukon.ca/fr/avertissement",
+		privacy_statement: "https://yukon.ca/fr/avis-de-confidentialite",
+		contact_government: "https://yukon.ca/fr/contacter-le-gouvernement"
   }
 };
