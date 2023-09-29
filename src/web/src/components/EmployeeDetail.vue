@@ -27,11 +27,11 @@
           </h3>
 
           <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-            <h2 class="mt-4 mb-2">{{ $t("EmployeeDetails.organization") }}</h2>
+            <h2 class="mt-4 mb-2">{{ $t("components.employee_details.organization.title") }}</h2>
             <v-row>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.department)">
                 <h3 class="mb-0">
-                  {{ $t("EmployeeDetails.department") }}:
+                  {{ $t("components.employee_details.organization.department") }}:
                   <a :href="generateUrl('department', 'n/a', 'n/a')">{{
                     item.department
                   }}</a>
@@ -39,12 +39,12 @@
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.division)" >
                 <h3 class="mb-0">
-                  {{ $t("EmployeeDetails.division") }}: {{ item.division }}
+                  {{ $t("components.employee_details.organization.division") }}: {{ item.division }}
                 </h3>
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.branch)">
                 <h3 class="mb-0">
-                  {{ $t("EmployeeDetails.branch") }}:
+                  {{ $t("components.employee_details.organization.branch") }}:
                   <a :href="generateUrl('branch', item.branch, item.division)">{{
                     item.branch
                   }}</a>
@@ -52,17 +52,17 @@
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.unit)">
                 <h3 class="mb-0">
-                  {{ $t("EmployeeDetails.unit") }}: <span>{{ item.unit }}</span>
+                  {{ $t("components.employee_details.organization.unit") }}: <span>{{ item.unit }}</span>
                 </h3>
               </v-col>
             </v-row>
           </v-card>
           <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-            <h2 class="mt-4 mb-2">{{ $t("EmployeeDetails.contact") }}:</h2>
+            <h2 class="mt-4 mb-2">{{ $t("components.employee_details.contact.title") }}:</h2>
             <v-row>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.phone_office)">
                 <h3  class="mb-0">
-                  {{ $t("EmployeeDetails.phoneOffice") }}:
+                  {{ $t("components.employee_details.contact.phone_office") }}:
                   <a :href="getPhone(item.phone_office)">{{
                     item.phone_office
                   }}</a>
@@ -70,23 +70,23 @@
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.email)">
                 <h3 class="mb-0">
-                  {{ $t("EmployeeDetails.emailAddress") }}:
+                  {{ $t("components.employee_details.contact.email_address") }}:
                   <a :href="getMail(item.email)">{{ item.email }}</a>
                 </h3>
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.fax_office)">
                 <h3  class="mb-0">
-                  {{ $t("EmployeeDetails.faxOffice") }}: <span>{{ item.fax_office }}</span>
+                  {{ $t("components.employee_details.contact.fax_office") }}: <span>{{ item.fax_office }}</span>
                 </h3>
               </v-col>
             </v-row>
           </v-card>
           <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-            <h2 class="mt-4 mb-2">{{ $t("EmployeeDetails.positionInformation") }}</h2>
+            <h2 class="mt-4 mb-2">{{ $t("components.employee_details.position_information.title") }}</h2>
             <v-row>
               <v-col class="mb-0 pt-2 pb-0">
                 <h3 class="mb-0">
-                  {{ $t("EmployeeDetails.manager") }}:
+                  {{ $t("components.employee_details.position_information.manager") }}:
                   <a :href="generateUrl('manager', item.manager, 'n/a')">{{
                     item.manager
                   }}</a>
@@ -95,20 +95,20 @@
             </v-row>
           </v-card>
           <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
-            <h2 class="mt-4 mb-2">{{ $t("EmployeeDetails.location") }}</h2>
+            <h2 class="mt-4 mb-2">{{ $t("components.employee_details.location.title") }}</h2>
             <v-row>
               <v-col class="mb-1" cols="12" md="6">
                 <h3 v-if="checkStatus(item.address)" class="mb-0">
-                  {{ $t("EmployeeDetails.address") }}: <span>{{ item.address }}</span>
+                  {{ $t("components.employee_details.location.address") }}: <span>{{ item.address }}</span>
                 </h3>
                 <h3 v-if="checkStatus(item.community)" class="mb-0">
-                  {{ $t("EmployeeDetails.community") }}: <span>{{ item.community }}</span>
+                  {{ $t("components.employee_details.location.community") }}: <span>{{ item.community }}</span>
                 </h3>
                 <h3 v-if="checkStatus(item.postal_code)" class="mb-0">
-                  {{ $t("EmployeeDetails.postalCode") }}: <span>{{ item.postal_code }}</span>
+                  {{ $t("components.employee_details.location.postal_code") }}: <span>{{ item.postal_code }}</span>
                 </h3>
                 <h3 v-if="checkStatus(item.mailcode)" class="mb-0">
-                  {{ $t("EmployeeDetails.mailCode") }}: <span>{{ item.mailcode }}</span>
+                  {{ $t("components.employee_details.location.mail_code") }}: <span>{{ item.mailcode }}</span>
                 </h3>
               </v-col>
               <v-col v-if="center !== null" cols="12" md="6">
