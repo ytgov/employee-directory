@@ -52,7 +52,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
         <v-card class="footer-details">
           <v-container class="container container-content">
 
-          <div class="d-flex justify-space-between">
+          <div class="d-flex justify-space-between links-to">
 
             <div class="d-flex flex-column pa-2">
               <a target="_blank" :href="$t('yukon_urls.home')">{{ $t("footer.sections.government") }}</a>
@@ -282,6 +282,26 @@ export default {
 
 .table-body tr:nth-child(odd) {
   background-color: #EDEDED;
+}
+
+.links-to div a {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 530px) {
+  .links-to div a {
+    text-align: center;
+  }
+  .links-to {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .links-to div:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
 }
 
 @media (min-width: 1904px) {
