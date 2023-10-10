@@ -14,24 +14,24 @@
         </template>
       </v-breadcrumbs>
 
-      <h1 class="my-16" style="font-weight:600 !important; font-size: 34px;">{{ $t("NotFound.pageNotFound") }}</h1>
+      <h1 class="my-16" style="font-weight:600 !important; font-size: 34px;">{{ $t("components.not_found.page_not_found") }}</h1>
       <v-card class="not-found-card mb-6" color="transparent" outlined>
-        <h2>{{ $t("NotFound.isNotHere") }}</h2>
-        <p>{{ $t("NotFound.mayHaveMoved") }}</p>
+        <h2>{{ $t("components.not_found.page_is_not_here.title") }}</h2>
+        <p>{{ $t("components.not_found.page_is_not_here.body") }}</p>
       </v-card>
       <v-card class="not-found-card mb-6" color="transparent" outlined>
-        <h2>{{ $t("NotFound.followALinkIn") }}</h2>
-        <p>{{ $t("NotFound.leaveAMessageIn.text1") }}<a
-            :href="$t('YukonHome.contactGovernment')">{{ $t("NotFound.leaveAMessageIn.text2") }}</a>{{ $t("NotFound.leaveAMessageIn.text3") }}</p>
+        <h2>{{ $t("components.not_found.reached_from_inside.title") }}</h2>
+        <p>{{ $t("components.not_found.reached_from_inside.body.part1") }}<a
+            :href="$t('yukon_urls.contact_government')">{{ $t("components.not_found.reached_from_inside.body.part2") }}</a>{{ $t("components.not_found.reached_from_inside.body.part3") }}</p>
       </v-card>
       <v-card class="not-found-card mb-6" color="transparent" outlined>
-        <h2>{{ $t("NotFound.followALinkIn") }}</h2>
-        <p>{{ $t("NotFound.leaveAMessageOut.text1") }}<a
-            :href="$t('YukonHome.contactGovernment')">{{ $t("NotFound.leaveAMessageOut.text2") }}</a>{{ $t("NotFound.leaveAMessageOut.text3") }}</p>
+        <h2>{{ $t("components.not_found.reached_from_outside.title") }}</h2>
+        <p>{{ $t("components.not_found.reached_from_outside.body.part1") }}<a
+            :href="$t('yukon_urls.contact_government')">{{ $t("components.not_found.reached_from_outside.body.part2") }}</a>{{ $t("components.not_found.reached_from_outside.body.part3") }}</p>
       </v-card>
       <v-card class="not-found-card mb-6" color="transparent" outlined>
-        <h2>{{ $t("NotFound.typedAddressWrong") }}</h2>
-        <p>{{ $t("NotFound.typedAddressWrong") }}</p>
+        <h2>{{ $t("components.not_found.address_wrong_message.title") }}</h2>
+        <p>{{ $t("components.not_found.address_wrong_message.body") }}</p>
       </v-card>
       <v-btn class="my-8" @click="$router.push('/')" height="40px" color="#00616D">Home</v-btn>
     </v-container>

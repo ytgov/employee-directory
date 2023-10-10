@@ -10,7 +10,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     <v-container class="px-0">
       <div class="header-container">
         <v-row align-content="space-between" justify="space-between" align="center">
-          <a :href="$t('YukonHome.home')"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
+          <a :href="$t('yukon_urls.home')"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
             class="ml-4"></v-progress-circular>
@@ -52,16 +52,16 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
         <v-card class="footer-details">
           <v-container class="container container-content">
 
-          <div class="d-flex justify-space-between">
+          <div class="d-flex justify-space-between links-to">
 
             <div class="d-flex flex-column pa-2">
-              <a target="_blank" :href="$t('YukonHome.home')">{{ $t("footer.government") }}</a>
-              <a target="_blank" :href="$t('YukonHome.copyright')">{{ $t("footer.copyright") }}</a>
-              <a target="_blank" :href="$t('YukonHome.disclaimer')">{{ $t("footer.disclaimer") }}</a>
-              <a target="_blank" :href="$t('YukonHome.privacyStatement')">{{ $t("footer.privacy") }}</a>
+              <a target="_blank" :href="$t('yukon_urls.home')">{{ $t("footer.sections.government") }}</a>
+              <a target="_blank" :href="$t('yukon_urls.copyright')">{{ $t("footer.sections.copyright") }}</a>
+              <a target="_blank" :href="$t('yukon_urls.disclaimer')">{{ $t("footer.sections.disclaimer") }}</a>
+              <a target="_blank" :href="$t('yukon_urls.privacy_statement')">{{ $t("footer.sections.privacy") }}</a>
             </div>
             <v-card-text class="white--text text-right">
-              <span>© {{ new Date().getFullYear() }} <a href="/">{{ $t("footer.government") }}</a></span>
+              <span>© {{ new Date().getFullYear() }} <a href="/">{{ $t("footer.sections.government") }}</a></span>
             </v-card-text>
           </div>
         </v-container>
@@ -282,6 +282,26 @@ export default {
 
 .table-body tr:nth-child(odd) {
   background-color: #EDEDED;
+}
+
+.links-to div a {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 530px) {
+  .links-to div a {
+    text-align: center;
+  }
+  .links-to {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .links-to div:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
 }
 
 @media (min-width: 1904px) {

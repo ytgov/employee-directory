@@ -31,9 +31,9 @@
             </v-card-actions>
 
             <v-card outlined color="transparent" class="flex-column pa-10">
-              <h2 v-if="!employeesNotFound" style="color:#522A44!important; font-size: 30px;">{{ $t("Department.browseEmployeesByDivisions") }}</h2>
+              <h2 v-if="!employeesNotFound" style="color:#522A44!important; font-size: 30px;">{{ $t("components.department.labels.browse_employees_by_divisions") }}</h2>
                 <div width="100%" v-else>
-                <h2 style="color:#522A44!important; font-size: 30px; text-align: center!important; width: 100%;">{{ $t("Department.notResults") }}</h2>
+                <h2 style="color:#522A44!important; font-size: 30px; text-align: center!important; width: 100%;">{{ $t("components.department.labels.no_results") }}</h2>
               </div>
               <v-card outlined color="transparent" v-for="(item, parent_item, id) in items" :key="item.full_name"
                 class="px-8">
@@ -55,7 +55,7 @@
               </v-card>
               <div style="height:20px;"></div>
               <a v-if="!employeesNotFound" @click="toggleApiSearch" class="mb-2"
-                style="font-size: 22px; font-weight: 700;" :class="{ colorOnClick: checkGrid }">{{ $t("Department.viewList") }} {{ title }}</a>
+                style="font-size: 22px; font-weight: 700;" :class="{ colorOnClick: checkGrid }">{{ $t("components.department.labels.view_list") }} {{ title }}</a>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
@@ -64,24 +64,24 @@
       <div class="mt-7" v-if="checkGrid">
         <v-row v-if="!results">
           <v-col cols="12" md="2" class="d-flex align-center justify-start">
-            <h4 class="">{{ $t("Department.groupBy") }}</h4>
+            <h4 class="">{{ $t("components.department.labels.group_by") }}</h4>
           </v-col>
           <v-col cols="12" md="8">
             <v-chip-group v-model="selection" center-active mandatory>
               <v-row>
                 <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
-                  <v-chip label outlined color="#00616D">{{ $t("Department.seeAll") }}</v-chip>
-                  <v-chip label outlined color="#00616D">{{ $t("Department.location") }}</v-chip>
-                  <v-chip label outlined color="#00616D">{{ $t("Department.position") }}</v-chip>
+                  <v-chip label outlined color="#00616D">{{ $t("components.department.labels.see_all_employees") }}</v-chip>
+                  <v-chip label outlined color="#00616D">{{ $t("components.department.labels.location") }}</v-chip>
+                  <v-chip label outlined color="#00616D">{{ $t("components.department.labels.position") }}</v-chip>
                 </v-col>
               </v-row>
             </v-chip-group>
           </v-col>
         </v-row>
 
-        <h2 v-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("Department.notResults") }}</h2>
+        <h2 v-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("components.department.labels.no_results") }}</h2>
 
-        <h2 v-else class="mt-3" style="font-size: 30px;"> {{ divisionLength }} {{ $t("Department.results") }} </h2>
+        <h2 v-else class="mt-3" style="font-size: 30px;"> {{ divisionLength }} {{ $t("components.department.labels.results") }} </h2>
 
         <div class="text-center loading" v-show="loading">
           <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
