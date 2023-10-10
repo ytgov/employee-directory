@@ -4,7 +4,7 @@ export const fr = {
       title: "Trouver un employé du gouvernement",
       search: {
         label: "Saisissez le nom, le titre du poste, l'e-mail ou le numéro de téléphone d'une personne dans la barre de recherche.",
-        input_placeholder: "mots clés"
+        input_placeholder: "Mots-clés"
       },
     },
     employees: {
@@ -12,12 +12,12 @@ export const fr = {
     },
     feedback_form: {
       questions: {
-        helpful_message: "Cette page vous a été utile?",
-        how_help_you_message: "Comment cette page vous a-t-elle aidé?",
-        how_improve_message: "Comment pouvons nous améliorer cette page?",
+        helpful_message: "Avez-vous trouvé cette page utile??",
+        how_help_you_message: "En quoi cette page vous a-t-elle été utile?",
+        how_improve_message: "Comment peut-on améliorer cette page?",
       },
       buttons: {
-        submit_feedback: "Soumettre des commentaires",
+        submit_feedback: "Soumettre vos commentaires",
       },
       alerts: {
         thanks_feedback: "Merci d'avoir pris le temps de nous envoyer vos commentaires.",
