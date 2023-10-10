@@ -12,7 +12,7 @@ export const fr = {
     },
     feedback_form: {
       questions: {
-        helpful_message: "Avez-vous trouvé cette page utile??",
+        helpful_message: "Avez-vous trouvé cette page utile?",
         how_help_you_message: "En quoi cette page vous a-t-elle été utile?",
         how_improve_message: "Comment peut-on améliorer cette page?",
       },
