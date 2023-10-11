@@ -22,8 +22,8 @@
                             <label class="full-name">{{ item.formatted_name }}</label>
                         </a>
                     </td>
-                    <td v-if="divisions === false" class="default-cursor"> {{ item.division }} </td>
-                    <td class="default-cursor"> {{ item.title }} </td>
+                    <td class="default-cursor">  {{$t('components.positions_api')[item.title] ? $t('components.positions_api')[item.title] : item.title }} </td>
+                    <td v-if="divisions === false" class="default-cursor">  {{ ($t('components.divisions_api')[item.division]) ? $t('components.divisions_api')[item.division] : item.division }} </td>
                     <td class="default-cursor"> {{ item.email }}</td>
                     <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
                             :class="{ telephone: check === true, 'telephone-desktop': check === false }"> {{

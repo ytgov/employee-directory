@@ -31,7 +31,7 @@
             {{ item.formatted_name }}
           </h2>
           <h3 v-if="checkStatus(item.title)" class="mb-8" style="color: #512a44 !important; font-size: 24px !important">
-            {{ item.title }}
+            {{$t('components.positions_api')[item.title] ? $t('components.positions_api')[item.title] : item.title }}
           </h3>
 
           <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
@@ -41,7 +41,7 @@
                 <h3 class="mb-0">
                   {{ $t("components.employee_details.organization.department") }} :
                   <a :href="generateUrl('department', 'n/a', 'n/a')">
-                    {{$t('components.departments_api')[item.department] ? $t('components.departments_api')[item.department] : item.name }}
+                    {{$t('components.departments_api')[item.department] ? $t('components.departments_api')[item.department] : item.department }}
                   </a>
                 </h3>
               </v-col>
