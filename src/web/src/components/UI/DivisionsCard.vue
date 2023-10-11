@@ -67,7 +67,7 @@ export default {
             this.check = division
         },
         generateUrl(type, param, index) {
-
+            
             const urlLocation = String(window.location.href)
             let url = urlLocation.split(window.location.pathname)
 
@@ -83,30 +83,25 @@ export default {
             let department = this.department.replace(reg, '-')
             let indexFormatted = index.replace(reg, '-')
             let paramFormatted = param.replace(reg, '-')
-
             if (indexFormatted === 'Employees-who-are-not-assigned-a-division') {
                 indexFormatted = 'not-division'
             }
-
-            if (type === 'division') {
-
-
-                if (indexFormatted === 'not-division') {
-                    return url + '/find-employee/' + department + '/not-division/all-branches'
-                }
-                return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
-
-            } else if (type === 'branch') {
-
-                if (paramFormatted !== 'Employees-who-are-not-assigned-a-branch' && indexFormatted !== 'not-division') {
-
-                    return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
-
-                } else {
-
+            switch (type) {
+                case 'division':
+                    if (indexFormatted === 'not-division') {
+                        return url + '/find-employee/' + department + '/not-division/all-branches'
+                    }
                     return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
-
-                }
+                    break;
+                case 'branch':
+                    if (paramFormatted === 'Employees-who-are-not-assigned-a-branch') {
+                        paramFormatted = 'not-branch'
+                    }
+                    return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
+                    break;
+                default:
+                return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
+                    break;
             }
         },
         getDataFromApi() {
