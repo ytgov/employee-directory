@@ -11,7 +11,7 @@
       <v-breadcrumbs class="mt-6 breadcrumbs px-0" :items="breadcrumbsList">
         <template v-slot:item="{ item }">
           <v-breadcrumbs-item :href="item.link">
-            {{ $t(item.name) }}
+            {{$t('components.departments_api')[item.name] ? $t('components.departments_api')[item.name] : item.name }}
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
@@ -26,7 +26,7 @@
                 <IconLoader :image="'icon'" :stroke="'purple-stroke'" >
               </div-->
               <div class="d-flex align-center justify-center" style="width:100%">
-                <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;">{{ title }}</h2>
+                <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;"> {{$t('components.departments_api')[title] ? $t('components.departments_api')[title] : title }}</h2>
               </div>
             </v-card-actions>
 
@@ -39,15 +39,16 @@
                 class="px-8">
                 <v-card outlined color="transparent">
                   <li>
-                    <a @click="activateBranches(parent_item)" :key="id" class="division">{{
-                      parent_item
-                    }}</a>
+                    <a @click="activateBranches(parent_item)" :key="id" class="division">
+                      {{ ($t('components.divisions_api')[parent_item]) ? $t('components.divisions_api')[parent_item] : parent_item }} 
+                    </a>
                   </li>
                   <v-expand-transition>
                     <ul v-if="check === parent_item">
                       <li v-for="(item, index, id) in item" :key="id" class="py-2">
-                        <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">{{ index
-                        }}</a>
+                        <a :href="generateUrl('branch', index, parent_item)" class="my-2 px-0 py-3 branch">
+                          {{ ($t('components.branch_api')[index]) ? $t('components.branch_api')[index] : index }}
+                        </a>
                       </li>
                     </ul>
                   </v-expand-transition>

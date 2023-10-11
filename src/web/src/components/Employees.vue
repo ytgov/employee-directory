@@ -40,7 +40,9 @@
                   </v-list-item-avatar-->
                   <v-list-item-content>
                     <v-list-item-title class="text-h6  ma-2 center-items">
-                      <a class="index-text department-link">{{ index }}</a>
+                      <a class="index-text department-link">             
+                        {{$t('components.departments_api')[index] ? $t('components.departments_api')[index] : index }}   
+                      </a>
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>

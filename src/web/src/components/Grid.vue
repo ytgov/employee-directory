@@ -8,7 +8,7 @@
       <v-breadcrumbs class="mt-6 mb-8 breadcrumbs px-0" :items="breadcrumbsList">
         <template v-slot:item="{ item }">
           <v-breadcrumbs-item :href="item.link">
-            {{ $t(item.name) }}
+            {{$t('components.departments_api')[item.name] ? $t('components.departments_api')[item.name] : ($t('components.divisions_api')[item.name] ? $t('components.divisions_api')[item.name] : $t(item.name))}}  
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
@@ -40,12 +40,12 @@
           <h2 class="px-0" style="font-size: 34px !important;">{{ $t("components.grid.no_results") }}</h2>
         </div>
         <div v-else class="d-flex align-center justify-start">
-          <h2 class="px-0" style="font-size: 34px !important;">{{ div }}</h2>
+          <h2 class="px-0" style="font-size: 34px !important;">   {{ ($t('components.divisions_api')[div]) ? $t('components.divisions_api')[div] : div }}    </h2>
           <h3 class="ml-4">( {{ divisionLength }} {{ $t("components.grid.results") }} )</h3>
         </div>
 
         <div v-if="branch !== 'All branches'" class=" d-flex align-center justify-start">
-          <h2 style="font-size: 25px !important;">{{ branch }}</h2>
+          <h2 style="font-size: 25px !important;"> {{ ($t('components.branch_api')[branch]) ? $t('components.branch_api')[branch] : branch }} </h2>
           <h3 style="font-size: 16px !important;" class="ml-4">( {{ totalLength }} {{ $t("components.grid.results") }} )</h3>
         </div>
       </div>
@@ -210,10 +210,10 @@ export default {
       let arr = this.$route.meta.breadcrumb;
       const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
       dynamicBreadcrumb.forEach((element => {
-        if (element.name == 'Department') {
+        if (element.name == 'breadcrumbs.department') {
           element.name = this.department;
           element.link = '/find-employee/' + this.department.replace(reg, '-')
-        } else if (element.name == 'Division') {
+        } else if (element.name == 'breadcrumbs.division') {
           if (this.div === 'Not division') {
             element.name = 'Employees who are not assigned a division'
             element.link = null
@@ -226,7 +226,7 @@ export default {
 
             element.link = null
           }
-        } else if (element.name == 'Branch') {
+        } else if (element.name == 'breadcrumbs.branch') {
           if (this.branch === 'All branches') {
             element.name = 'Employees who are not assigned a branch'
           } else {

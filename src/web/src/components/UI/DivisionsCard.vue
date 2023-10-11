@@ -8,16 +8,18 @@
                         <v-card outlined color="transparent">
                             <li>
                                 <a :class="{ 'branch-pressed': checkHover == parent_item }"
-                                    @click="activateBranches(parent_item)" :key="id" class="division">{{
-                                        parent_item
-                                    }}</a>
+                                    @click="activateBranches(parent_item)" :key="id" class="division">
+                                    {{ ($t('components.divisions_api')[parent_item]) ? $t('components.divisions_api')[parent_item] : parent_item }} 
+                                </a>
                             </li>
                             <v-expand-transition>
                                 <ul v-if="checkHover === parent_item || check === parent_item">
                                     <li class="py-1" v-for="(value, index, id) in item" :key="id">
                                         <a :class="{ 'branch-pressed': checkClass === index }"
                                             :href="generateUrl('branch', index, parent_item)"
-                                            class="branch my-2 px-0 py-3">{{ index }}</a>
+                                            class="branch my-2 px-0 py-3">
+                                            {{ ($t('components.branch_api')[index]) ? $t('components.branch_api')[index] : index }} 
+                                        </a>
                                     </li>
                                 </ul>
                             </v-expand-transition>

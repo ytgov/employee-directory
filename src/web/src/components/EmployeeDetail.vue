@@ -7,7 +7,7 @@
     <v-breadcrumbs class="mt-6 breadcrumbs px-0" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
-          {{ $t(item.name) }}
+          {{$t('components.departments_api')[item.name] ? $t('components.departments_api')[item.name] : ( ($t('components.divisions_api')[item.name]) ? $t('components.divisions_api')[item.name] : $t(item.name))}}  
         </v-breadcrumbs-item>
       </template>
     </v-breadcrumbs>
@@ -375,16 +375,16 @@ export default {
       const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
 
       dynamicBreadcrumb.forEach((element) => {
-        if (element.name == "Department") {
+        if (element.name == "breadcrumbs.department") {
           element.name = this.department;
           element.link =
             "/find-employee/" + this.department.replace(reg, "-");
-        } else if (element.name == "Division") {
+        } else if (element.name == "breadcrumbs.division") {
           element.name = this.division;
           element.link =
             ("/find-employee/" + this.department + "/" + this.division)
               .replace(reg, "-") + "/all-branches";
-        } else if (element.name == "Branch") {
+        } else if (element.name == "breadcrumbs.branch") {
           if (this.branch === null) {
             element.name = null;
             element.link = null;
@@ -399,13 +399,12 @@ export default {
             this.branch
           )
             .replace(reg, "-")
-        } else if (element.name == "Username") {
+        } else if (element.name == "breadcrumbs.username") {
           element.name = this.title;
         }
       });
 
       arr = arr.filter((item) => item.name !== null);
-
       this.breadcrumbsList = arr;
     },
   },
