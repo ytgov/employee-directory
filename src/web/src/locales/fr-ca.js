@@ -38,7 +38,7 @@ export const fr = {
       "Branch or Unit reports direct to ENV DM":"Branch or Unit reports direct to ENV DM",
       "Branch reports direct to CS DM":"Branch reports direct to CS DM",
       "Branch reports direct to ECO DM":"Branch reports direct to ECO DM",
-      "Branch reports direct to EDU DM":"Branch reports direct to EDU DM",
+      "Branch reports direct to EDU DM":"Branch reports direct to EDU DM FR",
       "Branch reports direct to FIN DM":"Branch reports direct to FIN DM",
       "Branch reports direct to HPW DM":"Branch reports direct to HPW DM",
       "Branch reports direct to HSS DM":"Branch reports direct to HSS DM",
@@ -129,7 +129,7 @@ export const fr = {
       "Media Development":"Media Development",
       "Regional Economic Development":"Regional Economic Development",
       "Technology and Telecommunications Development":"Technology and Telecommunications Development",
-      "Community Relations and Engagement":"Community Relations and Engagement",
+      "Community Relations and Engagement":"Community Relations and Engagement FR",
       "Finance":"Finance",
       "Commission scolaire francophone du Yukon":"Commission scolaire francophone du Yukon",
       "CSSC Mercier":"CSSC Mercier",
@@ -291,7 +291,8 @@ export const fr = {
       "Warehouse Operations":"Warehouse Operations",
       "Whitehorse Liquor Store":"Whitehorse Liquor Store",
       "Public Schools - Rural":"Public Schools - Rural",
-      "Client Business and Technology Solutions":"Client Business and Technology Solutions"
+      "Client Business and Technology Solutions":"Client Business and Technology Solutions",
+      "Employees who are not assigned a branch":"Employees who are not assigned a branch"
       //End Missing translation
     },
     search_bar_header: {
@@ -302,11 +303,11 @@ export const fr = {
       },
     },
     employees: {
-      browse_directory_by_departments_api: "Parcourez l'annuaire des employés par département"
+      browse_directory_by_department: "Parcourez l'annuaire des employés par département"
     },
     feedback_form: {
       questions: {
-        helpful_message: "Avez-vous trouvé cette page utile??",
+        helpful_message: "Avez-vous trouvé cette page utile?",
         how_help_you_message: "En quoi cette page vous a-t-elle été utile?",
         how_improve_message: "Comment peut-on améliorer cette page?",
       },
@@ -400,7 +401,11 @@ export const fr = {
       location: "Emplacement",
       position: "Position",
       no_results: "Il n'y a aucun résultat",
-      results: "Résultats"
+      results: "Résultats",
+      "Name" : "Nom et prénom	",
+      "Position" : "Poste",
+      "Email address" : "Adresse électronique",
+      "Phone number" : "Numéro de téléphone",
     },
     not_found: {
       page_not_found: "Page non trouvée",

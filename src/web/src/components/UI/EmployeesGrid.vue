@@ -2,7 +2,8 @@
     <v-data-table dense class="py-5 px-0 d-table" hide-default-footer :items="items" :headers="headers"
         :options.sync="options" :items-per-page="itemsPerPage" hide-default-header mobile-breakpoint="0">
         <template v-slot:header="{ props }">
-            <th class="data-header py-3 pl-3 " v-for="head in props.headers">{{ head.text }}
+            <th class="data-header py-3 pl-3 " v-for="head in props.headers">
+                {{$t('components.grid')[head.text] ? $t('components.grid')[head.text] : head.text }}
             </th>
         </template>
         <template v-slot:body="{ items }">

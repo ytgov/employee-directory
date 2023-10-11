@@ -11,7 +11,7 @@
       <v-breadcrumbs class="mt-6 breadcrumbs px-0" :items="breadcrumbsList">
         <template v-slot:item="{ item }">
           <v-breadcrumbs-item :href="item.link">
-            {{$t('components.departments_api')[item.name] ? $t('components.departments_api')[item.name] : item.name }}
+            {{$t('components.departments_api')[item.name] ? $t('components.departments_api')[item.name] : $t(item.name) }}
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>

@@ -7,7 +7,15 @@
     <v-breadcrumbs class="mt-6 breadcrumbs px-0" :items="breadcrumbsList">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :href="item.link">
-          {{$t('components.departments_api')[item.name] ? $t('components.departments_api')[item.name] : ( ($t('components.divisions_api')[item.name]) ? $t('components.divisions_api')[item.name] : $t(item.name))}}  
+
+
+          {{
+            item.link ? (
+              $t('components.departments_api')[item.name] ?
+                $t('components.departments_api')[item.name] : ( ($t('components.divisions_api')[item.name]) ?
+                  $t('components.divisions_api')[item.name] : ( ($t('components.branch_api')[item.name]) ?
+                    $t('components.branch_api')[item.name] : $t(item.name))) ) : item.name
+          }}
         </v-breadcrumbs-item>
       </template>
     </v-breadcrumbs>
@@ -31,23 +39,26 @@
             <v-row>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.department)">
                 <h3 class="mb-0">
-                  {{ $t("components.employee_details.organization.department") }}:
-                  <a :href="generateUrl('department', 'n/a', 'n/a')">{{
-                    item.department
-                  }}</a>
+                  {{ $t("components.employee_details.organization.department") }} :
+                  <a :href="generateUrl('department', 'n/a', 'n/a')">
+                    {{$t('components.departments_api')[item.department] ? $t('components.departments_api')[item.department] : item.name }}
+                  </a>
                 </h3>
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.division)" >
                 <h3 class="mb-0">
-                  {{ $t("components.employee_details.organization.division") }}: {{ item.division }}
+                  {{ $t("components.employee_details.organization.division") }}: 
+                  <a :href="generateUrl('division', item.division, item.division)">
+                    {{ ($t('components.divisions_api')[item.division]) ? $t('components.divisions_api')[item.division] : item.division }}
+                </a>
                 </h3>
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.branch)">
                 <h3 class="mb-0">
                   {{ $t("components.employee_details.organization.branch") }}:
-                  <a :href="generateUrl('branch', item.branch, item.division)">{{
-                    item.branch
-                  }}</a>
+                  <a :href="generateUrl('branch', item.branch, item.division)">
+                    {{ ($t('components.branch_api')[item.branch]) ? $t('components.branch_api')[item.branch] : item.branch }}
+                </a>
                 </h3>
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.unit)">
@@ -212,8 +223,6 @@ export default {
     this.getUrl();
   },
   methods: {
-
-
     getUrl() {
       const urlLocation = String(window.location.href);
       let url = urlLocation.split(window.location.pathname);
@@ -251,17 +260,13 @@ export default {
         return true;
       }
     },
-
     generateUrl(type, param, index) {
       let url = this.url
-
       let find = " ";
-
       let reg = new RegExp(find, "g");
       let department = this.department.replace(reg, "-");
       let indexFormatted = index.replace(reg, "-");
       let paramFormatted = param.replace(reg, "-");
-
       if (type === 'manager') {
         if (this.managerAvailability !== true) {
           return url + '/employee-not-found/' + param.replace(reg, ".")

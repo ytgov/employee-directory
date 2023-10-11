@@ -8,7 +8,12 @@
       <v-breadcrumbs class="mt-6 mb-8 breadcrumbs px-0" :items="breadcrumbsList">
         <template v-slot:item="{ item }">
           <v-breadcrumbs-item :href="item.link">
-            {{$t('components.departments_api')[item.name] ? $t('components.departments_api')[item.name] : ($t('components.divisions_api')[item.name] ? $t('components.divisions_api')[item.name] : $t(item.name))}}  
+            {{
+              $t('components.departments_api')[item.name] ?
+                $t('components.departments_api')[item.name] : ( ($t('components.divisions_api')[item.name]) ?
+                  $t('components.divisions_api')[item.name] : ( ($t('components.branch_api')[item.name]) ?
+                    $t('components.branch_api')[item.name] : $t(item.name)))
+            }}
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
