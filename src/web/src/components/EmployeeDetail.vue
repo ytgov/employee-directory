@@ -47,10 +47,7 @@
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.division)" >
                 <h3 class="mb-0">
-                  {{ $t("components.employee_details.organization.division") }}: 
-                  <a :href="generateUrl('division', item.division, item.division)">
-                    {{ ($t('components.divisions_api')[item.division]) ? $t('components.divisions_api')[item.division] : item.division }}
-                </a>
+                  {{ $t("components.employee_details.organization.division") }}:  {{ ($t('components.divisions_api')[item.division]) ? $t('components.divisions_api')[item.division] : item.division }}
                 </h3>
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.branch)">
@@ -124,7 +121,7 @@
               </v-col>
               <v-col v-if="center !== null" cols="12" md="6">
 
-                <l-map style="height: 300px" :zoom="zoom" :center="center" :options="{attributionControl: false}">
+                <l-map style="height: 300px" :zoom="zoom" :center="center">
 
                   <l-tile-layer :url="mapUrl"></l-tile-layer>
                   <l-marker :lat-lng="center"></l-marker>
