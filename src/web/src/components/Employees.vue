@@ -10,7 +10,7 @@
         <template v-slot:item="{ item }">
 
           <v-breadcrumbs-item :href="item.link">
-            {{ item.name }}
+            {{ $t(item.name) }}
           </v-breadcrumbs-item>
 
         </template>
@@ -20,7 +20,7 @@
           <v-row>
             <v-col cols="12" sm="12" class="align-center justify d-flex">
               <h2 class="mb-n1 text-responsive" style="color: #522a44 !important; font-size: 32px !important">
-                Browse the employee directory by department
+                {{ $t("components.employees.browse_directory_by_department") }}
               </h2>
             </v-col>
           </v-row>
@@ -40,7 +40,9 @@
                   </v-list-item-avatar-->
                   <v-list-item-content>
                     <v-list-item-title class="text-h6  ma-2 center-items">
-                      <a class="index-text department-link">{{ index }}</a>
+                      <a class="index-text department-link">             
+                        {{$t('components.departments_api')[index] ? $t('components.departments_api')[index] : index }}   
+                      </a>
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
