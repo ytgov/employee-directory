@@ -32,12 +32,6 @@
             <v-card :href="indexUrl(index, items)" class="mx-auto employee-division-card" max-width="344" outlined>
               <v-card class="d-flex">
                 <v-list-item three-line class="icon-list">
-                  <!--v-list-item-avatar tile size="100" min-height="100" height="100%" class="icon-avatar"
-                    :style="{ 'background-color': hover ? '#DC4001' : '#512A44' }">
-                    <div style="height:100%;">
-                      <IconLoader style="transform:scale(1.4)" :image="'icon'" />
-                    </div>
-                  </v-list-item-avatar-->
                   <v-list-item-content>
                     <v-list-item-title class="text-h6  ma-2 center-items">
                       <a class="index-text department-link">             
@@ -136,6 +130,7 @@ export default {
 }
 a.department-link{
   color:#005a65;
+  white-space: normal; 
 }
 a.department-link:visited{
   color:#643f5d;

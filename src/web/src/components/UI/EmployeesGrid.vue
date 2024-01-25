@@ -91,14 +91,18 @@ export default {
         },
 
         getPhone(number) {
-            const find = "-";
-            const reg = new RegExp(find, "g");
-            const numberFormatted = number.replace(reg, "");
-            const link = "tel:" + numberFormatted;
+            if(number != null){
+                const find = "-";
+                const reg = new RegExp(find, "g");
+                const numberFormatted = number.replace(reg, "");
+                const link = "tel:" + numberFormatted;
 
-            if (this.mobileCheck === false) {
-                return
-            } else { return String(link); }
+                if (this.mobileCheck === false) {
+                    return
+                } else { return String(link); }
+            }else{
+                return '';
+            }
         },
 
         cleanParam(param) {

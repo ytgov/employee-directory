@@ -56,7 +56,7 @@
               </v-card>
               <div style="height:20px;"></div>
               <a v-if="!employeesNotFound" @click="toggleApiSearch" class="mb-2"
-                style="font-size: 22px; font-weight: 700;" :class="{ colorOnClick: checkGrid }">{{ $t("components.department.labels.view_list") }} {{ title }}</a>
+                style="font-size: 22px; font-weight: 700;" :class="{ colorOnClick: checkGrid }">{{ $t("components.department.labels.view_list") }} {{ $t('components.departments_api')[title] ? $t('components.departments_api')[title] : title }}</a>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>

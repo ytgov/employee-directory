@@ -14,7 +14,7 @@
             <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.no_results_by_department.body.part2") }} {{$t('components.departments_api')[this.department] ? $t('components.departments_api')[this.department] : this.department }} {{ $t("components.employee_search.no_results_by_department.body.part3") }}</h2>
             <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }}  {{ $t("components.employee_search.no_results.body.part2") }}</h2>
             <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.results_by_department.body.part2") }} {{$t('components.departments_api')[this.department] ? $t('components.departments_api')[this.department] : this.department }} {{ $t("components.employee_search.results_by_department.body.part3") }} {{ this.itemsLength }} {{ $t("components.employee_search.results_by_department.body.part4") }}</h2>
-            <h2 v-else class="mt-8">{{ $t("components.employee_search.results.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.results.body.part2") }} {{ this.itemsLength }} {{ $t("components.employee_search.results.body.part3") }}
+            <h2 v-else class="mt-8">{{ $t("components.employee_search.results.body.part1") }} {{ this.searchTitle ? this.searchTitle.replace('any-employee', $t("components.employee_search.results.body.any_employee")).replace(/-/g, " ") : '' }} {{ $t("components.employee_search.results.body.part2") }} {{ this.itemsLength }} {{ $t("components.employee_search.results.body.part3") }}
             </h2>
             <v-row v-if="!results">
                 <v-col cols="12" md="2" class="d-flex align-center justify-start">
@@ -181,12 +181,13 @@ export default {
             return param;
         },
         cleanLocation(location) {
-
-            if (location[0] === ',') {
-                let link = location.slice(1);
-                return link.replace(/['"]+/g, '')
-            } else {
-                return location.replace(/['"]+/g, '')
+            if(location.length > 0){
+                if (location[0] === ',') {
+                    let link = location.slice(1);
+                    return link.replace(/['"]+/g, '')
+                } else {
+                    return location.replace(/['"]+/g, '')
+                }
             }
         },
         updateBreadCrumbs() {
