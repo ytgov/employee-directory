@@ -181,7 +181,7 @@ export default {
             return param;
         },
         cleanLocation(location) {
-            if(location.length > 0){
+            if(location != null){
                 if (location[0] === ',') {
                     let link = location.slice(1);
                     return link.replace(/['"]+/g, '')
