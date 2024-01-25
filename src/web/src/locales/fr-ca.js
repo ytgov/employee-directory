@@ -2890,9 +2890,10 @@ export const fr = {
           part4: "résultats."
         }
       },
-      résultats: {
+      results: {
         body: {
           part1: "Votre recherche pour",
+          any_employee: "tout employé",
           part2: "a donné",
           part3: "résultats."
         }

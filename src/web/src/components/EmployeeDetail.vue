@@ -244,11 +244,16 @@ export default {
       return String(link);
     },
     getPhone(number) {
-      const find = "-";
-      const reg = new RegExp(find, "g");
-      const numberFormatted = number.replace(reg, "");
-      const link = "tel:" + numberFormatted;
-      return String(link);
+      if(number != null){
+          const find = "-";
+          const reg = new RegExp(find, "g");
+          const numberFormatted = number.replace(reg, "");
+          const link = "tel:" + numberFormatted;
+          return String(link);
+      }else{
+         return '';
+      }
+    
     },
     checkStatus(param) {
       if (param == null || param == "" || param == "-") {

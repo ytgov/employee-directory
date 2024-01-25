@@ -2889,6 +2889,7 @@ export const en = {
       results: {
         body: {
           part1: "Your search for",
+          any_employee: "any employee",
           part2: "found",
           part3: "results."
         }
