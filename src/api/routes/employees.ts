@@ -9,6 +9,8 @@ import { EmployeeService } from "../services";
 
 const sanitizeHtml = require('sanitize-html');
 const employeeService = new EmployeeService();
+export const REMOVE_DEPARTMENTS = process.env.REMOVE_DEPARTMENTS;
+const remove_dept = _.split(REMOVE_DEPARTMENTS, ',').map((item) => _.trim(item));
 
 let path;
 switch (process.env.NODE_ENV) {
@@ -36,9 +38,11 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
 
             var resultEmployees = response.data.divisions;
             var departments = Array();
-
+            console.log(remove_dept);
             resultEmployees.forEach(function (element: any) {
-                departments.push(element.department);
+                if (!remove_dept.includes(element.department)) {
+                    departments.push(element.department);
+                }
             });
 
             var departmentsUq = departments.filter(function (elem, index, self) {

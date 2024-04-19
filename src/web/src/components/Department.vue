@@ -1,5 +1,5 @@
 <template>
-  <div class="books">
+  <div class="department">
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>

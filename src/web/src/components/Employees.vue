@@ -1,5 +1,5 @@
 <template>
-  <div class="books">
+  <div class="employees">
     <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
     
     <Aurora/>

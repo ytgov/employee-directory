@@ -1,5 +1,5 @@
 <template>
-  <div class="books">
+  <div class="employee-detail">
     <SearchBarHeader />
 
     <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
