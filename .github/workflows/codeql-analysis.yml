@@ -13,7 +13,7 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, prod ]
     # Publish server tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
