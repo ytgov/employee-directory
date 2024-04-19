@@ -38,7 +38,6 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
 
             var resultEmployees = response.data.divisions;
             var departments = Array();
-            console.log(remove_dept);
             resultEmployees.forEach(function (element: any) {
                 if (!remove_dept.includes(element.department)) {
                     departments.push(element.department);
