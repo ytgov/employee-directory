@@ -27,6 +27,7 @@ Environment variables should never be checked into the repository!
 - DIVISIONSJSON= (URL of the API to get the information of the divisions)
 - EMPLOYEEJSON= (URL of the API to get the information of the employees)
 - ESRI_KEY= (Key for esri)
+- REMOVE_DEPARTMENTS= (list of departments to be omitted in the home, separated by ',', example: 'Yukon Hospital Corporation,Workers Safety and Compensation Board')
 
 ## Building the container image
 
