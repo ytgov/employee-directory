@@ -9,15 +9,21 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     " color="#fff" flat height="77" max-height="77" class="shadow">
     <v-container class="px-0">
       <div class="header-container">
-        <v-row align-content="space-between" align="center">
-          <a href="https://yukon.ca/"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
+        <v-row align-content="space-between" justify="space-between" align="center">
+          <a :href="$t('yukon_urls.home')"><img src="/yukon.svg" style="margin-top:10px;" height="63" /></a>
           <v-toolbar-title>
             <v-progress-circular :class="loadingClass" indeterminate color="#f3b228" size="20" width="2"
-              class="ml-4"></v-progress-circular>
+            class="ml-4"></v-progress-circular>
           </v-toolbar-title>
           
-          <div>
-          </div>
+          
+          <v-btn 
+          text
+          @click="toggleLocale"
+          class="text-capitalize"
+          >
+            {{ locale === 'en' ? 'Français' : 'English' }}
+          </v-btn>
         </v-row>
       </div>
       </v-container>
@@ -37,25 +43,25 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
     <v-footer class="mt-16" flat style="z-index: 10" padless height="70">
       <v-card class="flex " flat tile>
         <v-card-title class="py-16 header-container full-width" id="footer-bg">
-          <v-container class="small-container">
+          <v-container class="container-content">
             <img src="/logo-white.svg" style="margin: -8px 155px 0 0" height="44" />
           </v-container>
         </v-card-title>
         <v-divider></v-divider>
         
         <v-card class="footer-details">
-          <v-container class="px-3 px-md-0">
+          <v-container class="container container-content">
 
-          <div class="d-flex justify-space-between">
+          <div class="d-flex justify-space-between links-to">
 
             <div class="d-flex flex-column pa-2">
-              <a target="_blank" href="https://yukon.ca/">Government of Yukon</a>
-              <a target="_blank" href="https://yukon.ca/en/copyright">Copyright</a>
-              <a target="_blank" href="https://yukon.ca/en/disclaimer">Disclaimer</a>
-              <a target="_blank" href="https://yukon.ca/en/privacy-statement">Privacy statement</a>
+              <a target="_blank" :href="$t('yukon_urls.home')">{{ $t("footer.sections.government") }}</a>
+              <a target="_blank" :href="$t('yukon_urls.copyright')">{{ $t("footer.sections.copyright") }}</a>
+              <a target="_blank" :href="$t('yukon_urls.disclaimer')">{{ $t("footer.sections.disclaimer") }}</a>
+              <a target="_blank" :href="$t('yukon_urls.privacy_statement')">{{ $t("footer.sections.privacy") }}</a>
             </div>
             <v-card-text class="white--text text-right">
-              <span>© {{ new Date().getFullYear() }} <a href="/">Government of Yukon</a></span>
+              <span>© {{ new Date().getFullYear() }} <a href="/">{{ $t("footer.sections.government") }}</a></span>
             </v-card-text>
           </div>
         </v-container>
@@ -75,6 +81,7 @@ import * as config from "./config";
 import { mapState } from "vuex";
 import IconLoader from "./components/icons/IconLoader.vue";
 import FeedbackForm from "./components/UI/FeedbackForm.vue";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
     name: "App",
@@ -94,6 +101,10 @@ export default {
     },
     watch: {},
     methods: {
+        ...mapActions({
+          loadLocale: "setLocale",
+          changeLocale: "setCookieLocale"
+        }),
         changeBackground() {
             this.noBgImg = false;
         },
@@ -106,8 +117,30 @@ export default {
         toggleMenu: function () {
             this.menuShow = !this.menuShow;
         },
+        toggleLocale: function () {
+          const currentLocale = this.$cookies.get("locale");
+
+          const newLocale = currentLocale === "en" ? "fr" : "en";
+
+          this.$cookies.set("locale", newLocale);
+          this.loadLocale(newLocale);
+          this.$i18n.locale = newLocale;
+        },
     },
-    components: { IconLoader, FeedbackForm }
+    components: { IconLoader, FeedbackForm },
+    computed: {
+      ...mapGetters(["locale"]),
+    },
+    mounted() {
+      if(this.$cookies.isKey("locale")) {
+        const locale = this.$cookies.get("locale");
+        this.loadLocale(locale);
+        this.$i18n.locale = locale;
+      } else {
+        this.$cookies.set("locale", "en");
+        this.$i18n.locale = "en";
+      }
+    },
 };
 </script>
 
@@ -249,6 +282,26 @@ export default {
 
 .table-body tr:nth-child(odd) {
   background-color: #EDEDED;
+}
+
+.links-to div a {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 530px) {
+  .links-to div a {
+    text-align: center;
+  }
+  .links-to {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .links-to div:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
 }
 
 @media (min-width: 1904px) {

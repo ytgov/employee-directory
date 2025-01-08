@@ -138,9 +138,12 @@ a {
 }
 
 .v-footer .v-card a {
-  color: white;
+  color: white !important;
 }
 
+.footer-details > .container.px-3.px-md-0 > .justify-space-between > .d-flex.flex-column.pa-2{
+  min-width: 300px;
+}
 .v-footer .v-card div.footer-details span {
   margin-left: 50%;
 }
