@@ -84,18 +84,29 @@ export default {
     },
   },
   mounted() {
+    this.toggleLocale();
     this.getEmployeesData();
     this.updateBreadCrumbs();
 
   },
   methods: {
+    toggleLocale: function () {
+        const savedLocale = this.$cookies.get("locale");
+        const routeLocale = this.$route.params.locale;
+
+        if (savedLocale != routeLocale) {
+            this.$cookies.set("locale", routeLocale);
+            this.loadLocale(routeLocale);
+            this.$i18n.locale = routeLocale;
+        }
+    },
     updateBreadCrumbs() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
 
     indexUrl(field) {
-
-      let department = "/find-employee/" + field.replace(/\//g, '')
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
+      let department = '/'+ locale + "/find-employee/" + field.replace(/\//g, '')
       let noSpaces = department.replaceAll(/\s/g, '-');
 
       return String(noSpaces)

@@ -88,7 +88,7 @@ import SearchBarHeader from './UI/SearchBarHeader.vue'
 import DepartmentHeader from './UI/DepartmentHeader.vue';
 import IconLoader from "./icons/IconLoader.vue";
 import EmployeesGrid from './UI/EmployeesGrid.vue';
-
+import { toggleLocale } from "@/utils/localeUtils.js";
 import * as urls from "../urls";
 
 export default {
@@ -126,7 +126,7 @@ export default {
     },
     emits: ['changeBg'],
     mounted() {
-
+        toggleLocale(this);
         this.$nextTick(() => {
             window.addEventListener('resize', this.onResize);
         })
@@ -162,15 +162,25 @@ export default {
             mobileCheck: false,
         }
     },
-
     methods: {
+    //     toggleLocale: function () {
+    //     const savedLocale = this.$cookies.get("locale");
+    //     const routeLocale = this.$route.params.locale;
+
+    //     if (savedLocale != routeLocale) {
+    //         this.$cookies.set("locale", routeLocale);
+    //         this.loadLocale(routeLocale);
+    //         this.$i18n.locale = routeLocale;
+    //     }
+    // },
         onResize() {
             this.windowWidth = window.innerWidth
         },
         urlEmployee(department, name) {
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
             var find = ' ';
             var reg = new RegExp(find, 'g');
-            return '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
+            return  '/'+ locale + '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
         },
         cleanParam(param) {
 
@@ -191,7 +201,7 @@ export default {
             }
         },
         updateBreadCrumbs() {
-
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
             var find = ' ';
             var reg = new RegExp(find, 'g');
             let arr = this.$route.meta.breadcrumb;
@@ -202,7 +212,7 @@ export default {
                 if (element.name == 'Department') {
                     element.name = this.department;
                     if (element.name !== 'Any department') {
-                        element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
+                        element.link = '/'+ locale + '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
                     } else {
                         element.link = undefined
                     }

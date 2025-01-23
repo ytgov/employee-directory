@@ -141,7 +141,7 @@
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
-
+import { toggleLocale } from "@/utils/localeUtils.js";
 
 import L from 'leaflet';
 import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
@@ -213,6 +213,7 @@ export default {
   emits: ['changeBg'],
   computed: {},
   mounted() {
+    toggleLocale(this);
     this.$emit('changeBg');
     this.getDataFromApi();
   },
@@ -220,6 +221,16 @@ export default {
     this.getUrl();
   },
   methods: {
+    // toggleLocale: function () {
+    //     const savedLocale = this.$cookies.get("locale");
+    //     const routeLocale = this.$route.params.locale;
+
+    //     if (savedLocale != routeLocale) {
+    //         this.$cookies.set("locale", routeLocale);
+    //         this.loadLocale(routeLocale);
+    //         this.$i18n.locale = routeLocale;
+    //     }
+    // },
     getUrl() {
       const urlLocation = String(window.location.href);
       let url = urlLocation.split(window.location.pathname);
@@ -232,7 +243,11 @@ export default {
     },
     checkError() {
       if (this.error === true) {
-        window.location.href = this.url + '/page-not-found/';
+        const savedLocale = this.$cookies.get("locale");
+        this.$cookies.set("latestFullPath", this.$route.fullPath);
+
+        const currentPath = `/${savedLocale}/page-not-found`
+        this.$router.push({ path: currentPath });
       }
     },
     setCenter(marker) {
@@ -250,7 +265,7 @@ export default {
           const numberFormatted = number.replace(reg, "");
           const link = "tel:" + numberFormatted;
           return String(link);
-      }else{
+      } else {
          return '';
       }
     
@@ -263,7 +278,8 @@ export default {
       }
     },
     generateUrl(type, param, index) {
-      let url = this.url
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
+      let url = this.url + '/'+ locale ;
       let find = " ";
       let reg = new RegExp(find, "g");
       let department = this.department.replace(reg, "-");
@@ -375,6 +391,7 @@ export default {
         });
     },
     updateBreadCrumbs() {
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       var find = " ";
       var reg = new RegExp(find, "g");
       let arr = this.$route.meta.breadcrumb;
@@ -385,11 +402,11 @@ export default {
         if (element.name == "breadcrumbs.department") {
           element.name = this.department;
           element.link =
-            "/find-employee/" + this.department.replace(reg, "-");
+           '/'+ locale + "/find-employee/" + this.department.replace(reg, "-");
         } else if (element.name == "breadcrumbs.division") {
           element.name = this.division;
           element.link =
-            ("/find-employee/" + this.department + "/" + this.division)
+            (  '/'+ locale + "/find-employee/" + this.department + "/" + this.division)
               .replace(reg, "-") + "/all-branches";
         } else if (element.name == "breadcrumbs.branch") {
           if (this.branch === null) {
@@ -398,7 +415,7 @@ export default {
           }
           element.name = this.branch;
           element.link = (
-            "/find-employee/" +
+             '/'+ locale + "/find-employee/" +
             this.department +
             "/" +
             this.division +

@@ -97,6 +97,7 @@ import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
 import EmployeesGrid from "./UI/EmployeesGrid.vue";
+import { toggleLocale } from "@/utils/localeUtils.js";
 
 export default {
   name: "Grid",
@@ -168,6 +169,7 @@ export default {
     }
   },
   mounted() {
+    toggleLocale(this);
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
@@ -178,6 +180,16 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
+    // toggleLocale: function () {
+    //     const savedLocale = this.$cookies.get("locale");
+    //     const routeLocale = this.$route.params.locale;
+
+    //     if (savedLocale != routeLocale) {
+    //         this.$cookies.set("locale", routeLocale);
+    //         this.loadLocale(routeLocale);
+    //         this.$i18n.locale = routeLocale;
+    //     }
+    // },
     cleanParam(param) {
 
       if (param === '-') {
@@ -214,12 +226,12 @@ export default {
       var reg = new RegExp(find, 'g');
       let arr = this.$route.meta.breadcrumb;
       const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-    
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       dynamicBreadcrumb.forEach((element => {
         switch (element.name) {
           case  'breadcrumbs.department':
             element.name = this.department.trim();
-            element.link = '/find-employee/' + this.department.replace(reg, '-')
+            element.link =  '/'+ locale +  '/find-employee/' + this.department.replace(reg, '-')
             break;
           case 'breadcrumbs.division':
             if (this.div === 'Not division') {
@@ -230,7 +242,7 @@ export default {
             }
 
             if (this.branch !== 'All branches') {
-              element.link = ('/find-employee/' + this.department + '/' + this.div).replace(reg, '-') + '/all-branches'
+              element.link = ( '/'+ locale + '/find-employee/' + this.department + '/' + this.div).replace(reg, '-') + '/all-branches'
             } else {
               element.link = null
             }
@@ -244,7 +256,7 @@ export default {
                 element.name = 'All branches'
                 break;
               default:
-                element.name = this.iibranch;
+                element.name = this.branch;
                 break;
             }
             break;

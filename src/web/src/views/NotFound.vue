@@ -15,6 +15,7 @@
       </v-breadcrumbs>
 
       <h1 class="my-16" style="font-weight:600 !important; font-size: 34px;">{{ $t("components.not_found.page_not_found") }}</h1>
+      <h1 style="font-weight:500">{{ $t("components.not_found.fullpath") }} {{ latestFullPath }} {{ $t("components.not_found.fullpath_sufix") }}</h1>
       <v-card class="not-found-card mb-6" color="transparent" outlined>
         <h2>{{ $t("components.not_found.page_is_not_here.title") }}</h2>
         <p>{{ $t("components.not_found.page_is_not_here.body") }}</p>
@@ -33,7 +34,7 @@
         <h2>{{ $t("components.not_found.address_wrong_message.title") }}</h2>
         <p>{{ $t("components.not_found.address_wrong_message.body") }}</p>
       </v-card>
-      <v-btn class="my-8" @click="$router.push('/')" height="40px" color="#00616D">Home</v-btn>
+      <v-btn class="my-8" @click="$router.push('/')" height="40px" color="#00616D">{{ $t("components.not_found.home.title") }}</v-btn>
     </v-container>
   </div>
 </template>
@@ -66,12 +67,24 @@ export default {
   },
   emits: ['changeBg'],
   mounted() {
+    this.toggleLocale();
     this.updateBreadCrumbs();
     this.$emit('changeBg');
+    this.latestFullPath = this.$cookies.get("latestFullPath");
   },
   methods: {
     updateBreadCrumbs() {
       this.breadcrumbsList = this.$route.meta.breadcrumb
+    },
+    toggleLocale: function () {
+        const savedLocale = this.$cookies.get("locale");
+        const routeLocale = this.$route.params.locale;
+
+        if (savedLocale != routeLocale) {
+            this.$cookies.set("locale", routeLocale);
+            this.loadLocale(routeLocale);
+            this.$i18n.locale = routeLocale;
+        }
     },
   },
 }

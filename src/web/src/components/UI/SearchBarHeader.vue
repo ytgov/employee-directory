@@ -104,26 +104,33 @@ export default {
     props: ['info', 'title'],
 
     methods: {
+        toggleLocale: function () {
+            const savedLocale = this.$cookies.get("locale");
+            const routeLocale = this.$route.params.locale;
 
-
-
+            if (savedLocale != routeLocale) {
+                this.$cookies.set("locale", routeLocale);
+                this.loadLocale(routeLocale);
+                this.$i18n.locale = routeLocale;
+            }
+        },
         updateSearch() {
             const find = ' ';
             const reg = new RegExp(find, 'g');
 
             let name = this.nameSearch.replace(/\s+/g, '.').trim()
             let department = this.departmentSearch.replace(reg, '-').replace(/\//g, '').toLowerCase()
-
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
 
             if (name === '' && department === '') {
-                window.location.href = '/find-employee/search/keyword=any-employee&department=any-department'
+                window.location.href = '/' + locale +'/find-employee/search/keyword=any-employee&department=any-department'
             } else {
                 if (department === '') {
-                    window.location.href = '/find-employee/search/keyword=' + name + '&department=any-department'
+                    window.location.href = '/' + locale +'/find-employee/search/keyword=' + name + '&department=any-department'
                 } else if (name === '') {
-                    window.location.href = '/find-employee/' + department
+                    window.location.href = '/' + locale +'/find-employee/' + department
                 } else {
-                    window.location.href = '/find-employee/search/keyword=' + name + '&department=' + department
+                    window.location.href = '/' + locale +'/find-employee/search/keyword=' + name + '&department=' + department
                 }
             }
         },

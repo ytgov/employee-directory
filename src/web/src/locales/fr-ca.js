@@ -2920,6 +2920,11 @@ export const fr = {
     },
     not_found: {
       page_not_found: "Page non trouvée",
+      fullpath: "La page demandée ",
+      fullpath_sufix: "ne peut être trouvé.",
+      home: {
+        title: "Accueil"
+      },
       page_is_not_here: {
         title: "Oups, il semble que cette page n’existe pas.",
         body: "Vous n’avez commis aucune erreur; il se peut que nous ayons déplacé la page que vous cherchez."

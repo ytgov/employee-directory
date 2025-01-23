@@ -35,7 +35,6 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
     var employeesByDept = Object();
     axios.get(String(DIVISIONSJSON))
         .then((response: any) => {
-
             var resultEmployees = response.data.divisions;
             var departments = Array();
             resultEmployees.forEach(function (element: any) {
@@ -75,7 +74,12 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
 
         })
         .catch((error: any) => {
-            console.log(error);
+            let errorMessage =  error.message ?? 'Unknown error occurred';
+            console.error("Error load department:", errorMessage);
+            return res.status(500).json({
+                error: "Failed to fetch departments",
+                details:  errorMessage
+            });
         });
 });
 
@@ -410,90 +414,123 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var _ = require("lodash");
     let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
     let error = false
-    
-    axios.get(String(DIVISIONSJSON), { params: { department: paramDepartment } })
-        .then(async (response: any) => {
+    try {
+
+        const divisionsResponse = await axios.get(String(DIVISIONSJSON), { params: { department: paramDepartment } });
+        if (divisionsResponse.data.divisions.length === 0) {
+            return res.json({ meta: { error: true } });
+        }
+        const employeesResponse = await axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } });
+        const resultEmployees = employeesResponse.data.employees;
+        if (resultEmployees.length === 0) {
+            return res.json({ meta: { count: 0, notFound: true } });
+        }
+        // Sorting and Formatting
+        let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc']);
+
+        employeesByDeptSorted.forEach((element: any) => {
+            if (!element.division) {
+                element.division = 'Employees who are not assigned a division';
+            }
+            if (!element.branch) {
+                element.branch = 'Employees who are not assigned a branch';
+            }
+        });
+
+        let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any }) => item.division);
+        for (const key in division) {
+            division[key] = _.groupBy(division[key], (division: any) => division.branch);
+        }
+
+        return res.json({ data: division, meta: { count: resultEmployees.length } });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    // axios.get(String(DIVISIONSJSON), { params: { department: paramDepartment } })
+    //     .then(async (response: any) => {
             
-            if (response.data.divisions.length === 0) {
-                    return res.send({ meta: { error: true } })
-            } else {
-                axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
-                    .then((response: any) => {
+    //         if (response.data.divisions.length === 0) {
+    //                 return res.send({ meta: { error: true } })
+    //         } else {
+    //             axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
+    //                 .then((response: any) => {
 
-                        var resultEmployees = response.data.employees;
-                        if (resultEmployees.length == 0) {
-                            return res.send({ meta: { count: 0, notFound: true } });
-                        }
+    //                     var resultEmployees = response.data.employees;
+    //                     if (resultEmployees.length == 0) {
+    //                         return res.send({ meta: { count: 0, notFound: true } });
+    //                     }
 
-                        let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc'])
+    //                     let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc'])
 
-                        resultEmployees.forEach((element: any) => {
-                            if (element.division === null) {
-                                element.division = 'Employees who are not assigned a division'
-                            }
-                            if (element.branch === null) {
-                                element.branch = 'Employees who are not assigned a branch'
-                            }
-                        })
+    //                     resultEmployees.forEach((element: any) => {
+    //                         if (element.division === null) {
+    //                             element.division = 'Employees who are not assigned a division'
+    //                         }
+    //                         if (element.branch === null) {
+    //                             element.branch = 'Employees who are not assigned a branch'
+    //                         }
+    //                     })
 
-                        let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
+    //                     let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
 
-                        for (const [key, value] of Object.entries(division)) {
-                            const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
+    //                     for (const [key, value] of Object.entries(division)) {
+    //                         const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
 
-                            division[key] = groupByDivision;
+    //                         division[key] = groupByDivision;
 
-                        }
+    //                     }
 
-                        return res.send({ data: division, meta: { count: 0 } });
+    //                     return res.send({ data: division, meta: { count: 0 } });
 
-                    })
-                    .catch((error: any) => {
-                        console.log(error);
-                    });
+    //                 })
+    //                 .catch((error: any) => {
+    //                     console.log(error);
+    //                 });
 
-            }
+    //         }
 
-        }).catch((error: any) => {
-            console.log(error);
-        });
+    //     }).catch((error: any) => {
+    //         console.log(error);
+    //     });
 
-    axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
-        .then((response: any) => {
+    // axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment } })
+    //     .then((response: any) => {
 
-            var resultEmployees = response.data.employees;
+    //         var resultEmployees = response.data.employees;
 
-            if (resultEmployees.length == 0) {
-                res.send({ meta: { count: 0, notFound: true } });
-                return
-            }
+    //         if (resultEmployees.length == 0) {
+    //             res.send({ meta: { count: 0, notFound: true } });
+    //             return
+    //         }
 
-            let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc'])
+    //         let employeesByDeptSorted = _.sortBy(resultEmployees, ['null', 'division', 'branch'], ['desc', 'asc'])
 
-            resultEmployees.forEach((element: any) => {
-                if (element.division === null) {
-                    element.division = 'Employees who are not assigned a division'
-                }
-                if (element.branch === null) {
-                    element.branch = 'Employees who are not assigned a branch'
-                }
-            })
+    //         resultEmployees.forEach((element: any) => {
+    //             if (element.division === null) {
+    //                 element.division = 'Employees who are not assigned a division'
+    //             }
+    //             if (element.branch === null) {
+    //                 element.branch = 'Employees who are not assigned a branch'
+    //             }
+    //         })
 
-            let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
+    //         let division: any = _.groupBy(employeesByDeptSorted, (item: { division: any; }) => `${item.division}`);
 
-            for (const [key, value] of Object.entries(division)) {
-                const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
+    //         for (const [key, value] of Object.entries(division)) {
+    //             const groupByDivision: any = _.groupBy(division[key], (division: any) => division.branch);
 
-                division[key] = groupByDivision;
+    //             division[key] = groupByDivision;
 
-            }
+    //         }
 
-            res.send({ data: division, meta: { count: 0, error } });
+    //         res.send({ data: division, meta: { count: 0, error } });
 
-        })
-        .catch((error: any) => {
-            console.log(error);
-        });
+    //     })
+    //     .catch((error: any) => {
+    //         console.log(error);
+    //     });
 });
 
 employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
@@ -535,25 +572,38 @@ employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
 });
 
 employeesRouter.post("/SearchBar", async (req: Request, res: Response) => {
+    try {
+        const response = await axios.get(String(DIVISIONSJSON));
+        // Validate API response
+        if (!response.data || !Array.isArray(response.data.divisions)) {
+            return res.status(500).json({ error: "Invalid response format from API" });
+        }
+        const departments = [...new Set(response.data.divisions.map((item: any) => item.department))];
 
-    axios.get(String(DIVISIONSJSON))
-        .then((response: any) => {
+        return res.status(200).json({ data: departments, meta: { count: departments.length } });
+    } catch (error: any) {
+       let errorMessage =  error.message ?? 'Unknown error occurred';
+        console.error("Error fetching search bar:", errorMessage);
 
-            var resultEmployees = response.data.divisions;
-            var departments = Array();
-            resultEmployees.forEach(function (element: any) {
-                departments.push(element.department);
-            });
-
-            var departmentsUq = departments.filter(function (elem, index, self) {
-                return index === self.indexOf(elem);
-            });
-            res.send({ data: departmentsUq, meta: { count: 0 } });
-
-        })
-        .catch((error: any) => {
-            console.log(error);
+        return res.status(500).json({
+            error: "Failed to fetch departments",
+            details: errorMessage
         });
+    }
+
+
+            // var resultEmployees = response.data.divisions;
+            // var departments = Array();
+            // resultEmployees.forEach(function (element: any) {
+            //     departments.push(element.department);
+            // });
+
+            // var departmentsUq = departments.filter(function (elem, index, self) {
+            //     return index === self.indexOf(elem);
+            // });
+            // res.send({ data: departmentsUq, meta: { count: 0 } });
+
+
 });
 
 employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {

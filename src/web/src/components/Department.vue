@@ -18,7 +18,7 @@
       <v-row class="mt-16"></v-row>
       <v-row>
         <v-col col="6">
-          <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
+          <v-card v-if="!error" elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
             max-width="1180" min-height="542" outlined>
             <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
               max-width="590">
@@ -57,6 +57,22 @@
               <div style="height:20px;"></div>
               <a v-if="!employeesNotFound" @click="toggleApiSearch" class="mb-2"
                 style="font-size: 22px; font-weight: 700;" :class="{ colorOnClick: checkGrid }">{{ $t("components.department.labels.view_list") }} {{ $t('components.departments_api')[title] ? $t('components.departments_api')[title] : title }}</a>
+            </v-card>
+          </v-card>
+          <v-card v-if="error" elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
+            max-width="1180" min-height="542" outlined>
+            <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
+              max-width="590">
+              <!--div class="py-4 d-flex align-center justify-center" style="width: 200px">
+                <IconLoader :image="'icon'" :stroke="'purple-stroke'" >
+              </div-->
+              <div class="d-flex align-center justify-center" style="width:100%">
+                <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;"> {{$t('components.departments_api')[title] ? $t('components.departments_api')[title] : title }}</h2>
+              </div>
+            </v-card-actions>
+
+            <v-card outlined color="transparent" class="flex-column pa-10">
+              <h2 style="color:#522A44!important; font-size: 30px;">{{ $t("components.department.labels.not_found") }}</h2>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
@@ -165,6 +181,7 @@ export default {
   }),
   watch: {
     '$route'() {
+      console.log(this.$route.meta.breadcrumb);
       this.breadcrumbsList = this.$route.meta.breadcrumb
     },
     options: {
@@ -195,6 +212,7 @@ export default {
     }
   },
   mounted() {
+    this.toggleLocale();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
@@ -205,7 +223,15 @@ export default {
     this.updateBreadCrumbs();
   },
   methods: {
-
+    toggleLocale: function () {
+        const savedLocale = this.$cookies.get("locale");
+        const routeLocale = this.$route.params.locale;
+        if (savedLocale != routeLocale) {
+            this.$cookies.set("locale", routeLocale);
+            this.loadLocale(routeLocale);
+            this.$i18n.locale = routeLocale;
+        }
+    },
     toggleApiSearch() {
       if (this.checkAPIStatus !== false) {
         this.checkGrid = !this.checkGrid
@@ -235,20 +261,24 @@ export default {
     },
     checkError() {
       if (this.error === true) {
-        window.location.href = this.url + '/page-not-found'
+        const savedLocale = this.$cookies.get("locale");
+        this.$cookies.set("latestFullPath", this.$route.fullPath);
+
+        const currentPath = `/${savedLocale}/page-not-found`
+        this.$router.push({ path: currentPath });
       }
     },
     activateBranches(item) {
       let find = ' ';
       let reg = new RegExp(find, 'g');
       let department = this.department.replace(reg, '-')
-
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       let division = item
 
       if (this.check === item) {
         if (this.check === 'Employees who are not assigned a division') {
-          window.location.href = '/find-employee/' + department + '/not-division/all-branches'
-        } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+          window.location.href = '/'+ locale + '/find-employee/' + department + '/not-division/all-branches'
+        } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
       }
       this.check = division
     },
@@ -257,17 +287,21 @@ export default {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     generateUrl(type, param, index) {
-
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       const urlLocation = String(window.location.href)
       let url = urlLocation.split(window.location.pathname)
-
+      console.log(url);
       url = url.filter(element => {
         return element !== ''
       })
       url = url[0]
-
+      console.log('after');
+      console.log(url);
       this.url = url[0]
+      url = url + '/'+ locale ;
       let find = ' ';
+      console.log('after 2');
+      console.log(url);
 
       let reg = new RegExp(find, 'g');
       let department = this.department.replace(reg, '-')
@@ -339,7 +373,11 @@ export default {
           this.totalLength = resp.data.meta.count;
           this.loading = false;
         })
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err)
+          this.error = true;
+          this.checkError();
+        })
         .finally(() => {
           this.loading = false;
         });
@@ -374,7 +412,10 @@ export default {
           this.itemsValue = this.selection
           this.loading = false;
         })
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err)
+          this.error = true;
+        })
         .finally(() => {
           this.loading = false;
         });

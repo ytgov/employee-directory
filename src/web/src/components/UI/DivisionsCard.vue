@@ -51,8 +51,22 @@ export default {
             this.getDataFromApi();
         }
     },
+    mounted() {
+        this.toggleLocale();
+    },
     methods: {
+        toggleLocale: function () {
+        const savedLocale = this.$cookies.get("locale");
+            const routeLocale = this.$route.params.locale;
+
+            if (savedLocale != routeLocale) {
+                this.$cookies.set("locale", routeLocale);
+                this.loadLocale(routeLocale);
+                this.$i18n.locale = routeLocale;
+            }
+        },
         activateBranches(item) {
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
             let find = ' ';
             let reg = new RegExp(find, 'g');
             let department = this.department.replace(reg, '-')
@@ -61,13 +75,13 @@ export default {
 
             if (this.check === item) {
                 if (this.check === 'Employees who are not assigned a division') {
-                    window.location.href = '/find-employee/' + department + '/not-division/all-branches'
-                } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+                    window.location.href = '/'+ locale + '/find-employee/' + department + '/not-division/all-branches'
+                } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
             }
             this.check = division
         },
         generateUrl(type, param, index) {
-            
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
             const urlLocation = String(window.location.href)
             let url = urlLocation.split(window.location.pathname)
 
@@ -76,7 +90,7 @@ export default {
             })
             url = url[0]
 
-            this.url = url[0]
+            this.url = url[0] + '/'+ locale ;
             let find = ' ';
 
             let reg = new RegExp(find, 'g');
