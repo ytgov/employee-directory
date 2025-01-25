@@ -19,7 +19,7 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
           
           <v-btn 
           text
-          @click="toggleLocale(locale)"
+          @click="toggleLocale"
           class="text-capitalize"
           >
             {{ locale === 'en' ? 'Français' : 'English' }}
@@ -75,13 +75,13 @@ box-shadow: 1px 3px 3px 0px rgba(163,163,163,0.33) !important;
 
 <script>
 import router from "./router";
-//import { mapState } from "vuex";
 import store from "./store";
 import * as config from "./config";
 import { mapState } from "vuex";
 import IconLoader from "./components/icons/IconLoader.vue";
 import FeedbackForm from "./components/UI/FeedbackForm.vue";
 import { mapGetters, mapActions } from "vuex";
+import { getSavedLocale, syncLocaleWithRoute, toggleLocale } from "@/utils/localeUtils.js";
 
 export default {
     name: "App",
@@ -102,8 +102,8 @@ export default {
     watch: {},
     methods: {
         ...mapActions({
-          loadLocale: "setLocale",
-          changeLocale: "setCookieLocale"
+           loadLocale: "setLocale",
+           changeLocale: "setCookieLocale"
         }),
         changeBackground() {
             this.noBgImg = false;
@@ -117,38 +117,21 @@ export default {
         toggleMenu: function () {
             this.menuShow = !this.menuShow;
         },
-        toggleLocale: function (locale) {
-          const currentLocale = this.$cookies.get("locale");
-          const newLocale = currentLocale === "en" ? "fr" : "en";
-          let currentPath = this.$route.matched[0].path;
-
-          for (const [key, value] of Object.entries(this.$route.params)) {
-            if (key == 'locale') {
-              currentPath = currentPath.replace(':locale', newLocale)
-            } else {
-              currentPath = currentPath.replace(`:${key}`, value);
-            }
-          }
-
-          this.$cookies.set("locale", newLocale);
-          this.$router.push({ path: currentPath });
-          this.loadLocale(newLocale);
-          this.$i18n.locale = newLocale;
+        changeBackground() {
+            this.noBgImg = false;
         },
+        async toggleLocale() {
+          await toggleLocale(this);
+          console.log("Locale switched, updating breadcrumbs...");
+          this.$root.$emit("localeChanged");
+        }
     },
     components: { IconLoader, FeedbackForm },
     computed: {
-      ...mapGetters(["locale"]),
+      ...mapState(["locale"]),
     },
-    mounted() {
-      if(this.$cookies.isKey("locale")) {
-        const locale = this.$cookies.get("locale");
-        this.loadLocale(locale);
-        this.$i18n.locale = locale;
-      } else {
-        this.$cookies.set("locale", "en");
-        this.$i18n.locale = "en";
-      }
+    async mounted() {
+      await syncLocaleWithRoute(this);
     },
 };
 </script>

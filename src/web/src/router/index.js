@@ -6,6 +6,7 @@ import Employees from "../components/Employees";
 import Department from "../components/Department";
 import EmployeeDetail from "../components/EmployeeDetail";
 import EmployeeSearch from "../components/EmployeeSearch";
+import { breadcrumbsSyncLocaleWithRoute } from "@/utils/localeUtils.js";
 
 
 Vue.use(VueRouter);
@@ -22,7 +23,7 @@ const routes = [
     component: EmployeeDetail,
     meta: {
       breadcrumb: [
-        {name: 'breadcrumbs.home', link: 'https://yukon.ca/'},
+        {name: 'breadcrumbs.home', link: 'https://yukon.ca/:locale'},
         {name: 'breadcrumbs.find_a_government_employee', link: '/:locale/find-employee'},
         {name: 'breadcrumbs.department', link: '/:locale/find-employee/Department' , dynamic: true},
         {name: 'breadcrumbs.division', link: '/:locale/find-employee/Department/Division' , dynamic: true},
@@ -37,9 +38,8 @@ const routes = [
     component: EmployeeSearch,
     meta: {
       breadcrumb: [
-        {name: 'breadcrumbs.home', link: 'https://yukon.ca/'},
+        {name: 'breadcrumbs.home', link: 'https://yukon.ca/:locale'},
         {name: 'breadcrumbs.find_a_government_employee', link: '/:locale/find-employee'},
-        {name: 'breadcrumbs.department', link: '/:locale/find-employee/Department' , dynamic: true},
         {name: 'breadcrumbs.search', dynamic: true},
       ]
     }
@@ -50,7 +50,7 @@ const routes = [
     component: Grid,
     meta: {
       breadcrumb: [
-        {name: 'breadcrumbs.home', link: 'https://yukon.ca/'},
+        {name: 'breadcrumbs.home', link: 'https://yukon.ca/:locale'},
         {name: 'breadcrumbs.find_a_government_employee', link: '/:locale/find-employee'},
         {name: 'breadcrumbs.department', link: '/:locale/find-employee/Department', dynamic: true},
         {name: 'breadcrumbs.division', link: '/:locale/find-employee/Department/Division', dynamic: true},
@@ -65,7 +65,7 @@ const routes = [
     
     meta: {
       breadcrumb: [
-        {name: 'breadcrumbs.home', link: 'https://yukon.ca/'},
+        {name: 'breadcrumbs.home', link: 'https://yukon.ca/:locale'},
         {name: 'breadcrumbs.find_a_government_employee', link: '/:locale/find-employee'},
         {name: 'breadcrumbs.department', dynamic: true}
       ]
@@ -77,7 +77,7 @@ const routes = [
     component: NotFound,
     meta: {
       breadcrumb: [
-        {name: 'breadcrumbs.home', link: 'https://yukon.ca/'},
+        {name: 'breadcrumbs.home', link: 'https://yukon.ca/:locale'},
         {name: 'breadcrumbs.find_employee', link: `/:locale/find-employee`},
         {name: 'breadcrumbs.page_not_found'},
       ]
@@ -92,7 +92,7 @@ const routes = [
     ],
     meta: {
       breadcrumb: [
-        {name: 'breadcrumbs.home', link: 'https://yukon.ca/'},
+        {name: 'breadcrumbs.home', link: 'https://yukon.ca/:locale'},
         {name: 'breadcrumbs.find_a_government_employee'},
       ]
 }  },
@@ -104,18 +104,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
   
-});
-
-router.beforeEach((to, from, next) => {
-  let locale = Vue.$cookies.get("locale") || "en"; // Get locale from cookies
-  if (to.meta.breadcrumb) {
-    to.meta.breadcrumb.forEach((breadcrumb) => {
-      if (breadcrumb.link) {
-        breadcrumb.link = breadcrumb.link.replace(/:locale/g, locale);
-      }
-    });
-  }
-  next();
 });
 
 export default router;

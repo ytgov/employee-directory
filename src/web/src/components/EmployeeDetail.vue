@@ -141,10 +141,9 @@
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
-import { toggleLocale } from "@/utils/localeUtils.js";
-
-import L from 'leaflet';
+import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 
 import { Icon } from 'leaflet';
 
@@ -166,6 +165,7 @@ export default {
 
   },
   name: "EmployeeDetail",
+  mixins: [breadcrumbMixin],
   data: () => ({
     zoom: 17,
     noBgImg: true,
@@ -195,7 +195,7 @@ export default {
   }),
   watch: {
     $route() {
-      this.breadcrumbsList = this.$route.meta.breadcrumb;
+      this.updateBreadCrumbs();
     },
     options: {
       handler() {
@@ -212,8 +212,8 @@ export default {
   },
   emits: ['changeBg'],
   computed: {},
-  mounted() {
-    toggleLocale(this);
+  async mounted() {
+    await syncLocaleWithRoute(this);
     this.$emit('changeBg');
     this.getDataFromApi();
   },
@@ -221,16 +221,6 @@ export default {
     this.getUrl();
   },
   methods: {
-    // toggleLocale: function () {
-    //     const savedLocale = this.$cookies.get("locale");
-    //     const routeLocale = this.$route.params.locale;
-
-    //     if (savedLocale != routeLocale) {
-    //         this.$cookies.set("locale", routeLocale);
-    //         this.loadLocale(routeLocale);
-    //         this.$i18n.locale = routeLocale;
-    //     }
-    // },
     getUrl() {
       const urlLocation = String(window.location.href);
       let url = urlLocation.split(window.location.pathname);
@@ -361,9 +351,14 @@ export default {
 
           this.checkError();
           this.employee = resp.data.data;
-          this.division = resp.data.data[0].division;
-          this.branch = resp.data.data[0].branch;
-          this.title = resp.data.data[0].formatted_name;
+          let employee = resp.data.data;
+          this.division = employee[0].division;
+          this.branch = employee[0].branch;
+          this.title = employee[0].formatted_name;
+          this.department = employee[0].department || "";
+
+
+
           if (resp.data.meta.manager.length === 0) {
             this.managerAvailability = false
           } else {
@@ -371,7 +366,6 @@ export default {
             this.managerAvailability = true
           }
 
-          this.department = resp.data.data[0].department;
           this.loading = false;
 
 
@@ -389,47 +383,6 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },
-    updateBreadCrumbs() {
-      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
-      var find = " ";
-      var reg = new RegExp(find, "g");
-      let arr = this.$route.meta.breadcrumb;
-
-      const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-
-      dynamicBreadcrumb.forEach((element) => {
-        if (element.name == "breadcrumbs.department") {
-          element.name = this.department;
-          element.link =
-           '/'+ locale + "/find-employee/" + this.department.replace(reg, "-");
-        } else if (element.name == "breadcrumbs.division") {
-          element.name = this.division;
-          element.link =
-            (  '/'+ locale + "/find-employee/" + this.department + "/" + this.division)
-              .replace(reg, "-") + "/all-branches";
-        } else if (element.name == "breadcrumbs.branch") {
-          if (this.branch === null) {
-            element.name = null;
-            element.link = null;
-          }
-          element.name = this.branch;
-          element.link = (
-             '/'+ locale + "/find-employee/" +
-            this.department +
-            "/" +
-            this.division +
-            "/" +
-            this.branch
-          )
-            .replace(reg, "-")
-        } else if (element.name == "breadcrumbs.username") {
-          element.name = this.title;
-        }
-      });
-
-      arr = arr.filter((item) => item.name !== null);
-      this.breadcrumbsList = arr;
     },
   },
 };

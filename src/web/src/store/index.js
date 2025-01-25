@@ -9,7 +9,7 @@ export default new Vuex.Store({
     locale: "en"
   },
   getters: {
-    locale: state => state.locale,
+   locale: (state) => state.locale,
   },
   mutations: {
     SET_LOCALE: (state, value) => {
@@ -17,7 +17,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    setLocale: ({ commit, getters }, locale) => {
+    setLocale({ commit }, locale) {
       commit("SET_LOCALE", locale);
     },
   }

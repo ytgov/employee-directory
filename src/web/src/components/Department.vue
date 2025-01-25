@@ -63,9 +63,7 @@
             max-width="1180" min-height="542" outlined>
             <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
               max-width="590">
-              <!--div class="py-4 d-flex align-center justify-center" style="width: 200px">
-                <IconLoader :image="'icon'" :stroke="'purple-stroke'" >
-              </div-->
+
               <div class="d-flex align-center justify-center" style="width:100%">
                 <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;"> {{$t('components.departments_api')[title] ? $t('components.departments_api')[title] : title }}</h2>
               </div>
@@ -144,9 +142,12 @@ import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
 import EmployeesGrid from "./UI/EmployeesGrid.vue";
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
+import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 
 const axios = require("axios");
 export default {
+  mixins: [breadcrumbMixin],
   components: {
     IconLoader,
     DepartmentHeader,
@@ -180,9 +181,18 @@ export default {
 
   }),
   watch: {
-    '$route'() {
-      console.log(this.$route.meta.breadcrumb);
-      this.breadcrumbsList = this.$route.meta.breadcrumb
+    "$route": {
+      handler() {
+        this.updateBreadCrumbs;
+      },
+      immediate: true,
+    },
+    "$i18n.locale": {
+      handler() {
+        this.$nextTick(() => {
+          this.updateBreadCrumbs;
+        });
+      },
     },
     options: {
       handler() {
@@ -211,27 +221,21 @@ export default {
       }
     }
   },
-  mounted() {
-    this.toggleLocale();
+  async mounted() {
+    await syncLocaleWithRoute(this);
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if (this.windowWidth > 900) {
-      this.mobileCheck = false
-    } else this.mobileCheck = true
+    this.mobileCheck = this.windowWidth <= 900;
     this.getDataFromApi();
+    this.$root.$on("localeChanged", this.updateBreadCrumbs);
     this.updateBreadCrumbs();
   },
+  beforeDestroy() {
+    this.$root.$off("localeChanged", this.updateBreadCrumbs);
+    window.removeEventListener("resize", this.onResize);
+  },
   methods: {
-    toggleLocale: function () {
-        const savedLocale = this.$cookies.get("locale");
-        const routeLocale = this.$route.params.locale;
-        if (savedLocale != routeLocale) {
-            this.$cookies.set("locale", routeLocale);
-            this.loadLocale(routeLocale);
-            this.$i18n.locale = routeLocale;
-        }
-    },
     toggleApiSearch() {
       if (this.checkAPIStatus !== false) {
         this.checkGrid = !this.checkGrid
@@ -240,15 +244,9 @@ export default {
     },
 
     cleanParam(param) {
-
-      if (param === '-') {
-        param = 'N/A'
-      }
-
-      return param;
+      return param === "-" ? "N/A" : param;
     },
     cleanLocation(location) {
-
       if (location[0] === ',') {
         let link = location.slice(1);
         return link.replace(/['"]+/g, '')
@@ -290,18 +288,13 @@ export default {
       const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       const urlLocation = String(window.location.href)
       let url = urlLocation.split(window.location.pathname)
-      console.log(url);
       url = url.filter(element => {
         return element !== ''
       })
       url = url[0]
-      console.log('after');
-      console.log(url);
       this.url = url[0]
       url = url + '/'+ locale ;
       let find = ' ';
-      console.log('after 2');
-      console.log(url);
 
       let reg = new RegExp(find, 'g');
       let department = this.department.replace(reg, '-')
@@ -332,17 +325,6 @@ export default {
 
         }
       }
-    },
-    updateBreadCrumbs() {
-
-      let arr = this.$route.meta.breadcrumb;
-
-      const dynamicBreadcrumb = arr.find(({ dynamic }) => !!dynamic);
-
-      if (dynamicBreadcrumb) {
-        dynamicBreadcrumb.name = this.title;
-      }
-      this.breadcrumbsList = arr
     },
     toggleBranches(param) {
       if (this.show === param) {

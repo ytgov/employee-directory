@@ -3,7 +3,6 @@
     <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
     
     <Aurora/>
-
     <v-container class="px-0">
       <v-breadcrumbs class="mt-sm-6 mb-sm-0 breadcrumbs mt-2 mb-n8 px-0" :items="breadcrumbsList">
 
@@ -54,6 +53,8 @@ import IconLoader from './icons/IconLoader.vue'
 import SearchBarHeader from './UI/SearchBarHeader.vue'
 import * as urls from "../urls";
 import Aurora from './UI/Aurora.vue';
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
+import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 
 const axios = require("axios");
 export default {
@@ -61,7 +62,8 @@ export default {
     IconLoader,
     SearchBarHeader,
     Aurora
-},
+  },
+  mixins: [breadcrumbMixin],
   name: "Employees",
   data: () => ({
     noBgImg: true,
@@ -77,58 +79,46 @@ export default {
       handler() {
         this.getEmployeesData();
       },
-      '$route'() {
-        this.breadcrumbsList = this.$route.meta.breadcrumb
+      "$route": {
+        handler() {
+          this.getDataFromApi().then(this.updateBreadCrumbs);
+        },
+        immediate: true,
       },
-      deep: true,
+      "$i18n.locale": {
+        handler() {
+          this.$nextTick(() => {
+            this.getDataFromApi().then(this.updateBreadCrumbs);
+          });
+        },
+      },
+        deep: true,
     },
   },
-  mounted() {
-    this.toggleLocale();
+  async mounted() {
+    await syncLocaleWithRoute(this);
     this.getEmployeesData();
     this.updateBreadCrumbs();
-
   },
   methods: {
-    toggleLocale: function () {
-        const savedLocale = this.$cookies.get("locale");
-        const routeLocale = this.$route.params.locale;
-
-        if (savedLocale != routeLocale) {
-            this.$cookies.set("locale", routeLocale);
-            this.loadLocale(routeLocale);
-            this.$i18n.locale = routeLocale;
-        }
-    },
-    updateBreadCrumbs() {
-      this.breadcrumbsList = this.$route.meta.breadcrumb
-    },
-
-    indexUrl(field) {
-      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
+     indexUrl(field) {
+      const locale = this.$i18n.locale || "en";
       let department = '/'+ locale + "/find-employee/" + field.replace(/\//g, '')
       let noSpaces = department.replaceAll(/\s/g, '-');
-
       return String(noSpaces)
 
     },
-    getEmployeesData() {
+    async getEmployeesData() {
       this.loading = true;
-
-      axios
-        .post(
-          urls.EMPLOYEES_URL,
-          // this.options
-        )
-        .then((resp) => {
-          this.item = resp.data.data;
-          this.loading = false;
-        })
-        .catch((err) => console.error(err))
-        .finally(() => {
-          this.loading = false;
-        });
-
+      try {
+        const resp = await axios.post(urls.EMPLOYEES_URL);
+        this.item = resp.data.data;
+      } catch (error) {
+        console.error("Error fetching employees data:", error);
+        this.loading = false;
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };
@@ -148,5 +138,10 @@ a.department-link:visited{
 }
 a.department-link:hover{
   color:#008392;
+}
+.aurora--main {
+  pointer-events: none;
+  position: relative;
+  z-index: 0;
 }
 </style>

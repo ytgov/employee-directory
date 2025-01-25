@@ -1,8 +1,6 @@
 <template>
   <div class="employee-grid">
-
     <SearchBarHeader />
-
     <DepartmentHeader :title="title" :image="title.toLowerCase()" />
     <v-container class="px-0">
       <v-breadcrumbs class="mt-6 mb-8 breadcrumbs px-0" :items="breadcrumbsList">
@@ -36,7 +34,7 @@
       </v-row>
 
       <v-row>
-        <DivisionsCard :division="this.div" :checkClass="this.branch" :checkHover="this.div" :department="this.department"
+        <DivisionsCard :division="this.division" :checkClass="this.branch" :checkHover="this.division" :department="this.department"
           class="mt-6" />
       </v-row>
 
@@ -45,7 +43,7 @@
           <h2 class="px-0" style="font-size: 34px !important;">{{ $t("components.grid.no_results") }}</h2>
         </div>
         <div v-else class="d-flex align-center justify-start">
-          <h2 class="px-0" style="font-size: 34px !important;">   {{ ($t('components.divisions_api')[div]) ? $t('components.divisions_api')[div] : div }}    </h2>
+          <h2 class="px-0" style="font-size: 34px !important;">   {{ ($t('components.divisions_api')[division]) ? $t('components.divisions_api')[division] : division }}    </h2>
           <h3 class="ml-4">( {{ divisionLength }} {{ $t("components.grid.results") }} )</h3>
         </div>
 
@@ -77,7 +75,7 @@
       <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
         <v-row>
           <div class="mt-8 d-flex align-center">
-            <h3 class="division-text px-3">{{ cleanParam(parent_array) }}</h3>
+            <h3 class="division-text px-3 position">{{$t('components.positions_api')[cleanParam(parent_array)] ? $t('components.positions_api')[cleanParam(parent_array)] : cleanParam(parent_array) }} </h3>
           </div>
         </v-row>
         <div class="mt-8 d-flex align-center">
@@ -90,17 +88,20 @@
 </template>
 
 <script>
-const axios = require("axios");
+import axios from "axios";
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import DivisionsCard from "./UI/DivisionsCard.vue";
 import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
 import EmployeesGrid from "./UI/EmployeesGrid.vue";
-import { toggleLocale } from "@/utils/localeUtils.js";
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
+import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
+
 
 export default {
   name: "Grid",
+  mixins: [breadcrumbMixin],
   components: {
     DepartmentHeader,
     DivisionsCard,
@@ -117,7 +118,7 @@ export default {
     breadcrumbsList: [],
     department: '',
     title: '',
-    div: '',
+    division: '',
     loading: false,
     items: [],
     search: "",
@@ -137,8 +138,18 @@ export default {
     mobileCheck: false,
   }),
   watch: {
-    '$route'() {
-      this.breadcrumbsList = this.$route.meta.breadcrumb
+    "$route": {
+      handler() {
+        this.getDataFromApi().then(this.updateBreadCrumbs);
+      },
+      immediate: true,
+    },
+    "$i18n.locale": {
+      handler() {
+        this.$nextTick(() => {
+          this.getDataFromApi().then(this.updateBreadCrumbs);
+        });
+      },
     },
     options: {
       handler() {
@@ -158,48 +169,33 @@ export default {
         this.getDataFromApi();
       },
     },
+  },
+  windowWidth: {
+    handler() {
+      if (this.windowWidth > 900) {
 
-    windowWidth: {
-      handler() {
-        if (this.windowWidth > 900) {
-
-          this.mobileCheck = false
-        } else this.mobileCheck = true
-      }
+        this.mobileCheck = false
+      } else this.mobileCheck = true
     }
   },
-  mounted() {
-    toggleLocale(this);
+  async mounted() {
+    await syncLocaleWithRoute(this);
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if (this.windowWidth > 900) {
-      this.mobileCheck = false
-    } else this.mobileCheck = true
+    this.mobileCheck = this.windowWidth <= 900;
+    this.$root.$on("localeChanged", this.updateBreadCrumbs);
     this.getDataFromApi();
-    this.updateBreadCrumbs();
+  },
+  beforeDestroy() {
+    this.$root.$off("localeChanged", this.updateBreadCrumbs);
+    window.removeEventListener("resize", this.onResize);
   },
   methods: {
-    // toggleLocale: function () {
-    //     const savedLocale = this.$cookies.get("locale");
-    //     const routeLocale = this.$route.params.locale;
-
-    //     if (savedLocale != routeLocale) {
-    //         this.$cookies.set("locale", routeLocale);
-    //         this.loadLocale(routeLocale);
-    //         this.$i18n.locale = routeLocale;
-    //     }
-    // },
     cleanParam(param) {
-
-      if (param === '-') {
-        param = 'N/A'
-      }
-
-      return param;
+      return param === "-" ? "N/A" : param;
     },
     cleanLocation(location) {
-
       if (location[0] === ',') {
         let link = location.slice(1);
         return link.replace(/['"]+/g, '')
@@ -210,78 +206,19 @@ export default {
     onResize() {
       this.windowWidth = window.innerWidth
     },
-    cleanParam(param) {
-      if (param === '-') {
-        param = 'N/A'
-      }
-      return param;
+    capitalizeString(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
     },
-
-    capitalizeString(param) {
-      const string = param
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-    updateBreadCrumbs() {
-      var find = ' ';
-      var reg = new RegExp(find, 'g');
-      let arr = this.$route.meta.breadcrumb;
-      const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
-      dynamicBreadcrumb.forEach((element => {
-        switch (element.name) {
-          case  'breadcrumbs.department':
-            element.name = this.department.trim();
-            element.link =  '/'+ locale +  '/find-employee/' + this.department.replace(reg, '-')
-            break;
-          case 'breadcrumbs.division':
-            if (this.div === 'Not division') {
-              element.name = 'Employees who are not assigned a division'
-              element.link = null
-            } else{ 
-              element.name = this.div.trim();
-            }
-
-            if (this.branch !== 'All branches') {
-              element.link = ( '/'+ locale + '/find-employee/' + this.department + '/' + this.div).replace(reg, '-') + '/all-branches'
-            } else {
-              element.link = null
-            }
-            break;
-          case 'breadcrumbs.branch':
-            switch (this.branch) {
-              case  'All branches':
-                element.name = 'All branches'
-                break;
-              case  'All branches':
-                element.name = 'All branches'
-                break;
-              default:
-                element.name = this.branch;
-                break;
-            }
-            break;
-        }
-      }))
-      arr = arr.filter(item => item.name !== null)
-      this.breadcrumbsList = arr
-    },
-    getDataFromApi() {
+    async getDataFromApi() {
+      await syncLocaleWithRoute(this);
       var find = '-';
       var reg = new RegExp(find, 'g');
       const { department, division, branch } = this.$route.params;
       this.loading = true;
-      let formattedQueryParam = ''
-      if (division == null) {
-        formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-      } else if (division !== null && branch == null || branch == undefined) {
-        formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}`)}`
-      } else if (division !== null && branch !== null) {
-        formattedQueryParam = `${encodeURIComponent(`${department}-%252F-${division}-%252F-${branch}`)}`
-      }
       this.title = this.capitalizeString(department.replace(reg, ' '))
 
       this.department = this.capitalizeString(department.replace(reg, ' '))
-      this.div = this.capitalizeString(division.replace(reg, ' '))
+      this.division = this.capitalizeString(division.replace(reg, ' '))
       this.branch = this.capitalizeString(branch.replace(reg, ' '))
       const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
@@ -298,6 +235,7 @@ export default {
           if (this.items.length === 0) {
             this.results = true
           }
+          const locale = this.$i18n.locale || "en";
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
           this.itemsPerPage = resp.data.meta.divisionCount;

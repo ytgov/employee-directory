@@ -88,9 +88,6 @@ export default {
             }
         }
     },
-    created() {
-        this.getEmployeesData()
-    },
     data() {
         return {
             options: [],
@@ -133,24 +130,6 @@ export default {
                     window.location.href = '/' + locale +'/find-employee/search/keyword=' + name + '&department=' + department
                 }
             }
-        },
-        getEmployeesData() {
-            this.loading = true;
-
-            axios
-                .post(
-                    `${urls.EMPLOYEES_URL}searchBar`,
-                    this.options
-                )
-                .then((resp) => {
-                    this.item = resp.data.data;
-                    this.loading = false;
-                })
-                .catch((err) => console.error(err))
-                .finally(() => {
-                    this.loading = false;
-                });
-
         },
     }
 

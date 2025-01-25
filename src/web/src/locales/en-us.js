@@ -97,6 +97,7 @@ export const en = {
       "YLC President's Office":"YLC President's Office",
       "YLC President's Office":"YLC President's Office",
       "Yukon Party Caucus":"Yukon Party Caucus",
+      "Not division":"Not division"
     },
     branch_api: {
       "Communications":"Communications",

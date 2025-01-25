@@ -40,15 +40,15 @@
 
 <script>
 import IconLoader from '../icons/IconLoader.vue'
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 
 export default {
     components: {
         IconLoader
     },
-
     props: ['items', 'department', 'check', 'divisions'],
-    mounted() {
-        this.toggleLocale();
+    async mounted() {
+        await syncLocaleWithRoute(this);
         if (this.divisions === false) {
             this.headers.splice(2,0,{ text: "Division", value: "division" },)
         }
@@ -115,10 +115,7 @@ export default {
         },
 
         cleanParam(param) {
-            if (param === '-') {
-                param = 'N/A'
-            }
-            return param;
+            return param === "-" ? "N/A" : param;
         },
         cleanLocation(location) {
             if (location[0] === ',') {

@@ -66,8 +66,8 @@ export default {
     },
   },
   emits: ['changeBg'],
-  mounted() {
-    this.toggleLocale();
+  async mounted() {
+    await syncLocaleWithRoute(this);
     this.updateBreadCrumbs();
     this.$emit('changeBg');
     this.latestFullPath = this.$cookies.get("latestFullPath");
