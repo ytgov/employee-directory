@@ -2954,7 +2954,7 @@ export const fr = {
     },
   },
   breadcrumbs: {
-    home: "Yukon.ca home",
+    home: "Accueil Yukon.ca",
     find_a_government_employee: "Répertoire des fonctionnaires",
     department: "Ministère",
     search: "Rechercher",
