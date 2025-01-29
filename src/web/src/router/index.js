@@ -98,12 +98,24 @@ const routes = [
 }  },
 ];
 
+const supportedLocales = ["en", "fr"]; // Allowed languages
+
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
   
+});
+
+
+router.beforeEach((to, from, next) => {
+  const locale = to.params.locale;
+  if (!locale || !supportedLocales.includes(locale)) {
+    next({ path: `/en${to.path}`, replace: true });
+  } else {
+    next();
+  }
 });
 
 export default router;
