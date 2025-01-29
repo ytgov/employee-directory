@@ -40,17 +40,17 @@
 
 <script>
 import IconLoader from '../icons/IconLoader.vue'
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 
 export default {
     components: {
         IconLoader
     },
-
     props: ['items', 'department', 'check', 'divisions'],
-    mounted() {
-        
+    async mounted() {
+        await syncLocaleWithRoute(this);
         if (this.divisions === false) {
-            this.headers.splice(1,0,{ text: "Division", value: "division" },)
+            this.headers.splice(2,0,{ text: "Division", value: "division" },)
         }
     },
     data() {
@@ -80,7 +80,16 @@ export default {
         }
     },
     methods: {
+        toggleLocale: function () {
+            const savedLocale = this.$cookies.get("locale");
+            const routeLocale = this.$route.params.locale;
 
+            if (savedLocale != routeLocale) {
+                this.$cookies.set("locale", routeLocale);
+                this.loadLocale(routeLocale);
+                this.$i18n.locale = routeLocale;
+            }
+        },
         getMargin(baseMarginValue, level) {
 
             const total = baseMarginValue * level
@@ -106,10 +115,7 @@ export default {
         },
 
         cleanParam(param) {
-            if (param === '-') {
-                param = 'N/A'
-            }
-            return param;
+            return param === "-" ? "N/A" : param;
         },
         cleanLocation(location) {
             if (location[0] === ',') {
@@ -120,9 +126,10 @@ export default {
             }
         },
         urlEmployee(department, name) {
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
             var find = ' ';
             var reg = new RegExp(find, 'g');
-            return '/find-employee/employee-detail/' + department.replace(reg, '-') + '/' + name
+            return '/'+ locale  + '/find-employee/employee-detail/' + department.replace(reg, '-') + '/' + name
         },
         capitalizeString(param) {
             const string = param

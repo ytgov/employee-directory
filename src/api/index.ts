@@ -41,7 +41,7 @@ app.use(
     })
 );
 
-// very basic CORS setup
+// Basic CORS setup
 app.use(cors({
   origin: config.FRONTEND_URL,
   optionsSuccessStatus: 200,

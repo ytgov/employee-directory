@@ -18,7 +18,7 @@
       <v-row class="mt-16"></v-row>
       <v-row>
         <v-col col="6">
-          <v-card elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
+          <v-card v-if="!error" elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
             max-width="1180" min-height="542" outlined>
             <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
               max-width="590">
@@ -57,6 +57,20 @@
               <div style="height:20px;"></div>
               <a v-if="!employeesNotFound" @click="toggleApiSearch" class="mb-2"
                 style="font-size: 22px; font-weight: 700;" :class="{ colorOnClick: checkGrid }">{{ $t("components.department.labels.view_list") }} {{ $t('components.departments_api')[title] ? $t('components.departments_api')[title] : title }}</a>
+            </v-card>
+          </v-card>
+          <v-card v-if="error" elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
+            max-width="1180" min-height="542" outlined>
+            <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
+              max-width="590">
+
+              <div class="d-flex align-center justify-center" style="width:100%">
+                <h2 class="py-4" style="color:#522A44!important; font-size: 32px; text-align: center;"> {{$t('components.departments_api')[title] ? $t('components.departments_api')[title] : title }}</h2>
+              </div>
+            </v-card-actions>
+
+            <v-card outlined color="transparent" class="flex-column pa-10">
+              <h2 style="color:#522A44!important; font-size: 30px;">{{ $t("components.department.labels.not_found") }}</h2>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
@@ -128,9 +142,12 @@ import IconLoader from "./icons/IconLoader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
 import EmployeesGrid from "./UI/EmployeesGrid.vue";
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
+import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 
 const axios = require("axios");
 export default {
+  mixins: [breadcrumbMixin],
   components: {
     IconLoader,
     DepartmentHeader,
@@ -164,8 +181,18 @@ export default {
 
   }),
   watch: {
-    '$route'() {
-      this.breadcrumbsList = this.$route.meta.breadcrumb
+    "$route": {
+      handler() {
+        this.updateBreadCrumbs;
+      },
+      immediate: true,
+    },
+    "$i18n.locale": {
+      handler() {
+        this.$nextTick(() => {
+          this.updateBreadCrumbs;
+        });
+      },
     },
     options: {
       handler() {
@@ -194,18 +221,21 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
+    await syncLocaleWithRoute(this);
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if (this.windowWidth > 900) {
-      this.mobileCheck = false
-    } else this.mobileCheck = true
+    this.mobileCheck = this.windowWidth <= 900;
     this.getDataFromApi();
+    this.$root.$on("localeChanged", this.updateBreadCrumbs);
     this.updateBreadCrumbs();
   },
+  beforeDestroy() {
+    this.$root.$off("localeChanged", this.updateBreadCrumbs);
+    window.removeEventListener("resize", this.onResize);
+  },
   methods: {
-
     toggleApiSearch() {
       if (this.checkAPIStatus !== false) {
         this.checkGrid = !this.checkGrid
@@ -214,15 +244,9 @@ export default {
     },
 
     cleanParam(param) {
-
-      if (param === '-') {
-        param = 'N/A'
-      }
-
-      return param;
+      return param === "-" ? "N/A" : param;
     },
     cleanLocation(location) {
-
       if (location[0] === ',') {
         let link = location.slice(1);
         return link.replace(/['"]+/g, '')
@@ -235,20 +259,24 @@ export default {
     },
     checkError() {
       if (this.error === true) {
-        window.location.href = this.url + '/page-not-found'
+        const savedLocale = this.$cookies.get("locale");
+        this.$cookies.set("latestFullPath", this.$route.fullPath);
+
+        const currentPath = `/${savedLocale}/page-not-found`
+        this.$router.push({ path: currentPath });
       }
     },
     activateBranches(item) {
       let find = ' ';
       let reg = new RegExp(find, 'g');
       let department = this.department.replace(reg, '-')
-
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       let division = item
 
       if (this.check === item) {
         if (this.check === 'Employees who are not assigned a division') {
-          window.location.href = '/find-employee/' + department + '/not-division/all-branches'
-        } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+          window.location.href = '/'+ locale + '/find-employee/' + department + '/not-division/all-branches'
+        } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
       }
       this.check = division
     },
@@ -257,16 +285,15 @@ export default {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     generateUrl(type, param, index) {
-
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       const urlLocation = String(window.location.href)
       let url = urlLocation.split(window.location.pathname)
-
       url = url.filter(element => {
         return element !== ''
       })
       url = url[0]
-
       this.url = url[0]
+      url = url + '/'+ locale ;
       let find = ' ';
 
       let reg = new RegExp(find, 'g');
@@ -299,17 +326,6 @@ export default {
         }
       }
     },
-    updateBreadCrumbs() {
-
-      let arr = this.$route.meta.breadcrumb;
-
-      const dynamicBreadcrumb = arr.find(({ dynamic }) => !!dynamic);
-
-      if (dynamicBreadcrumb) {
-        dynamicBreadcrumb.name = this.title;
-      }
-      this.breadcrumbsList = arr
-    },
     toggleBranches(param) {
       if (this.show === param) {
         this.show = null
@@ -339,7 +355,11 @@ export default {
           this.totalLength = resp.data.meta.count;
           this.loading = false;
         })
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err)
+          this.error = true;
+          this.checkError();
+        })
         .finally(() => {
           this.loading = false;
         });
@@ -374,7 +394,10 @@ export default {
           this.itemsValue = this.selection
           this.loading = false;
         })
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err)
+          this.error = true;
+        })
         .finally(() => {
           this.loading = false;
         });

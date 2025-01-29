@@ -98,7 +98,8 @@ export const fr = {
       "YLC President's Office":"Bureau de la présidente ou du président de la Société des alcools du Yukon",
       "YLC President's Office":"Bureau de la présidente ou du président de la Société des alcools du Yukon",
       "Yukon Party Caucus":"Caucus du Parti du Yukon",
-      "Employees who are not assigned a division":"Personnel non affecté à une division"
+      "Employees who are not assigned a division":"Personnel non affecté à une division",
+      "Not division":"Non division"
     },
     branch_api: {
       "Corporate Services ":"Services généraux",
@@ -292,6 +293,7 @@ export const fr = {
       "Client Business and Technology Solutions":"Solutions clients, entreprises et technologie",
       "Employees who are not assigned a branch":"Personnel non affecté à une direction",
       "All branches":"Toutes les direction",
+      "Not branch":"Non direction",
     },
     positions_api:{
       "Residential Care Worker":"Residential Care Worker",
@@ -2920,6 +2922,11 @@ export const fr = {
     },
     not_found: {
       page_not_found: "Page non trouvée",
+      fullpath: "La page demandée ",
+      fullpath_sufix: "ne peut être trouvé.",
+      home: {
+        title: "Accueil"
+      },
       page_is_not_here: {
         title: "Oups, il semble que cette page n’existe pas.",
         body: "Vous n’avez commis aucune erreur; il se peut que nous ayons déplacé la page que vous cherchez."

@@ -20,10 +20,23 @@ export class EmployeeService {
 
     async getEmployee(paramDepartment: string, paramFullName: string)  {
     var employeeArr: any[] = Array();
-    await axios.get(String(EMPLOYEEJSON), { params: { department: paramDepartment, keyword: paramFullName } })
+    await axios.get(String(EMPLOYEEJSON), { params: { keyword: paramFullName } })
         .then(async (response: any) => {
-            var resultEmployees = response.data.employees;
-            resultEmployees.forEach(function (element: any) {
+            var resultEmployees = response.data.employees  || [];
+
+            if (resultEmployees.length === 0) {
+                return [];
+            }
+            let filteredEmployees = resultEmployees;
+            if (resultEmployees.length > 1 && paramDepartment) {
+              filteredEmployees = resultEmployees.filter((emp: any) => emp.department === paramDepartment);
+            }
+
+            if (filteredEmployees.length === 0) {
+              filteredEmployees = [resultEmployees[0]];
+            }
+  
+            filteredEmployees.forEach(function (element: any) {
                 var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
                 interface EmployeeDetail extends EmployeeTable {
                     unit: String

@@ -36,6 +36,7 @@
 <script>
 const axios = require("axios");
 import * as urls from "../../urls";
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 
 export default {
 
@@ -51,8 +52,12 @@ export default {
             this.getDataFromApi();
         }
     },
+    async mounted() {
+        await syncLocaleWithRoute(this);
+    },
     methods: {
         activateBranches(item) {
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
             let find = ' ';
             let reg = new RegExp(find, 'g');
             let department = this.department.replace(reg, '-')
@@ -61,13 +66,14 @@ export default {
 
             if (this.check === item) {
                 if (this.check === 'Employees who are not assigned a division') {
-                    window.location.href = '/find-employee/' + department + '/not-division/all-branches'
-                } else window.location.href = '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+                    window.location.href = '/'+ locale + '/find-employee/' + department + '/not-division/all-branches'
+                } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
             }
             this.check = division
         },
         generateUrl(type, param, index) {
-            
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
+            console.log(locale);
             const urlLocation = String(window.location.href)
             let url = urlLocation.split(window.location.pathname)
 
@@ -75,10 +81,7 @@ export default {
                 return element !== ''
             })
             url = url[0]
-
-            this.url = url[0]
             let find = ' ';
-
             let reg = new RegExp(find, 'g');
             let department = this.department.replace(reg, '-')
             let indexFormatted = index.replace(reg, '-')
@@ -89,18 +92,18 @@ export default {
             switch (type) {
                 case 'division':
                     if (indexFormatted === 'not-division') {
-                        return url + '/find-employee/' + department + '/not-division/all-branches'
+                        return url + '/' +locale +'/find-employee/' + department + '/not-division/all-branches'
                     }
-                    return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
+                    return url + '/' +locale +'/find-employee/' + department + '/' + indexFormatted + '/all-branches'
                     break;
                 case 'branch':
                     if (paramFormatted === 'Employees-who-are-not-assigned-a-branch') {
                         paramFormatted = 'not-branch'
                     }
-                    return url + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
+                    return url + '/' +locale + '/find-employee/' + department + '/' + indexFormatted + '/' + paramFormatted
                     break;
                 default:
-                return url + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
+                return url + '/' +locale + '/find-employee/' + department + '/' + indexFormatted + '/all-branches'
                     break;
             }
         },

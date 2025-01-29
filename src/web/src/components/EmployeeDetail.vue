@@ -121,8 +121,7 @@
               </v-col>
               <v-col v-if="center !== null" cols="12" md="6">
 
-                <l-map style="height: 300px" :zoom="zoom" :center="center">
-
+                <l-map style="height: 300px" :zoom="zoom" :center="center"  :options="{ attributionControl: false }">
                   <l-tile-layer :url="mapUrl"></l-tile-layer>
                   <l-marker :lat-lng="center"></l-marker>
 
@@ -141,10 +140,9 @@
 import DepartmentHeader from "./UI/DepartmentHeader.vue";
 import SearchBarHeader from "./UI/SearchBarHeader.vue";
 import * as urls from "../urls";
-
-
-import L from 'leaflet';
+import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 
 import { Icon } from 'leaflet';
 
@@ -166,6 +164,7 @@ export default {
 
   },
   name: "EmployeeDetail",
+  mixins: [breadcrumbMixin],
   data: () => ({
     zoom: 17,
     noBgImg: true,
@@ -195,7 +194,7 @@ export default {
   }),
   watch: {
     $route() {
-      this.breadcrumbsList = this.$route.meta.breadcrumb;
+      this.updateBreadCrumbs();
     },
     options: {
       handler() {
@@ -212,7 +211,8 @@ export default {
   },
   emits: ['changeBg'],
   computed: {},
-  mounted() {
+  async mounted() {
+    await syncLocaleWithRoute(this);
     this.$emit('changeBg');
     this.getDataFromApi();
   },
@@ -232,7 +232,11 @@ export default {
     },
     checkError() {
       if (this.error === true) {
-        window.location.href = this.url + '/page-not-found/';
+        const savedLocale = this.$cookies.get("locale");
+        this.$cookies.set("latestFullPath", this.$route.fullPath);
+
+        const currentPath = `/${savedLocale}/page-not-found`
+        this.$router.push({ path: currentPath });
       }
     },
     setCenter(marker) {
@@ -250,7 +254,7 @@ export default {
           const numberFormatted = number.replace(reg, "");
           const link = "tel:" + numberFormatted;
           return String(link);
-      }else{
+      } else {
          return '';
       }
     
@@ -263,7 +267,8 @@ export default {
       }
     },
     generateUrl(type, param, index) {
-      let url = this.url
+      const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
+      let url = this.url + '/'+ locale ;
       let find = " ";
       let reg = new RegExp(find, "g");
       let department = this.department.replace(reg, "-");
@@ -345,9 +350,14 @@ export default {
 
           this.checkError();
           this.employee = resp.data.data;
-          this.division = resp.data.data[0].division;
-          this.branch = resp.data.data[0].branch;
-          this.title = resp.data.data[0].formatted_name;
+          let employee = resp.data.data;
+          this.division = employee[0].division;
+          this.branch = employee[0].branch;
+          this.title = employee[0].formatted_name;
+          this.department = employee[0].department || "";
+
+
+
           if (resp.data.meta.manager.length === 0) {
             this.managerAvailability = false
           } else {
@@ -355,7 +365,6 @@ export default {
             this.managerAvailability = true
           }
 
-          this.department = resp.data.data[0].department;
           this.loading = false;
 
 
@@ -373,46 +382,6 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },
-    updateBreadCrumbs() {
-      var find = " ";
-      var reg = new RegExp(find, "g");
-      let arr = this.$route.meta.breadcrumb;
-
-      const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-
-      dynamicBreadcrumb.forEach((element) => {
-        if (element.name == "breadcrumbs.department") {
-          element.name = this.department;
-          element.link =
-            "/find-employee/" + this.department.replace(reg, "-");
-        } else if (element.name == "breadcrumbs.division") {
-          element.name = this.division;
-          element.link =
-            ("/find-employee/" + this.department + "/" + this.division)
-              .replace(reg, "-") + "/all-branches";
-        } else if (element.name == "breadcrumbs.branch") {
-          if (this.branch === null) {
-            element.name = null;
-            element.link = null;
-          }
-          element.name = this.branch;
-          element.link = (
-            "/find-employee/" +
-            this.department +
-            "/" +
-            this.division +
-            "/" +
-            this.branch
-          )
-            .replace(reg, "-")
-        } else if (element.name == "breadcrumbs.username") {
-          element.name = this.title;
-        }
-      });
-
-      arr = arr.filter((item) => item.name !== null);
-      this.breadcrumbsList = arr;
     },
   },
 };

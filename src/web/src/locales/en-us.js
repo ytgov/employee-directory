@@ -97,6 +97,7 @@ export const en = {
       "YLC President's Office":"YLC President's Office",
       "YLC President's Office":"YLC President's Office",
       "Yukon Party Caucus":"Yukon Party Caucus",
+      "Not division":"Not division"
     },
     branch_api: {
       "Communications":"Communications",
@@ -2835,7 +2836,8 @@ export const en = {
         see_all_employees: "See all government employees",
         location: "Location",
         position: "Position",
-        results: "Results"
+        results: "Results",
+        not_found: "Division not found"
       },
     },
     employee_details: {
@@ -2915,7 +2917,12 @@ export const en = {
       "Phone number" : "Phone number",
     },
     not_found: {
-      page_not_found: "Page non trouvée",
+      page_not_found: "Page not found",
+      fullpath: "The requested page",
+      fullpath_sufix: "could not be found.",
+      home: {
+        title: "Home"
+      },
       page_is_not_here: {
         title: "Sorry, that page isn't here.",
         body: "You didn't do anything wrong. We may have moved the page you're looking for somewhere else."

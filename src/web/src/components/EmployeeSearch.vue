@@ -43,11 +43,13 @@
                 <EmployeesGrid :check="mobileCheck" :items="items" :department="department" />
             </div>
             <div v-if="itemsValue === 1" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
-                <h2 class="mt-8 department-text">{{ cleanParam(parent_array) }}</h2>
+                <h2 class="mt-8 department-text">                 
+                    {{$t('components.departments_api')[cleanParam(parent_array)] ? $t('components.departments_api')[cleanParam(parent_array)] : cleanParam(parent_array) }} 
+                </h2>
 
                 <div v-for="(item, index, id) in value" :key="id">
                     <div class="mt-8 d-flex align-center">
-                        <h3 class="division-text">{{ cleanParam(index) }}</h3>
+                        <h3 class="division-text">{{$t('components.divisions_api')[cleanParam(index)] ? $t('components.divisions_api')[cleanParam(index)] : cleanParam(index) }} </h3>
                         <h3 class="py-1 px-3 division-length">{{ item.length }}</h3>
                     </div>
                     <EmployeesGrid :check="mobileCheck" :items="item" :department="department" />
@@ -58,7 +60,9 @@
             <div v-if="itemsValue === 2" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
                 <v-row>
                     <div class="mt-8 d-flex align-center">
-                        <h3 class="division-text pl-3">{{ cleanLocation(parent_array) }}</h3>
+                        <h3 class="division-text pl-3 location"> {{ cleanLocation(parent_array) }}</h3>
+
+
                     </div>
                 </v-row>
                 <div class="mt-4 d-flex align-center">
@@ -70,7 +74,7 @@
             <div v-if="itemsValue === 3" v-for='(value, parent_array, key) in items' class="mb-6 mt-2">
                 <v-row>
                     <div class="mt-8 pl-3 d-flex align-center">
-                        <h3 class="division-text ">{{ cleanParam(parent_array) }}</h3>
+                        <h3 class="division-text position ">  {{$t('components.positions_api')[cleanParam(parent_array)] ? $t('components.positions_api')[cleanParam(parent_array)] : cleanParam(parent_array) }} </h3>
                     </div>
                 </v-row>
                 <div class="mt-8 d-flex align-center">
@@ -88,8 +92,9 @@ import SearchBarHeader from './UI/SearchBarHeader.vue'
 import DepartmentHeader from './UI/DepartmentHeader.vue';
 import IconLoader from "./icons/IconLoader.vue";
 import EmployeesGrid from './UI/EmployeesGrid.vue';
-
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import * as urls from "../urls";
+import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 
 export default {
     components: {
@@ -98,6 +103,7 @@ export default {
         IconLoader,
         DepartmentHeader
     },
+    mixins: [breadcrumbMixin],
     watch: {
         options: {
             handler() {
@@ -122,20 +128,17 @@ export default {
                 } else this.mobileCheck = true
             }
         }
-
     },
     emits: ['changeBg'],
-    mounted() {
+    async mounted() {
+        await syncLocaleWithRoute(this);
 
         this.$nextTick(() => {
             window.addEventListener('resize', this.onResize);
         })
-        if (this.windowWidth > 900) {
-            this.mobileCheck = false
-        } else this.mobileCheck = true
-
+        this.mobileCheck = this.windowWidth <= 900;
+        this.$root.$on("localeChanged", this.updateBreadCrumbs);
         this.getDataFromApi();
-        this.updateBreadCrumbs();
         this.$emit('changeBg');
     },
     data() {
@@ -162,23 +165,18 @@ export default {
             mobileCheck: false,
         }
     },
-
     methods: {
         onResize() {
             this.windowWidth = window.innerWidth
         },
         urlEmployee(department, name) {
+            const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
             var find = ' ';
             var reg = new RegExp(find, 'g');
-            return '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
+            return  '/'+ locale + '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
         },
         cleanParam(param) {
-
-            if (param === '-') {
-                param = 'N/A'
-            }
-
-            return param;
+            return param === "-" ? "N/A" : param;
         },
         cleanLocation(location) {
             if(location != null){
@@ -189,34 +187,6 @@ export default {
                     return location.replace(/['"]+/g, '')
                 }
             }
-        },
-        updateBreadCrumbs() {
-
-            var find = ' ';
-            var reg = new RegExp(find, 'g');
-            let arr = this.$route.meta.breadcrumb;
-
-            const dynamicBreadcrumb = arr.filter(({ dynamic }) => !!dynamic);
-
-            dynamicBreadcrumb.forEach((element => {
-                if (element.name == 'Department') {
-                    element.name = this.department;
-                    if (element.name !== 'Any department') {
-                        element.link = '/find-employee/' + this.department.replace(reg, '-').toLowerCase()
-                    } else {
-                        element.link = undefined
-                    }
-
-                } else if (element.name == 'Search') {
-
-                    element.name = 'Employee Search';
-
-                }
-            }))
-
-            arr = arr.filter(item => item.name !== 'Any department')
-
-            this.breadcrumbsList = arr
         },
         getDataFromApi() {
             var find = '-';
@@ -251,9 +221,9 @@ export default {
                     }
                     this.itemsLength = resp.data.meta.count
                     this.itemsPerPage = resp.data.meta.count
-
                     this.itemsValue = this.selection
                     this.loading = false;
+                    this.updateBreadCrumbs();
                 })
                 .catch((err) => console.error(err))
                 .finally(() => {
