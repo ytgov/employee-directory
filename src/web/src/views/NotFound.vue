@@ -34,7 +34,7 @@
         <h2>{{ $t("components.not_found.address_wrong_message.title") }}</h2>
         <p>{{ $t("components.not_found.address_wrong_message.body") }}</p>
       </v-card>
-      <v-btn class="my-8" @click="$router.push('/')" height="40px" color="#00616D">{{ $t("components.not_found.home.title") }}</v-btn>
+      <v-btn class="my-8" @click="goToHome()" height="40px" color="#00616D">{{ $t("components.not_found.home.title") }}</v-btn>
     </v-container>
   </div>
 </template>
@@ -42,6 +42,8 @@
 <script>
 import Aurora from '../components/UI/Aurora.vue';
 import SearchBarHeader from '../components/UI/SearchBarHeader.vue'
+import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
+import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 
 export default {
   components: {
@@ -52,40 +54,36 @@ export default {
     return {
       breadcrumbsList: [],
       noBgImg: false,
+      latestFullPath: "",
     }
   },
+  mixins: [breadcrumbMixin],
   watch: {
-    options: {
+    "$route": {
       handler() {
-        this.getEmployeesData();
+        this.updateBreadCrumbs();
       },
-      '$route'() {
-        this.breadcrumbsList = this.$route.meta.breadcrumb
-      },
-      deep: true,
+      immediate: true,
     },
+    "$i18n.locale": {
+      handler() {
+        this.updateBreadCrumbs();
+      },
+  },
   },
   emits: ['changeBg'],
   async mounted() {
     await syncLocaleWithRoute(this);
-    this.updateBreadCrumbs();
     this.$emit('changeBg');
-    this.latestFullPath = this.$cookies.get("latestFullPath");
+    this.latestFullPath = this.$cookies.get("latestFullPath") || ""; 
+    this.updateBreadCrumbs();
+
   },
   methods: {
-    updateBreadCrumbs() {
-      this.breadcrumbsList = this.$route.meta.breadcrumb
-    },
-    toggleLocale: function () {
-        const savedLocale = this.$cookies.get("locale");
-        const routeLocale = this.$route.params.locale;
-
-        if (savedLocale != routeLocale) {
-            this.$cookies.set("locale", routeLocale);
-            this.loadLocale(routeLocale);
-            this.$i18n.locale = routeLocale;
-        }
-    },
+    goToHome() {
+      const locale = this.$route.params.locale || "en";
+      this.$router.push(`/${locale}/find-employee`);
+    }
   },
 }
 

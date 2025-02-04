@@ -9,10 +9,10 @@ export default {
   methods: {
     async updateBreadCrumbs() {
       await syncLocaleWithRoute(this);
+     
       let locale = this.$i18n.locale || "en";
       let breadcrumbs = [...(this.$route.meta.breadcrumb || [])];
       breadcrumbs.forEach((item) => {
-
         const departmentSlug = this.department ? this.department.replace(/\s/g, "-") : "";
         const divisionSlug = this.division
         ? this.division === "Not division"
@@ -25,8 +25,6 @@ export default {
           ? this.branch.toLowerCase().replace(/\s/g, "-")
           : this.branch.replace(/\s/g, "-")
         : "";
-
-        //const branchSlug = this.branch ? this.branch.replace(/\s/g, "-") : "";
 
         switch (item.name) {
             case "breadcrumbs.department":
@@ -60,6 +58,7 @@ export default {
         : null
       }));
       this.breadcrumbsList = this.breadcrumbsList.filter((item) => item.name !== null && item.name !== '');
+
     },
   },
   computed: {
