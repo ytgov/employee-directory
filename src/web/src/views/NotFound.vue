@@ -62,14 +62,12 @@ export default {
     "$route": {
       handler() {
         this.updateBreadCrumbs();
-        console.log('hol111a');
       },
       immediate: true,
     },
     "$i18n.locale": {
       handler() {
         this.updateBreadCrumbs();
-        console.log('hola');
       },
   },
   },
