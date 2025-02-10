@@ -35,7 +35,15 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
     var employeesByDept = Object();
     axios.get(String(DIVISIONSJSON))
         .then((response: any) => {
+            if (!response.data || !response.data.divisions) {
+                console.log("API Response:", response); 
+                throw new Error("API response is missing 'divisions' field.");
+            }
             var resultEmployees = response.data.divisions;
+            if (!Array.isArray(resultEmployees)) {
+                throw new Error(`Expected 'divisions' to be an array, but got: ${typeof resultEmployees}`);
+            }
+
             var departments = Array();
             resultEmployees.forEach(function (element: any) {
                 if (!remove_dept.includes(element.department)) {
