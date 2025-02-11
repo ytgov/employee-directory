@@ -26,6 +26,7 @@ Environment variables should never be checked into the repository!
 - SMTP_PASS= (The password of the service)
 - DIVISIONSJSON= (URL of the API to get the information of the divisions)
 - EMPLOYEEJSON= (URL of the API to get the information of the employees)
+- EMPLOYEEDETAILJSON= (API URL to get employee details)
 - ESRI_KEY= (Key for esri)
 - REMOVE_DEPARTMENTS= (list of departments to be omitted in the home, separated by ',', example: 'Yukon Hospital Corporation,Workers Safety and Compensation Board')
 

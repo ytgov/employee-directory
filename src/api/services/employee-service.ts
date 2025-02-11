@@ -14,16 +14,15 @@ switch (process.env.NODE_ENV) {
       path = `.env.development`;
   }
 dotenv.config({ path: path });
-export const EMPLOYEEJSON = process.env.EMPLOYEEJSON;
+export const EMPLOYEEDETAILJSON = process.env.EMPLOYEEDETAILJSON;
 
 export class EmployeeService {
-
     async getEmployee(paramDepartment: string, paramFullName: string)  {
     var employeeArr: any[] = Array();
-    await axios.get(String(EMPLOYEEJSON), { params: { keyword: paramFullName } })
+    paramFullName = paramFullName.replace(" ", ".");
+    await axios.get(String(EMPLOYEEDETAILJSON), { params: { samaccountname: paramFullName } })
         .then(async (response: any) => {
             var resultEmployees = response.data.employees  || [];
-
             if (resultEmployees.length === 0) {
                 return [];
             }

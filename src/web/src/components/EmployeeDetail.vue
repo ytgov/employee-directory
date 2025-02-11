@@ -406,4 +406,7 @@ export default {
 .employee-detail h3 {
   font-size: 22px;
 }
+ul.breadcrumbs li a{
+  font-size: 14px;
+}
 </style>
