@@ -193,8 +193,7 @@ export default {
 
             var reg = new RegExp(find, 'g');
             let { full_name, department } = this.$route.params;
-
-            this.searchTitle = full_name.replace(/\./g, ' ')
+            this.searchTitle= full_name.includes('@') ? full_name.trim() : full_name.replace(/\./g, ' ').trim();
 
             let departmentFormatted = department.replace(reg, ' ')
 

@@ -98,13 +98,14 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
     const itemsPerPage = (req.body.itemsPerPage);
     var find = '-';
     var reg = new RegExp(find, 'g');
-    let paramDepartment = (req.params.department).replace(/\--/g, '-/-')
-    let paramFullName = (req.params.full_name).replace(".", " ")
+    let paramDepartment = (req.params.department).replace(/\--/g, '-/-');
+    let paramFullName = req.params.full_name;
+    if (!paramFullName.includes('@')) {
+        paramFullName = paramFullName.replace(".", " ");
+    }
 
     if (paramFullName === 'any-employee') {
         paramFullName = ''
-    } else {
-        paramFullName = paramFullName
     }
 
     if (paramDepartment === 'any-department') {
