@@ -102,10 +102,15 @@ export const fr = {
       "Not division":"Non division"
     },
     branch_api: {
+      "Policy, Planning, and Communications": "Politiques, planification et communications",
+      "Deputy Ministers Office":"Bureau des sous-ministres",
       "Corporate Services ":"Services généraux",
       "Communications":"Communications",
       "Finance, Systems and Administration":"Finances, informatique et administration",
-      "Human Resources":"Ressources humaines",
+      "Human Resources": "Ressources humaines",
+      "Innovation, Industry, and Business Development": "Développement de l’innovation, des entreprises et des secteurs d’activité",
+      "Innovation, Industry and Business Development":"Développement de l’innovation, des entreprises et des secteurs d’activité",
+      "Assistant Deputy Ministers Office":"Bureau de la sous-ministre adjointe ou du sous-ministre adjoint",
       "Assistant Deputy Minister's Office":"Bureau de la sous-ministre adjointe ou du sous-ministre adjoint",
       "Community Affairs":"Affaires communautaires",
       "Community Operations":"Activités dans les collectivités",
