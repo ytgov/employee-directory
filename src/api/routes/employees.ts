@@ -242,9 +242,6 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
     let paramBranch = (req.params.branch)
 
     var notDivision = paramDivision === 'not-division';
-
-
-
     var onlyDept = paramDivision === 'only-department' && paramBranch === 'only-department'
 
     if (paramDivision === 'not-division') {
@@ -294,14 +291,18 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             });
             
             let employeesByDivision = employeesByDept
-
-             if (notBranch) {
-                employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
-            } else if (paramBranch !== '' && !onlyDept) {
-                employeesByDivision = employeesByDivision.filter(item => { return item.branch.indexOf(paramBranch) >= 0 })
-            }
             //Get the number of employees displayed in the grid.
             let divLength = employeesByDivision.length
+
+            if (notBranch) {
+                employeesByDivision = employeesByDivision.filter(item => { return item.branch === '-' || _.isUndefined(item.branch) || _.isEmpty(item.branch) })
+             } else if (paramBranch !== '' && !onlyDept) {
+                 employeesByDivision = employeesByDivision.filter(item => {
+                    const branch = (item.branch || '').trim();
+                    const target = paramBranch.trim();
+                    return branch.includes(target);
+                });
+             }
 
             //Get all the Managers' name
             var managersNameByDivision = _.uniq(_.map(employeesByDivision, 'manager'));
