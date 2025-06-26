@@ -23,7 +23,7 @@
                         </a>
                     </td>
                     <td class="default-cursor">  {{$t('components.positions_api')[item.title] ? $t('components.positions_api')[item.title] : item.title }} </td>
-                    <td v-if="divisions === false" class="default-cursor">  {{ ($t('components.divisions_api')[item.division]) ? $t('components.divisions_api')[item.division] : item.division }} </td>
+                    <td v-if="divisions === false" class="default-cursor">  {{ ($t('components.divisions_api')[item.division.trim()]) ? $t('components.divisions_api')[item.division.trim()] : item.division }} </td>
                     <td class="default-cursor"> {{ item.email }}</td>
                     <td class="default-cursor"> <a :href="getPhone(item.phone_office)"
                             :class="{ telephone: check === true, 'telephone-desktop': check === false }"> {{

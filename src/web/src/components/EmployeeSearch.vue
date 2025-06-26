@@ -11,9 +11,9 @@
                     </v-breadcrumbs-item>
                 </template>
             </v-breadcrumbs>
-            <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.no_results_by_department.body.part2") }} {{$t('components.departments_api')[this.department] ? $t('components.departments_api')[this.department] : this.department }} {{ $t("components.employee_search.no_results_by_department.body.part3") }}</h2>
+            <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.no_results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.no_results_by_department.body.part3") }}</h2>
             <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }}  {{ $t("components.employee_search.no_results.body.part2") }}</h2>
-            <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.results_by_department.body.part2") }} {{$t('components.departments_api')[this.department] ? $t('components.departments_api')[this.department] : this.department }} {{ $t("components.employee_search.results_by_department.body.part3") }} {{ this.itemsLength }} {{ $t("components.employee_search.results_by_department.body.part4") }}</h2>
+            <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.results_by_department.body.part3") }} {{ this.itemsLength }} {{ $t("components.employee_search.results_by_department.body.part4") }}</h2>
             <h2 v-else class="mt-8">{{ $t("components.employee_search.results.body.part1") }} {{ this.searchTitle ? this.searchTitle.replace('any-employee', $t("components.employee_search.results.body.any_employee")).replace(/-/g, " ") : '' }} {{ $t("components.employee_search.results.body.part2") }} {{ this.itemsLength }} {{ $t("components.employee_search.results.body.part3") }}
             </h2>
             <v-row v-if="!results">
@@ -176,7 +176,7 @@ export default {
             return  '/'+ locale + '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
         },
         cleanParam(param) {
-            return param === "-" ? "N/A" : param;
+            return param === "-" ? "N/A" : param.trim();
         },
         cleanLocation(location) {
             if(location != null){
