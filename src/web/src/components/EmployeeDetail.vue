@@ -11,10 +11,10 @@
 
           {{
             item.link ? (
-              $t('components.departments_api')[item.name] ?
-                $t('components.departments_api')[item.name] : ( ($t('components.divisions_api')[item.name]) ?
-                  $t('components.divisions_api')[item.name] : ( ($t('components.branch_api')[item.name]) ?
-                    $t('components.branch_api')[item.name] : $t(item.name))) ) : item.name
+              $t('components.departments_api')[item.name.trim()] ?
+                $t('components.departments_api')[item.name.trim()] : ( ($t('components.divisions_api')[item.name.trim()]) ?
+                  $t('components.divisions_api')[item.name.trim()] : ( ($t('components.branch_api')[item.name.trim()]) ?
+          $t('components.branch_api')[item.name.trim()] : $t(item.name.trim()))) ) : item.name
           }}
         </v-breadcrumbs-item>
       </template>
@@ -41,20 +41,20 @@
                 <h3 class="mb-0">
                   {{ $t("components.employee_details.organization.department") }} :
                   <a :href="generateUrl('department', 'n/a', 'n/a')">
-                    {{$t('components.departments_api')[item.department] ? $t('components.departments_api')[item.department] : item.department }}
+                    {{ $t('components.departments_api')[item.department.trim()] ? $t('components.departments_api')[item.department.trim()] : item.department }}
                   </a>
                 </h3>
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.division)" >
                 <h3 class="mb-0">
-                  {{ $t("components.employee_details.organization.division") }}:  {{ ($t('components.divisions_api')[item.division]) ? $t('components.divisions_api')[item.division] : item.division }}
+                  {{ $t("components.employee_details.organization.division") }}:  {{ ($t('components.divisions_api')[item.division.trim()]) ? $t('components.divisions_api')[item.division.trim()] : item.division }}
                 </h3>
               </v-col>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6"  v-if="checkStatus(item.branch)">
                 <h3 class="mb-0">
                   {{ $t("components.employee_details.organization.branch") }}:
                   <a :href="generateUrl('branch', item.branch, item.division)">
-                    {{ ($t('components.branch_api')[item.branch]) ? $t('components.branch_api')[item.branch] : item.branch }}
+                    {{ ($t('components.branch_api')[item.branch.trim()]) ? $t('components.branch_api')[item.branch.trim()] : item.branch }}
                 </a>
                 </h3>
               </v-col>

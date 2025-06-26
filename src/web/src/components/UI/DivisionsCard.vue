@@ -9,7 +9,7 @@
                             <li>
                                 <a :class="{ 'branch-pressed': checkHover == parent_item }"
                                     @click="activateBranches(parent_item)" :key="id" class="division">
-                                    {{ ($t('components.divisions_api')[parent_item]) ? $t('components.divisions_api')[parent_item] : parent_item }} 
+                                    {{ ($t('components.divisions_api')[parent_item.trim()]) ? $t('components.divisions_api')[parent_item.trim()] : parent_item }} 
                                 </a>
                             </li>
                             <v-expand-transition>
@@ -18,7 +18,7 @@
                                         <a :class="{ 'branch-pressed': checkClass === index }"
                                             :href="generateUrl('branch', index, parent_item)"
                                             class="branch my-2 px-0 py-3">
-                                            {{ ($t('components.branch_api')[index]) ? $t('components.branch_api')[index] : index }} 
+                                            {{ ($t('components.branch_api')[index.trim()]) ? $t('components.branch_api')[index.trim()] : index }} 
                                         </a>
                                     </li>
                                 </ul>
