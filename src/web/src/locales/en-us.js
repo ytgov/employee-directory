@@ -2904,6 +2904,9 @@ export const en = {
         position: "Position"
       }
     },
+    errors: {
+      server_error: "We're having trouble retrieving employee data."
+    },
     grid: {
       group_by: "Group by",
       see_all: "See all government employees",

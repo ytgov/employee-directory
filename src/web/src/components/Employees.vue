@@ -14,6 +14,15 @@
 
         </template>
       </v-breadcrumbs>
+        <v-card
+        class="feedback-form form-error my-4 pa-4 help d-flex align-center"
+        v-if="requestError"
+      >
+        <p class="ma-0">
+          {{ $t('components.errors.server_error') }}
+          {{ $t('components.feedback_form.alerts.try_again') }}
+        </p>
+      </v-card>
       <div class="full-width pt-6 bg-img">
         <v-container class="container-content">
           <v-row>
@@ -73,6 +82,7 @@ export default {
     item: [],
     options: {},
     findEmployeeHeaderInfo: true,
+    requestError: false,
   }),
   watch: {
     options: {
@@ -112,10 +122,15 @@ export default {
       this.loading = true;
       try {
         const resp = await axios.post(urls.EMPLOYEES_URL);
+        if (resp.data.meta && resp.data.meta.error) {
+          this.requestError = true;
+          return;
+        }
         this.item = resp.data.data;
       } catch (error) {
         console.error("Error fetching employees data:", error);
         this.loading = false;
+        this.requestError = true;
       } finally {
         this.loading = false;
       }

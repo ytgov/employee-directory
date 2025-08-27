@@ -11,6 +11,15 @@
                     </v-breadcrumbs-item>
                 </template>
             </v-breadcrumbs>
+            <v-card
+                class="feedback-form form-error my-4 pa-4 help d-flex align-center"
+                v-if="requestError"
+            >
+                <p class="ma-0">
+                    {{ $t('components.errors.server_error') }}
+                    {{ $t('components.feedback_form.alerts.try_again') }}
+                </p>
+            </v-card>
             <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.no_results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.no_results_by_department.body.part3") }}</h2>
             <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }}  {{ $t("components.employee_search.no_results.body.part2") }}</h2>
             <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.results_by_department.body.part3") }} {{ this.itemsLength }} {{ $t("components.employee_search.results_by_department.body.part4") }}</h2>
@@ -163,6 +172,7 @@ export default {
             searchTitle: '',
             windowWidth: window.innerWidth,
             mobileCheck: false,
+            requestError: false,
         }
     },
     methods: {
@@ -213,7 +223,10 @@ export default {
                 }
                 )
                 .then((resp) => {
-
+                    if (resp.data.meta && resp.data.meta.error) {
+                        this.requestError = true;
+                        return;
+                    }
                     this.items = resp.data.data;
                     if(this.items.length === 0) {
                         this.results = true
@@ -224,7 +237,10 @@ export default {
                     this.loading = false;
                     this.updateBreadCrumbs();
                 })
-                .catch((err) => console.error(err))
+                .catch((err) => {
+                    console.error(err)
+                    this.requestError = true
+                })
                 .finally(() => {
                     this.loading = false;
                 });
