@@ -15,6 +15,15 @@
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
+      <v-card
+        class="feedback-form form-error my-4 pa-4 help d-flex align-center"
+        v-if="requestError"
+      >
+        <p class="ma-0">
+          {{ $t('components.errors.server_error') }}
+          {{ $t('components.feedback_form.alerts.try_again') }}
+        </p>
+      </v-card>
 
       <v-row>
         <v-col cols="12" md="2" class="d-flex align-center justify-start">
@@ -136,6 +145,7 @@ export default {
     itemsPerPage: 9999,
     windowWidth: window.innerWidth,
     mobileCheck: false,
+    requestError: false,
   }),
   watch: {
     "$route": {
@@ -230,6 +240,7 @@ export default {
           url: `${urls.FIND_EMPLOYEE_URL}${department}/${division}/${branch}?search=`
         })
         .then((resp) => {
+          this.requestError = false;
           this.items = resp.data.data;
 
           if (this.items.length === 0) {
@@ -243,7 +254,10 @@ export default {
           this.updateBreadCrumbs();
           this.loading = false;
         })
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err)
+          this.requestError = true;
+        })
         .finally(() => {
           this.loading = false;
         });

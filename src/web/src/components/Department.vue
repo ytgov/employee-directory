@@ -15,6 +15,15 @@
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
+      <v-card
+        class="feedback-form form-error my-4 pa-4 help d-flex align-center"
+        v-if="requestError"
+      >
+        <p class="ma-0">
+          {{ $t('components.errors.server_error') }}
+          {{ $t('components.feedback_form.alerts.try_again') }}
+        </p>
+      </v-card>
       <v-row class="mt-16"></v-row>
       <v-row>
         <v-col col="6">
@@ -178,7 +187,7 @@ export default {
     windowWidth: window.innerWidth,
     checkAPIStatus: false,
     employeesNotFound: false,
-
+    requestError: false,
   }),
   watch: {
     "$route": {
@@ -348,6 +357,7 @@ export default {
           this.options
         )
         .then((resp) => {
+          this.requestError = false;
           this.employeesNotFound = resp.data.meta.notFound
           this.error = resp.data.meta.error;
           this.checkError();
@@ -357,8 +367,7 @@ export default {
         })
         .catch((err) => {
           console.error(err)
-          this.error = true;
-          this.checkError();
+          this.requestError = true;
         })
         .finally(() => {
           this.loading = false;
@@ -382,6 +391,7 @@ export default {
           url: `${urls.FIND_EMPLOYEE_URL}${department}/only-department/only-department?search=`
         })
         .then((resp) => {
+          this.requestError = false;
           this.employees = resp.data.data;
           if (this.employees.length === 0) {
             this.results = true
@@ -396,7 +406,7 @@ export default {
         })
         .catch((err) => {
           console.error(err)
-          this.error = true;
+          this.requestError = true;
         })
         .finally(() => {
           this.loading = false;

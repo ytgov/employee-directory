@@ -20,6 +20,16 @@
       </template>
     </v-breadcrumbs>
 
+    <v-card
+      class="feedback-form form-error my-4 pa-4 help d-flex align-center"
+      v-if="requestError"
+    >
+      <p class="ma-0">
+        {{ $t('components.errors.server_error') }}
+        {{ $t('components.feedback_form.alerts.try_again') }}
+      </p>
+    </v-card>
+
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
@@ -188,6 +198,7 @@ export default {
     address: "",
     community: "",
     error: false,
+    requestError: false,
     name: '',
     url: '',
     mapUrl: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`,
@@ -345,7 +356,7 @@ export default {
           `${urls.FIND_EMPLOYEE_URL}employee-detail/${department}/${full_name}`
         )
         .then((resp) => {
-
+          this.requestError = false;
           this.error = resp.data.data;
 
           this.checkError();
@@ -378,6 +389,7 @@ export default {
 
         .catch((err) => {
           console.error(err)
+          this.requestError = true;
         })
         .finally(() => {
           this.loading = false;

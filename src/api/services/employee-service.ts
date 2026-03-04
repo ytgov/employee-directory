@@ -18,70 +18,81 @@ export const EMPLOYEEDETAILJSON = process.env.EMPLOYEEDETAILJSON;
 
 export class EmployeeService {
     async getEmployee(paramDepartment: string, paramFullName: string)  {
-    var employeeArr: any[] = Array();
-    paramFullName = paramFullName.replace(" ", ".");
-    await axios.get(String(EMPLOYEEDETAILJSON), { params: { samaccountname: paramFullName } })
-        .then(async (response: any) => {
-            var resultEmployees = response.data.employees  || [];
-            if (resultEmployees.length === 0) {
-                return [];
+        var employeeArr: any[] = Array();
+        // Normalize names that do not contain a dot at all
+        let samaccountname = (paramFullName || '').trim();
+        samaccountname = (paramFullName || "'").trim();
+        if (!samaccountname.includes('.')) {
+            samaccountname = samaccountname
+                .replace(/\s+/g, '.')         
+                .replace(/['’]/g, '')         
+                .normalize('NFD')             
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        try {
+            const response = await axios.get(String(EMPLOYEEDETAILJSON), { params: { samaccountname } });
+            const resultEmployees = response.data.employees || [];
+        if (resultEmployees.length === 0) {
+            return [];
+        }
+
+        let filteredEmployees = resultEmployees;
+        if (resultEmployees.length > 1 && paramDepartment) {
+            filteredEmployees = resultEmployees.filter((emp: any) => emp.department === paramDepartment);
+        }
+
+        if (filteredEmployees.length === 0) {
+            filteredEmployees = [resultEmployees[0]];
+        }
+
+        filteredEmployees.forEach(function (element: any) {
+            const division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
+            interface EmployeeDetail extends EmployeeTable {
+                unit: String
+                fax_office: String
+                postal_code: String
+                mailcode: string
+                full_name_url: string
+                center: any
+                latitude: Number
+                longitude: Number
             }
-            let filteredEmployees = resultEmployees;
-            if (resultEmployees.length > 1 && paramDepartment) {
-              filteredEmployees = resultEmployees.filter((emp: any) => emp.department === paramDepartment);
-            }
 
-            if (filteredEmployees.length === 0) {
-              filteredEmployees = [resultEmployees[0]];
-            }
-  
-            filteredEmployees.forEach(function (element: any) {
-                var division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
-                interface EmployeeDetail extends EmployeeTable {
-                    unit: String
-                    fax_office: String
-                    postal_code: String
-                    mailcode: string
-                    full_name_url: string
-                    center: any
-                    latitude: Number
-                    longitude: Number
-                }
+            const employee: EmployeeDetail = {
+                'full_name': element.full_name.replace(".", " "),
+                'formatted_name': element.first_name + ' ' + element.last_name,
+                'department': element.department,
+                'division': element.division,
+                'branch': element.branch,
+                'unit': element.unit,
+                'title': element.title,
+                'email': element.email.toLowerCase(),
+                'phone_office': element.phone_office,
+                'fax_office': element.fax_office,
+                'address': element.address,
+                'community': element.community,
+                'postal_code': element.postal_code,
+                'mailcode': element.mailcode,
+                'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
+                'division_url': division_url,
+                'full_name_url': element.full_name,
+                'latitude': element.latitude,
+                'longitude': element.longitude,
+                'value': 0,
+                'center': { "lat": 0, "lng": 0 }
+            };
 
-                var employee: EmployeeDetail = {
-                    'full_name': element.full_name.replace(".", " "),
-                    'formatted_name': element.first_name + ' ' + element.last_name,
-                    'department': element.department,
-                    'division': element.division,
-                    'branch': element.branch,
-                    'unit': element.unit,
-                    'title': element.title,
-                    'email': element.email.toLowerCase(),
-                    'phone_office': element.phone_office,
-                    'fax_office': element.fax_office,
-                    'address': element.address,
-                    'community': element.community,
-                    'postal_code': element.postal_code,
-                    'mailcode': element.mailcode,
-                    'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
-                    'division_url': division_url,
-                    'full_name_url': element.full_name,
-                    'latitude': element.latitude,
-                    'longitude': element.longitude,
-                    'value': 0,
-                    'center': { "lat": 0, "lng": 0 }
-                };
-
-                employeeArr.push(employee);
-            });
-            return employeeArr;
-
-        })
-        .catch((error: any) => {
-            console.log(error);
-            
+            employeeArr.push(employee);
         });
-        return employeeArr; 
+        return employeeArr;
+    } catch (error: any) {
+        const errorMessage = error.message ?? 'Unknown error occurred';
+        console.error("Error loading employee:", errorMessage);
+
+        throw new Error(errorMessage);
+    }
   }
 
 }

@@ -181,9 +181,12 @@ export default {
         },
         urlEmployee(department, name) {
             const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
-            var find = ' ';
-            var reg = new RegExp(find, 'g');
-            return  '/'+ locale + '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
+            const find = ' ';
+            const reg = new RegExp(find, 'g');
+            const departmentSlug = department ? department.replace(reg, '-').toLowerCase() : '';
+            const encodedDepartment = encodeURIComponent(departmentSlug);
+            const encodedName = encodeURIComponent(name || '');
+            return  '/' + locale + '/find-employee/employee-detail/' + encodedDepartment + '/' + encodedName;
         },
         cleanParam(param) {
             return param === "-" ? "N/A" : param.trim();
@@ -212,6 +215,9 @@ export default {
 
             this.loading = true;
 
+            const encodedFullName = encodeURIComponent(full_name);
+            const encodedDepartment = encodeURIComponent(department);
+
             axios
                 .request({
                     method: 'POST',
@@ -219,9 +225,8 @@ export default {
                         groupBy: this.selection,
                         itemsperPage: this.itemsPerPage,
                     },
-                    url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${full_name}&department=${department}`
-                }
-                )
+                    url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${encodedFullName}&department=${encodedDepartment}`
+                })
                 .then((resp) => {
                     if (resp.data.meta && resp.data.meta.error) {
                         this.requestError = true;
@@ -238,8 +243,10 @@ export default {
                     this.updateBreadCrumbs();
                 })
                 .catch((err) => {
-                    console.error(err)
-                    this.requestError = true
+                    console.error(err);
+                    this.requestError = true;
+                    this.loading = false;
+
                 })
                 .finally(() => {
                     this.loading = false;

@@ -170,60 +170,73 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
             res.send({ data: finalResult, meta: { count: employeesByDept.length } });
         })
         .catch((error: any) => {
-            console.log(error);
+            console.error("Error in /find-employee/search endpoint:", error);
+            const errorMessage = error?.message ?? "Unknown error occurred";
+            return res.status(500).json({
+                error: "Failed to fetch employees for search",
+                details: errorMessage,
+            });
         });
 });
 
 employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [param("full_name", "department").notEmpty()], async (req: Request, res: Response) => {
+    try {
+        var employeeArr: any[] = Array();
+        var find = '-';
+        var reg = new RegExp(find, 'g');
 
-    var employeeArr: any[] = Array();
-    var find = '-';
-    var reg = new RegExp(find, 'g');
-
-    let paramDepartment = (req.params.department).replace(/\--/g, '-/-').replace(reg, ' ')
-    let paramFullName = (req.params.full_name)
-    var resultEmployees = await employeeService.getEmployee(paramDepartment, paramFullName);
-    if(resultEmployees){
-            if (resultEmployees.length === 0) {
-                return res.send({ data: true })
-            }
-
-            if (resultEmployees[0] && resultEmployees[0].community && resultEmployees[0].address !== '' || null) {
-                if (resultEmployees[0].latitude !== null) {
-                    resultEmployees[0].center.lat = resultEmployees[0].latitude
-                    resultEmployees[0].center.lng = resultEmployees[0].longitude
-                } else {
-
-                    await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${resultEmployees[0].community},${resultEmployees[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
-                        .then((response: any) => {
-                            
-                            if(response.data.candidates){
-                                const center = response.data.candidates[0].location
-                                resultEmployees[0].center.lat = center.y;
-                                resultEmployees[0].center.lng = center.x;
-                            }
-                            else{
-                                console.log('Error in ESRI:' + JSON.stringify(response.data));
-                                resultEmployees[0].center = null;
-                            }
-                        }).catch((error: any) => {
-                            console.log(error)
-                        })
+        let paramDepartment = (req.params.department).replace(/\--/g, '-/-').replace(reg, ' ')
+        let paramFullName = (req.params.full_name)
+        var resultEmployees = await employeeService.getEmployee(paramDepartment, paramFullName);
+        console.log('hola');
+        if(resultEmployees){
+                if (resultEmployees.length === 0) {
+                    return res.send({ data: true })
                 }
-            } else resultEmployees[0].center = null
 
-            let managerName: any
-            var managerFilter = [];
-            if (resultEmployees[0] && resultEmployees[0].manager){
-                managerName = resultEmployees[0].manager;
-                if(managerName){
-                    managerFilter = await employeeService.getEmployee(paramDepartment, managerName);
+                if (resultEmployees[0] && resultEmployees[0].community && resultEmployees[0].address !== '' || null) {
+                    if (resultEmployees[0].latitude !== null) {
+                        resultEmployees[0].center.lat = resultEmployees[0].latitude
+                        resultEmployees[0].center.lng = resultEmployees[0].longitude
+                    } else {
+                        await axios.get(`https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?address={${resultEmployees[0].community},${resultEmployees[0].address}}&outFields={}&f=json&token=${ESRI_KEY}`)
+                            .then((response: any) => {
+                                
+                                if(response.data.candidates){
+                                    const center = response.data.candidates[0].location
+                                    resultEmployees[0].center.lat = center.y;
+                                    resultEmployees[0].center.lng = center.x;
+                                }
+                                else{
+                                    console.log('Error in ESRI:' + JSON.stringify(response.data));
+                                    resultEmployees[0].center = null;
+                                }
+                            }).catch((error: any) => {
+                                console.log(error)
+                            })
+                    }
+                } else resultEmployees[0].center = null
+
+                let managerName: any
+                var managerFilter = [];
+                if (resultEmployees[0] && resultEmployees[0].manager){
+                    managerName = resultEmployees[0].manager;
+                    if(managerName){
+                        managerFilter = await employeeService.getEmployee(paramDepartment, managerName);
+                    }
                 }
-            }
-            res.send({ data: resultEmployees, meta: { manager: managerFilter } });
-      
-    }else{
-        return res.send({ data: true });
+                res.send({ data: resultEmployees, meta: { manager: managerFilter } });
+        
+        }else{
+            return res.send({ data: true });
+        }
+    } catch (error: any) {
+        console.error("Route error:", error.message);
+
+        return res.status(500).json({
+            error: "Failed to fetch employee detail",
+            details: error.message
+        });
     }
 });
 
@@ -413,7 +426,13 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
             res.send({ data: endResult, meta: { branchCount: finalResult.length, divisionCount: divLength } });
         })
         .catch((error: any) => {
-            console.log(error);
+           let errorMessage =  error.message ?? 'Unknown error occurred';
+            console.error("Failed to fetch departments:", errorMessage);
+
+            return res.status(500).json({
+                error: "Failed to fetch departments",
+                details: errorMessage
+            });
         });
 });
 

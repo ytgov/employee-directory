@@ -2905,7 +2905,7 @@ export const en = {
       }
     },
     errors: {
-      server_error: "We're having trouble retrieving employee data."
+      server_error: "Sorry, there is a problem with this service. Try again later."
     },
     grid: {
       group_by: "Group by",
