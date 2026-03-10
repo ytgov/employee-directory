@@ -129,15 +129,24 @@ export default {
           }
           )
           .then((resp) => {
-            console.log(resp)
             if (resp) {
               this.formStatus = false, this.success = true, this.colorCheck = 0, this.feedbackText = ''
             }
           })
           .catch((err) => {
             this.requestError = true;
-            this.errorMessage = err;
-            console.error(err)
+            if (err.response && err.response.data) {
+              this.errorMessage =
+                err.response.data.error ||
+                err.response.data.details ||
+                'Server error';
+            } else if (err.message) {
+              this.errorMessage = err.message;
+            } else {
+              this.errorMessage = 'Unexpected error occurred';
+            }
+
+            console.error('Feedback form error:', err);
           });
       }
     }

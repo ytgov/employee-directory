@@ -28,12 +28,12 @@
                 <v-row>
                         <v-row no-gutters class="center-search-bar">
                             <v-col cols="9" md="5" sm="8" xs="9">
-                                <v-text-field class="input-with-button" :items="item" v-model="nameSearch" dense=""
+                                <v-text-field class="input-with-button" :items="item" v-model="nameSearch" dense="" :disabled="disabled"
                                     background-color="#F1F1F1" outlined="outlined" flat="" :label="$t('components.search_bar_header.search.input_placeholder')" solo>
                                 </v-text-field>
                             </v-col>
                             <v-col cols="1"  md="1" sm="2">
-                                <v-btn width="100%" class="mt-0 py-2" height="40px" type="submit" color="#ffcd57">
+                                <v-btn width="100%" class="mt-0 py-2" height="40px" type="submit" color="#ffcd57" :disabled="disabled">
                                     <IconLoader height="20px" :image="'magnifying-glass'" :color="'black'" />
                                 </v-btn>
                             </v-col>
@@ -98,8 +98,14 @@ export default {
             dptError: false,
         }
     },
-    props: ['info', 'title'],
-
+    props: {
+        info: Boolean,
+        title: String,
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
+    },
     methods: {
         toggleLocale: function () {
             const savedLocale = this.$cookies.get("locale");
@@ -112,6 +118,9 @@ export default {
             }
         },
         updateSearch() {
+            if (this.disabled) {
+                return;
+            }
             const find = ' ';
             const reg = new RegExp(find, 'g');
 

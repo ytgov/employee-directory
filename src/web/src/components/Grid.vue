@@ -1,6 +1,6 @@
 <template>
   <div class="employee-grid">
-    <SearchBarHeader />
+    <SearchBarHeader :disabled="serviceUnavailable" />
     <DepartmentHeader :title="title" :image="title.toLowerCase()" />
     <v-container class="px-0">
       <v-breadcrumbs class="mt-6 mb-8 breadcrumbs px-0" :items="breadcrumbsList">
@@ -15,27 +15,18 @@
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
-      <v-card
-        class="feedback-form form-error my-4 pa-4 help d-flex align-center"
-        v-if="requestError"
-      >
-        <p class="ma-0">
-          {{ $t('components.errors.server_error') }}
-          {{ $t('components.feedback_form.alerts.try_again') }}
-        </p>
-      </v-card>
-
+      <ServiceStatusBanner v-if="serviceUnavailable" />
       <v-row>
-        <v-col cols="12" md="2" class="d-flex align-center justify-start">
+        <v-col cols="12" md="2" class="d-flex align-center justify-start" :disabled="serviceUnavailable">
           <h4 class="">{{ $t("components.grid.group_by") }}: </h4>
         </v-col>
         <v-col cols="12" md="8">
-          <v-chip-group v-model="selection" center-active mandatory>
+          <v-chip-group v-model="selection" center-active mandatory :disabled="serviceUnavailable">
             <v-row>
               <v-col class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
-                <v-chip label outlined color="#00616D">{{ $t("components.grid.see_all") }}</v-chip>
-                <v-chip label outlined color="#00616D">{{ $t("components.grid.location") }}</v-chip>
-                <v-chip label outlined color="#00616D">{{ $t("components.grid.position") }}</v-chip>
+                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.grid.see_all") }}</v-chip>
+                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.grid.location") }}</v-chip>
+                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.grid.position") }}</v-chip>
               </v-col>
             </v-row>
           </v-chip-group>
@@ -106,6 +97,7 @@ import * as urls from "../urls";
 import EmployeesGrid from "./UI/EmployeesGrid.vue";
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
 
 
 export default {
@@ -116,7 +108,8 @@ export default {
     DivisionsCard,
     IconLoader,
     SearchBarHeader,
-    EmployeesGrid
+    EmployeesGrid,
+    ServiceStatusBanner
   },
   data: () => ({
     results: false,
@@ -145,7 +138,7 @@ export default {
     itemsPerPage: 9999,
     windowWidth: window.innerWidth,
     mobileCheck: false,
-    requestError: false,
+    serviceUnavailable: false,
   }),
   watch: {
     "$route": {
@@ -175,6 +168,9 @@ export default {
     },
     selection: {
       handler() {
+        if (this.serviceUnavailable) {
+            return;
+        }
         this.loading = true
         this.getDataFromApi();
       },
@@ -229,8 +225,7 @@ export default {
 
       this.department = this.capitalizeString(department.replace(reg, ' '))
       this.division = this.capitalizeString(division.replace(reg, ' '))
-      this.branch = this.capitalizeString(branch.replace(reg, ' '))
-      const search = `${encodeURIComponent(`${this.search}`)}`;
+      this.branch = this.capitalizeString(branch?.replace(reg, ' ') || '');      const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
         .request({
           method: 'POST',
@@ -240,7 +235,6 @@ export default {
           url: `${urls.FIND_EMPLOYEE_URL}${department}/${division}/${branch}?search=`
         })
         .then((resp) => {
-          this.requestError = false;
           this.items = resp.data.data;
 
           if (this.items.length === 0) {
@@ -252,11 +246,16 @@ export default {
           this.itemsPerPage = resp.data.meta.divisionCount;
           this.itemsValue = this.selection
           this.updateBreadCrumbs();
+          this.serviceUnavailable = false;
           this.loading = false;
         })
         .catch((err) => {
           console.error(err)
-          this.requestError = true;
+          this.serviceUnavailable = true;
+          if (!sessionStorage.getItem("UPSTREAM_UNAVAILABLE_SHOWN")) {
+              console.info("UPSTREAM_UNAVAILABLE_SHOWN");
+              sessionStorage.setItem("UPSTREAM_UNAVAILABLE_SHOWN", "1");
+          }
         })
         .finally(() => {
           this.loading = false;

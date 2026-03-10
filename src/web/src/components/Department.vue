@@ -3,7 +3,7 @@
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <SearchBarHeader />
+     <SearchBarHeader :disabled="serviceUnavailable" />
 
     <DepartmentHeader :title="title" :image="department" />
 
@@ -15,20 +15,12 @@
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
-      <v-card
-        class="feedback-form form-error my-4 pa-4 help d-flex align-center"
-        v-if="requestError"
-      >
-        <p class="ma-0">
-          {{ $t('components.errors.server_error') }}
-          {{ $t('components.feedback_form.alerts.try_again') }}
-        </p>
-      </v-card>
+      <ServiceStatusBanner v-if="serviceUnavailable" />
       <v-row class="mt-16"></v-row>
       <v-row>
         <v-col col="6">
           <v-card v-if="!error" elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
-            max-width="1180" min-height="542" outlined>
+            max-width="1180" min-height="542" outlined :disabled="serviceUnavailable">
             <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
               max-width="590">
               <!--div class="py-4 d-flex align-center justify-center" style="width: 200px">
@@ -39,7 +31,7 @@
               </div>
             </v-card-actions>
 
-            <v-card outlined color="transparent" class="flex-column pa-10">
+            <v-card outlined color="transparent" class="flex-column pa-10" :disabled="serviceUnavailable">
               <h2 v-if="!employeesNotFound" style="color:#522A44!important; font-size: 30px;">{{ $t("components.department.labels.browse_employees_by_divisions") }}</h2>
                 <div width="100%" v-else>
                 <h2 style="color:#522A44!important; font-size: 30px; text-align: center!important; width: 100%;">{{ $t("components.department.labels.no_results") }}</h2>
@@ -69,7 +61,7 @@
             </v-card>
           </v-card>
           <v-card v-if="error" elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
-            max-width="1180" min-height="542" outlined>
+            max-width="1180" min-height="542" outlined :disabled="serviceUnavailable">
             <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
               max-width="590">
 
@@ -78,14 +70,14 @@
               </div>
             </v-card-actions>
 
-            <v-card outlined color="transparent" class="flex-column pa-10">
+            <v-card outlined color="transparent" class="flex-column pa-10" :disabled="serviceUnavailable">
               <h2 style="color:#522A44!important; font-size: 30px;">{{ $t("components.department.labels.not_found") }}</h2>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
         </v-col>
       </v-row>
-      <div class="mt-7" v-if="checkGrid">
+      <div class="mt-7" v-if="checkGrid" :disabled="serviceUnavailable">
         <v-row v-if="!results">
           <v-col cols="12" md="2" class="d-flex align-center justify-start">
             <h4 class="">{{ $t("components.department.labels.group_by") }}</h4>
@@ -111,7 +103,7 @@
           <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
         </div>
 
-        <div v-if="!results">
+        <div v-if="!results" :disabled="serviceUnavailable">
           <div v-if="itemsValue === 0" class="mb-6 mt-2">
             <EmployeesGrid :divisions="false" :check="mobileCheck" :items="employees" :department="department" />
           </div>
@@ -153,6 +145,7 @@ import * as urls from "../urls";
 import EmployeesGrid from "./UI/EmployeesGrid.vue";
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
 
 const axios = require("axios");
 export default {
@@ -161,7 +154,8 @@ export default {
     IconLoader,
     DepartmentHeader,
     SearchBarHeader,
-    EmployeesGrid
+    EmployeesGrid,
+    ServiceStatusBanner,
   },
   name: "Department",
   data: () => ({
@@ -187,7 +181,7 @@ export default {
     windowWidth: window.innerWidth,
     checkAPIStatus: false,
     employeesNotFound: false,
-    requestError: false,
+    serviceUnavailable: false,
   }),
   watch: {
     "$route": {
@@ -217,6 +211,9 @@ export default {
     },
     selection: {
       handler() {
+        if (this.serviceUnavailable) {
+            return;
+        }
         this.loading = true
         this.getEmployeeData();
       },
@@ -350,6 +347,7 @@ export default {
       formattedQueryParam = `${encodeURIComponent(`${department}`)}`
       this.department = department.replace(reg, ' ')
       this.title = this.capitalizeString(department.replace(reg, ' '))
+      this.serviceUnavailable = false;
 
       axios
         .post(
@@ -357,7 +355,6 @@ export default {
           this.options
         )
         .then((resp) => {
-          this.requestError = false;
           this.employeesNotFound = resp.data.meta.notFound
           this.error = resp.data.meta.error;
           this.checkError();
@@ -367,7 +364,7 @@ export default {
         })
         .catch((err) => {
           console.error(err)
-          this.requestError = true;
+          this.serviceUnavailable = true;
         })
         .finally(() => {
           this.loading = false;
@@ -391,7 +388,6 @@ export default {
           url: `${urls.FIND_EMPLOYEE_URL}${department}/only-department/only-department?search=`
         })
         .then((resp) => {
-          this.requestError = false;
           this.employees = resp.data.data;
           if (this.employees.length === 0) {
             this.results = true
@@ -406,7 +402,7 @@ export default {
         })
         .catch((err) => {
           console.error(err)
-          this.requestError = true;
+          this.serviceUnavailable = true;
         })
         .finally(() => {
           this.loading = false;

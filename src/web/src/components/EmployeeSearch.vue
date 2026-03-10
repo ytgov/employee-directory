@@ -1,6 +1,6 @@
 <template>
     <div class="employee-search">
-        <SearchBarHeader />
+        <SearchBarHeader :disabled="serviceUnavailable" />
         <DepartmentHeader v-if="department !== 'Any department'" :title="this.department"
             :image="this.department.toLowerCase().replace(/\//g, '')" />
         <v-container class="px-0">
@@ -11,15 +11,7 @@
                     </v-breadcrumbs-item>
                 </template>
             </v-breadcrumbs>
-            <v-card
-                class="feedback-form form-error my-4 pa-4 help d-flex align-center"
-                v-if="requestError"
-            >
-                <p class="ma-0">
-                    {{ $t('components.errors.server_error') }}
-                    {{ $t('components.feedback_form.alerts.try_again') }}
-                </p>
-            </v-card>
+            <ServiceStatusBanner v-if="serviceUnavailable" />
             <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.no_results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.no_results_by_department.body.part3") }}</h2>
             <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }}  {{ $t("components.employee_search.no_results.body.part2") }}</h2>
             <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.results_by_department.body.part3") }} {{ this.itemsLength }} {{ $t("components.employee_search.results_by_department.body.part4") }}</h2>
@@ -30,14 +22,14 @@
                     <h4 class="">{{ $t("components.employee_search.labels.group_by") }}: </h4>
                 </v-col>
                 <v-col cols="12" md="8">
-                    <v-chip-group v-model="selection" center-active mandatory>
+                    <v-chip-group v-model="selection" center-active mandatory :disabled="serviceUnavailable">
                         <v-row>
                             <v-col
                                 class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
-                                <v-chip label outlined color="#00616D">{{ $t("components.employee_search.labels.see_all") }}</v-chip>
-                                <v-chip label outlined color="#00616D">{{ $t("components.employee_search.labels.department") }}</v-chip>
-                                <v-chip label outlined color="#00616D">{{ $t("components.employee_search.labels.location") }}</v-chip>
-                                <v-chip label outlined color="#00616D">{{ $t("components.employee_search.labels.position") }}</v-chip>
+                                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.employee_search.labels.see_all") }}</v-chip>
+                                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.employee_search.labels.department") }}</v-chip>
+                                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.employee_search.labels.location") }}</v-chip>
+                                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.employee_search.labels.position") }}</v-chip>
                             </v-col>
                         </v-row>
                     </v-chip-group>
@@ -104,13 +96,15 @@ import EmployeesGrid from './UI/EmployeesGrid.vue';
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import * as urls from "../urls";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
 
 export default {
     components: {
         EmployeesGrid,
         SearchBarHeader,
         IconLoader,
-        DepartmentHeader
+        DepartmentHeader,
+        ServiceStatusBanner
     },
     mixins: [breadcrumbMixin],
     watch: {
@@ -126,6 +120,9 @@ export default {
 
         selection: {
             handler() {
+                if (this.serviceUnavailable) {
+                    return;
+                }
                 this.loading = true
                 this.getDataFromApi();
             },
@@ -172,7 +169,7 @@ export default {
             searchTitle: '',
             windowWidth: window.innerWidth,
             mobileCheck: false,
-            requestError: false,
+            serviceUnavailable: false,
         }
     },
     methods: {
@@ -214,7 +211,7 @@ export default {
             this.department = departmentFormatted
 
             this.loading = true;
-
+            this.serviceUnavailable = false;
             const encodedFullName = encodeURIComponent(full_name);
             const encodedDepartment = encodeURIComponent(department);
 
@@ -229,7 +226,7 @@ export default {
                 })
                 .then((resp) => {
                     if (resp.data.meta && resp.data.meta.error) {
-                        this.requestError = true;
+                        this.serviceUnavailable = true;
                         return;
                     }
                     this.items = resp.data.data;
@@ -243,9 +240,21 @@ export default {
                     this.updateBreadCrumbs();
                 })
                 .catch((err) => {
-                    console.error(err);
-                    this.requestError = true;
-                    this.loading = false;
+                    const status = err?.response?.status;
+                    const code = err?.response?.data?.code;
+                    if (status === 503 || code === "SERVICE_UNAVAILABLE") {
+                        this.serviceUnavailable = true;
+                        this.items = [];
+                        this.itemsLength = 0;
+                        this.results = false;
+                        if (!sessionStorage.getItem("UPSTREAM_UNAVAILABLE_SHOWN")) {
+                            console.info("UPSTREAM_UNAVAILABLE_SHOWN");
+                            sessionStorage.setItem("UPSTREAM_UNAVAILABLE_SHOWN", "1");
+                        }
+                    } else {
+                        console.error(err);
+                        this.serviceUnavailable = true;
+                    }
 
                 })
                 .finally(() => {

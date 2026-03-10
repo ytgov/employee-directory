@@ -1,6 +1,6 @@
 <template>
   <div class="Homepage-departments">
-    <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
+    <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" :disabled="serviceUnavailable"/>
     
     <Aurora/>
     <v-container class="px-0">
@@ -14,17 +14,13 @@
 
         </template>
       </v-breadcrumbs>
-        <v-card
-        class="feedback-form form-error my-4 pa-4 help d-flex align-center"
-        v-if="requestError"
-      >
-        <p class="ma-0">
-          {{ $t('components.errors.server_error') }}
-          {{ $t('components.feedback_form.alerts.try_again') }}
-        </p>
-      </v-card>
-      <div class="full-width pt-6 bg-img">
-        <v-container class="container-content">
+      <ServiceStatusBanner v-if="serviceUnavailable" />
+      <div class="text-center loading" v-show="loading">
+        <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+      </div>
+
+      <div class="full-width pt-6 bg-img" v-if="!serviceUnavailable">
+        <v-container class="container-content" v-if="!serviceUnavailable">
           <v-row>
             <v-col cols="12" sm="12" class="align-center justify d-flex">
               <h2 class="mb-n1 text-responsive" style="color: #522a44 !important; font-size: 32px !important">
@@ -64,13 +60,15 @@ import * as urls from "../urls";
 import Aurora from './UI/Aurora.vue';
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
 
 const axios = require("axios");
 export default {
   components: {
     IconLoader,
     SearchBarHeader,
-    Aurora
+    Aurora,
+    ServiceStatusBanner
   },
   mixins: [breadcrumbMixin],
   name: "Employees",
@@ -78,15 +76,18 @@ export default {
     noBgImg: true,
     breadcrumbsList: [],
     show: false,
-    loading: false,
+    loading: true,
     item: [],
     options: {},
     findEmployeeHeaderInfo: true,
-    requestError: false,
+    serviceUnavailable: false,
   }),
   watch: {
     options: {
       handler() {
+        if (this.serviceUnavailable) {
+          return;
+        }
         this.getEmployeesData();
       },
       "$route": {
@@ -123,14 +124,18 @@ export default {
       try {
         const resp = await axios.post(urls.EMPLOYEES_URL);
         if (resp.data.meta && resp.data.meta.error) {
-          this.requestError = true;
+          this.serviceUnavailable = true;
           return;
         }
         this.item = resp.data.data;
       } catch (error) {
         console.error("Error fetching employees data:", error);
         this.loading = false;
-        this.requestError = true;
+        this.serviceUnavailable = true;
+        if (!sessionStorage.getItem("UPSTREAM_UNAVAILABLE_SHOWN")) {
+            console.info("UPSTREAM_UNAVAILABLE_SHOWN");
+            sessionStorage.setItem("UPSTREAM_UNAVAILABLE_SHOWN", "1");
+        }
       } finally {
         this.loading = false;
       }

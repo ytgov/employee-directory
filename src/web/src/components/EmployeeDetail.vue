@@ -1,6 +1,6 @@
 <template>
   <div class="employee-detail">
-    <SearchBarHeader />
+    <SearchBarHeader :disabled="serviceUnavailable" />
 
     <DepartmentHeader :title="this.department" :image="this.department.toLowerCase()" />
 
@@ -19,16 +19,8 @@
         </v-breadcrumbs-item>
       </template>
     </v-breadcrumbs>
-
-    <v-card
-      class="feedback-form form-error my-4 pa-4 help d-flex align-center"
-      v-if="requestError"
-    >
-      <p class="ma-0">
-        {{ $t('components.errors.server_error') }}
-        {{ $t('components.feedback_form.alerts.try_again') }}
-      </p>
-    </v-card>
+    
+    <ServiceStatusBanner v-if="serviceUnavailable" />
 
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
@@ -44,7 +36,7 @@
             {{$t('components.positions_api')[item.title] ? $t('components.positions_api')[item.title] : item.title }}
           </h3>
 
-          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1" :disabled="serviceUnavailable">
             <h2 class="mt-4 mb-2">{{ $t("components.employee_details.organization.title") }}</h2>
             <v-row>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.department)">
@@ -75,7 +67,7 @@
               </v-col>
             </v-row>
           </v-card>
-          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1" :disabled="serviceUnavailable">
             <h2 class="mt-4 mb-2">{{ $t("components.employee_details.contact.title") }}:</h2>
             <v-row>
               <v-col class="mb-0 pt-2 pb-0" cols="12" md="6" v-if="checkStatus(item.phone_office)">
@@ -99,7 +91,7 @@
               </v-col>
             </v-row>
           </v-card>
-          <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+          <v-card v-if="checkStatus(item.manager)" class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1" :disabled="serviceUnavailable">
             <h2 class="mt-4 mb-2">{{ $t("components.employee_details.position_information.title") }}</h2>
             <v-row>
               <v-col class="mb-0 pt-2 pb-0">
@@ -112,7 +104,7 @@
               </v-col>
             </v-row>
           </v-card>
-          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1">
+          <v-card class="my-5 py-1 pb-3 px-5 employee-detail" elevation="1" :disabled="serviceUnavailable">
             <h2 class="mt-4 mb-2">{{ $t("components.employee_details.location.title") }}</h2>
             <v-row>
               <v-col class="mb-1" cols="12" md="6">
@@ -153,6 +145,7 @@ import * as urls from "../urls";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
 
 import { Icon } from 'leaflet';
 
@@ -171,7 +164,7 @@ export default {
     LMap,
     LTileLayer,
     LMarker,
-
+    ServiceStatusBanner,
   },
   name: "EmployeeDetail",
   mixins: [breadcrumbMixin],
@@ -198,10 +191,10 @@ export default {
     address: "",
     community: "",
     error: false,
-    requestError: false,
     name: '',
     url: '',
     mapUrl: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`,
+    serviceUnavailable: false,
   }),
   watch: {
     $route() {
@@ -356,7 +349,6 @@ export default {
           `${urls.FIND_EMPLOYEE_URL}employee-detail/${department}/${full_name}`
         )
         .then((resp) => {
-          this.requestError = false;
           this.error = resp.data.data;
 
           this.checkError();
@@ -378,7 +370,6 @@ export default {
 
           this.loading = false;
 
-
           this.address = resp.data.data[0].address;
           this.community = resp.data.data[0].community;
 
@@ -389,7 +380,7 @@ export default {
 
         .catch((err) => {
           console.error(err)
-          this.requestError = true;
+          this.serviceUnavailable = true;
         })
         .finally(() => {
           this.loading = false;
