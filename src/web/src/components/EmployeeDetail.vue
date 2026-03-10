@@ -26,7 +26,6 @@
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
     <v-container class="px-0">
-      <v-row class="mt-16"></v-row>
       <v-row>
         <v-col v-for="item in employee" :key="item.full_name">
           <h2 class="mb-1" style="color: #dc4405 !important; font-size: 34px !important">
