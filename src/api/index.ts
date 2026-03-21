@@ -2,8 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import path from 'path';
-import { doHealthCheck } from "./utils/healthCheck";
-import { employeesRouter } from "./routes";
+import { employeesRouter, healthRouter} from "./routes";
 import * as config from './config';
 
 const app = express();
@@ -48,12 +47,8 @@ app.use(cors({
   credentials: false
 }));
 
-app.get("/api/healthCheck", (req: Request, res: Response) => {
-  doHealthCheck(res);
-});
-
 app.use("/api/employees", employeesRouter);
-
+app.use("/health", healthRouter);
 
 // set up rate limiter: maximum of five requests per minute
 var RateLimit = require('express-rate-limit');

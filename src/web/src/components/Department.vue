@@ -3,7 +3,7 @@
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <SearchBarHeader />
+     <SearchBarHeader :disabled="serviceUnavailable" />
 
     <DepartmentHeader :title="title" :image="department" />
 
@@ -15,11 +15,12 @@
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
+      <ServiceStatusBanner   v-if="serviceUnavailable || staleData" :isStaleData="staleData"  />
       <v-row class="mt-16"></v-row>
       <v-row>
         <v-col col="6">
           <v-card v-if="!error" elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
-            max-width="1180" min-height="542" outlined>
+            max-width="1180" min-height="542" outlined :disabled="serviceUnavailable">
             <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
               max-width="590">
               <!--div class="py-4 d-flex align-center justify-center" style="width: 200px">
@@ -30,7 +31,7 @@
               </div>
             </v-card-actions>
 
-            <v-card outlined color="transparent" class="flex-column pa-10">
+            <v-card outlined color="transparent" class="flex-column pa-10" :disabled="serviceUnavailable">
               <h2 v-if="!employeesNotFound" style="color:#522A44!important; font-size: 30px;">{{ $t("components.department.labels.browse_employees_by_divisions") }}</h2>
                 <div width="100%" v-else>
                 <h2 style="color:#522A44!important; font-size: 30px; text-align: center!important; width: 100%;">{{ $t("components.department.labels.no_results") }}</h2>
@@ -60,7 +61,7 @@
             </v-card>
           </v-card>
           <v-card v-if="error" elevation="2" class="mx-auto flex-column flex-md-row d-flex justify-center align-center department-card"
-            max-width="1180" min-height="542" outlined>
+            max-width="1180" min-height="542" outlined :disabled="serviceUnavailable">
             <v-card-actions class=" d-flex flex-column justify-center align-center" height="450"
               max-width="590">
 
@@ -69,14 +70,14 @@
               </div>
             </v-card-actions>
 
-            <v-card outlined color="transparent" class="flex-column pa-10">
+            <v-card outlined color="transparent" class="flex-column pa-10" :disabled="serviceUnavailable">
               <h2 style="color:#522A44!important; font-size: 30px;">{{ $t("components.department.labels.not_found") }}</h2>
             </v-card>
           </v-card>
           <v-card tile class="mx-auto mt-n3" height="12px" width="281px" color="#244C5A"></v-card>
         </v-col>
       </v-row>
-      <div class="mt-7" v-if="checkGrid">
+      <div class="mt-7" v-if="checkGrid" :disabled="serviceUnavailable">
         <v-row v-if="!results">
           <v-col cols="12" md="2" class="d-flex align-center justify-start">
             <h4 class="">{{ $t("components.department.labels.group_by") }}</h4>
@@ -102,7 +103,7 @@
           <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
         </div>
 
-        <div v-if="!results">
+        <div v-if="!results" :disabled="serviceUnavailable">
           <div v-if="itemsValue === 0" class="mb-6 mt-2">
             <EmployeesGrid :divisions="false" :check="mobileCheck" :items="employees" :department="department" />
           </div>
@@ -144,6 +145,8 @@ import * as urls from "../urls";
 import EmployeesGrid from "./UI/EmployeesGrid.vue";
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
+import debounce from "lodash/debounce";
 
 const axios = require("axios");
 export default {
@@ -152,7 +155,8 @@ export default {
     IconLoader,
     DepartmentHeader,
     SearchBarHeader,
-    EmployeesGrid
+    EmployeesGrid,
+    ServiceStatusBanner,
   },
   name: "Department",
   data: () => ({
@@ -165,7 +169,6 @@ export default {
     breadcrumbsList: [],
     imgTitle: '',
     show: 90,
-    loading: false,
     items: [],
     search: "",
     title: '',
@@ -178,48 +181,56 @@ export default {
     windowWidth: window.innerWidth,
     checkAPIStatus: false,
     employeesNotFound: false,
-
+    serviceUnavailable: false,
+    staleData: false,
   }),
   watch: {
     "$route": {
       handler() {
-        this.updateBreadCrumbs;
+        this.updateBreadCrumbs();
+        this.getDataFromApi();
       },
       immediate: true,
     },
     "$i18n.locale": {
       handler() {
         this.$nextTick(() => {
-          this.updateBreadCrumbs;
+          this.updateBreadCrumbs();
+          this.debouncedGetData();
         });
       },
     },
     options: {
       handler() {
-        this.getDataFromApi();
+        if (!this.serviceUnavailable) {
+          this.debouncedGetData();
+        }
       },
       deep: true,
     },
-    search: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: true,
+    search() {
+      this.debouncedGetData();
     },
-    selection: {
-      handler() {
-        this.loading = true
-        this.getEmployeeData();
-      },
+    selection() {
+      if (this.serviceUnavailable) return;
+      this.loading = true;
+      this.debouncedGetEmployees();
     },
     windowWidth: {
       handler() {
         if (this.windowWidth > 900) {
-
           this.mobileCheck = false
         } else this.mobileCheck = true
       }
     }
+  },created() {
+    this.debouncedGetData = debounce(() => {
+      this.getDataFromApi();
+    }, 300);
+
+    this.debouncedGetEmployees = debounce(() => {
+      this.getEmployeeData();
+    }, 300);
   },
   async mounted() {
     await syncLocaleWithRoute(this);
@@ -227,7 +238,6 @@ export default {
       window.addEventListener('resize', this.onResize);
     })
     this.mobileCheck = this.windowWidth <= 900;
-    this.getDataFromApi();
     this.$root.$on("localeChanged", this.updateBreadCrumbs);
     this.updateBreadCrumbs();
   },
@@ -236,8 +246,12 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    normalizeParam(param) {
+      if (!param) return '';
+      return this.capitalizeString(param.replace(/-/g, ' '));
+    },
     toggleApiSearch() {
-      if (this.checkAPIStatus !== false) {
+      if (this.checkAPIStatus) {
         this.checkGrid = !this.checkGrid
         return
       } else this.getEmployeeData()
@@ -267,16 +281,14 @@ export default {
       }
     },
     activateBranches(item) {
-      let find = ' ';
-      let reg = new RegExp(find, 'g');
-      let department = this.department.replace(reg, '-')
+      let department = this.department.replace(/\s/g, '-');
       const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       let division = item
 
       if (this.check === item) {
         if (this.check === 'Employees who are not assigned a division') {
           window.location.href = '/'+ locale + '/find-employee/' + department + '/not-division/all-branches'
-        } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+        } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(/\s/g, '-') + '/all-branches'
       }
       this.check = division
     },
@@ -294,12 +306,9 @@ export default {
       url = url[0]
       this.url = url[0]
       url = url + '/'+ locale ;
-      let find = ' ';
-
-      let reg = new RegExp(find, 'g');
-      let department = this.department.replace(reg, '-')
-      let indexFormatted = index.replace(reg, '-')
-      let paramFormatted = param.replace(reg, '-')
+      let department = this.department.replace(/\s/g, '-');
+      let indexFormatted = index.replace(/\s/g, '-');
+      let paramFormatted = param.replace(/\s/g, '-');
 
       if (indexFormatted === 'Employees-who-are-not-assigned-a-division') {
         indexFormatted = 'not-division'
@@ -333,14 +342,11 @@ export default {
         this.show = param;
     },
     getDataFromApi() {
-      var find = '-';
-      var reg = new RegExp(find, 'g');
       const { department, division } = this.$route.params;
       this.loading = true;
-      let formattedQueryParam = ''
-      formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-      this.department = department.replace(reg, ' ')
-      this.title = this.capitalizeString(department.replace(reg, ' '))
+      this.department = this.normalizeParam(department);
+      this.title = this.normalizeParam(department);
+      this.serviceUnavailable = false;
 
       axios
         .post(
@@ -348,31 +354,26 @@ export default {
           this.options
         )
         .then((resp) => {
+          this.staleData = resp.data.meta?.stale === true;
+          this.serviceUnavailable = !resp.data?.data && !this.staleData;
           this.employeesNotFound = resp.data.meta.notFound
           this.error = resp.data.meta.error;
           this.checkError();
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
-          this.loading = false;
         })
         .catch((err) => {
           console.error(err)
-          this.error = true;
-          this.checkError();
+          this.serviceUnavailable = true;
+          this.staleData = false;
         })
         .finally(() => {
           this.loading = false;
         });
     },
     getEmployeeData() {
-      var find = '-';
-      var reg = new RegExp(find, 'g');
       const { department, division, branch } = this.$route.params;
       this.loading = true;
-      let formattedQueryParam = ''
-
-      formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-
       axios
         .request({
           method: 'POST',
@@ -383,20 +384,20 @@ export default {
         })
         .then((resp) => {
           this.employees = resp.data.data;
-          if (this.employees.length === 0) {
-            this.results = true
-          }
+          this.results = this.employees.length === 0;
+          this.staleData = resp.data.meta?.stale === true;
+          this.serviceUnavailable = !resp.data?.data && !this.staleData;
           this.checkAPIStatus = true;
           this.checkGrid = true;
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
           this.itemsPerPage = resp.data.meta.divisionCount;
           this.itemsValue = this.selection
-          this.loading = false;
         })
         .catch((err) => {
           console.error(err)
-          this.error = true;
+          this.serviceUnavailable = true;
+          this.staleData = false;
         })
         .finally(() => {
           this.loading = false;

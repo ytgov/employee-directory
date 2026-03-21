@@ -12,5 +12,11 @@ export interface EmployeeTable {
     full_name_url: string
     value: number
     address: string
-    community: string
+    community: string,
+    level: number
 }
+
+export type CacheRecord = {
+  data: any[];
+  updatedAt: number;
+};

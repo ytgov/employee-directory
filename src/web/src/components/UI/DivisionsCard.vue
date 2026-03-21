@@ -32,12 +32,11 @@
     </v-row>
 </template>
 
-
 <script>
 const axios = require("axios");
 import * as urls from "../../urls";
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
-
+const SPACE_REGEX = /\s/g;
 export default {
 
     props: ['department', 'division', 'branch', 'checkHover', 'checkClass'],
@@ -48,32 +47,32 @@ export default {
         }
     },
     watch: {
-        department: function () {
-            this.getDataFromApi();
-        }
+        //  department: {
+        //     handler() {
+        //         if (!this.department) return;
+        //         this.getDataFromApi();
+        //     },
+        //    // immediate: true
+        // }
     },
     async mounted() {
         await syncLocaleWithRoute(this);
+        this.getDataFromApi();
     },
     methods: {
         activateBranches(item) {
             const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
-            let find = ' ';
-            let reg = new RegExp(find, 'g');
-            let department = this.department.replace(reg, '-')
-
+            let department = this.department.replace(SPACE_REGEX, '-');
             let division = item
-
             if (this.check === item) {
                 if (this.check === 'Employees who are not assigned a division') {
                     window.location.href = '/'+ locale + '/find-employee/' + department + '/not-division/all-branches'
-                } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+                } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(SPACE_REGEX, '-') + '/all-branches'
             }
             this.check = division
         },
         generateUrl(type, param, index) {
             const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
-            console.log(locale);
             const urlLocation = String(window.location.href)
             let url = urlLocation.split(window.location.pathname)
 
@@ -81,11 +80,9 @@ export default {
                 return element !== ''
             })
             url = url[0]
-            let find = ' ';
-            let reg = new RegExp(find, 'g');
-            let department = this.department.replace(reg, '-')
-            let indexFormatted = index.replace(reg, '-')
-            let paramFormatted = param.replace(reg, '-')
+            let department = this.department.replace(SPACE_REGEX, '-');
+            let indexFormatted = index.replace(SPACE_REGEX, '-');
+            let paramFormatted = param.replace(SPACE_REGEX, '-');
             if (indexFormatted === 'Employees-who-are-not-assigned-a-division') {
                 indexFormatted = 'not-division'
             }
@@ -108,33 +105,20 @@ export default {
             }
         },
         getDataFromApi() {
-            this.loading = true;
+            if (!this.department) return;
 
-            axios.request({
-                method: 'POST',
-                data: {
-                    department: this.$props.department
-                },
-                url: `${urls.EMPLOYEES_URL}DivisionsCard`
-            }
-
-            )
-
-                .then((resp) => {
-                    this.items = resp.data.data;
-                    this.totalLength = resp.data.meta.count;
-                    this.loading = false;
-                })
-                .catch((err) => console.error(err))
-                .finally(() => {
-                    this.loading = false;
-                });
+            axios.post(`${urls.EMPLOYEES_URL}DivisionsCard`, {
+                department: this.department
+            })
+            .then((resp) => {
+                this.items = resp.data.data;
+                this.totalLength = resp.data.meta.count;
+            })
+            .catch((err) => console.error(err));
         },
     },
 
 }
-
-
 </script>
 
 

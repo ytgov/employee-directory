@@ -1,6 +1,6 @@
 <template>
     <div class="employee-search">
-        <SearchBarHeader />
+        <SearchBarHeader :disabled="serviceUnavailable" />
         <DepartmentHeader v-if="department !== 'Any department'" :title="this.department"
             :image="this.department.toLowerCase().replace(/\//g, '')" />
         <v-container class="px-0">
@@ -11,6 +11,7 @@
                     </v-breadcrumbs-item>
                 </template>
             </v-breadcrumbs>
+            <ServiceStatusBanner   v-if="serviceUnavailable || staleData" :isStaleData="staleData"  />
             <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.no_results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.no_results_by_department.body.part3") }}</h2>
             <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }}  {{ $t("components.employee_search.no_results.body.part2") }}</h2>
             <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.results_by_department.body.part3") }} {{ this.itemsLength }} {{ $t("components.employee_search.results_by_department.body.part4") }}</h2>
@@ -21,14 +22,14 @@
                     <h4 class="">{{ $t("components.employee_search.labels.group_by") }}: </h4>
                 </v-col>
                 <v-col cols="12" md="8">
-                    <v-chip-group v-model="selection" center-active mandatory>
+                    <v-chip-group v-model="selection" center-active mandatory :disabled="serviceUnavailable">
                         <v-row>
                             <v-col
                                 class="d-flex flex-column align-sm-center justify-sm-space-around flex-sm-row justify-md-start">
-                                <v-chip label outlined color="#00616D">{{ $t("components.employee_search.labels.see_all") }}</v-chip>
-                                <v-chip label outlined color="#00616D">{{ $t("components.employee_search.labels.department") }}</v-chip>
-                                <v-chip label outlined color="#00616D">{{ $t("components.employee_search.labels.location") }}</v-chip>
-                                <v-chip label outlined color="#00616D">{{ $t("components.employee_search.labels.position") }}</v-chip>
+                                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.employee_search.labels.see_all") }}</v-chip>
+                                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.employee_search.labels.department") }}</v-chip>
+                                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.employee_search.labels.location") }}</v-chip>
+                                <v-chip label outlined :disabled="serviceUnavailable" color="#00616D">{{ $t("components.employee_search.labels.position") }}</v-chip>
                             </v-col>
                         </v-row>
                     </v-chip-group>
@@ -95,13 +96,15 @@ import EmployeesGrid from './UI/EmployeesGrid.vue';
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import * as urls from "../urls";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
 
 export default {
     components: {
         EmployeesGrid,
         SearchBarHeader,
         IconLoader,
-        DepartmentHeader
+        DepartmentHeader,
+        ServiceStatusBanner
     },
     mixins: [breadcrumbMixin],
     watch: {
@@ -117,6 +120,9 @@ export default {
 
         selection: {
             handler() {
+                if (this.serviceUnavailable) {
+                    return;
+                }
                 this.loading = true
                 this.getDataFromApi();
             },
@@ -163,17 +169,30 @@ export default {
             searchTitle: '',
             windowWidth: window.innerWidth,
             mobileCheck: false,
+            serviceUnavailable: false,
+            staleData: false,
         }
     },
     methods: {
+        capitalizeString(param) {
+        const string = param
+        return string.charAt(0).toUpperCase() + string.slice(1);
+        },
+        normalizeParam(param) {
+            if (!param) return '';
+            return this.capitalizeString(param.replace(/-/g, ' '));
+        },
         onResize() {
             this.windowWidth = window.innerWidth
         },
         urlEmployee(department, name) {
             const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
-            var find = ' ';
-            var reg = new RegExp(find, 'g');
-            return  '/'+ locale + '/find-employee/employee-detail/' + department.replace(reg, '-').toLowerCase() + '/' + name.toLowerCase()
+            const find = ' ';
+            const reg = new RegExp(find, 'g');
+            const departmentSlug = department ? department.replace(reg, '-').toLowerCase() : '';
+            const encodedDepartment = encodeURIComponent(departmentSlug);
+            const encodedName = encodeURIComponent(name || '');
+            return  '/' + locale + '/find-employee/employee-detail/' + encodedDepartment + '/' + encodedName;
         },
         cleanParam(param) {
             return param === "-" ? "N/A" : param.trim();
@@ -195,12 +214,15 @@ export default {
             let { full_name, department } = this.$route.params;
             this.searchTitle= full_name.includes('@') ? full_name.trim() : full_name.replace(/\./g, ' ').trim();
 
-            let departmentFormatted = department.replace(reg, ' ')
+            let departmentFormatted = this.normalizeParam(department);
 
             departmentFormatted = departmentFormatted.charAt(0).toUpperCase() + departmentFormatted.slice(1);
             this.department = departmentFormatted
 
             this.loading = true;
+            this.serviceUnavailable = false;
+            const encodedFullName = encodeURIComponent(full_name);
+            const encodedDepartment = encodeURIComponent(department);
 
             axios
                 .request({
@@ -209,11 +231,9 @@ export default {
                         groupBy: this.selection,
                         itemsperPage: this.itemsPerPage,
                     },
-                    url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${full_name}&department=${department}`
-                }
-                )
+                    url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${encodedFullName}&department=${encodedDepartment}`
+                })
                 .then((resp) => {
-
                     this.items = resp.data.data;
                     if(this.items.length === 0) {
                         this.results = true
@@ -221,10 +241,25 @@ export default {
                     this.itemsLength = resp.data.meta.count
                     this.itemsPerPage = resp.data.meta.count
                     this.itemsValue = this.selection
-                    this.loading = false;
+                    this.staleData = resp.data.meta?.stale === true;
+                    this.serviceUnavailable = !resp.data?.data && !this.staleData;
                     this.updateBreadCrumbs();
                 })
-                .catch((err) => console.error(err))
+                .catch((err) => {
+                    const status = err?.response?.status;
+                    const code = err?.response?.data?.code;
+                    if (status === 503 || code === "SERVICE_UNAVAILABLE") {
+                        this.items = [];
+                        this.itemsLength = 0;
+                        this.results = false;
+                    } else {
+                        console.error(err);
+                    }
+                    this.staleData = false;
+                    this.serviceUnavailable = true;
+
+
+                })
                 .finally(() => {
                     this.loading = false;
                 });

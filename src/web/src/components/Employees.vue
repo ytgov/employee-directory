@@ -1,6 +1,6 @@
 <template>
   <div class="Homepage-departments">
-    <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" />
+    <SearchBarHeader class="z-indx" :info="this.findEmployeeHeaderInfo" :disabled="serviceUnavailable"/>
     
     <Aurora/>
     <v-container class="px-0">
@@ -14,8 +14,13 @@
 
         </template>
       </v-breadcrumbs>
-      <div class="full-width pt-6 bg-img">
-        <v-container class="container-content">
+      <ServiceStatusBanner   v-if="serviceUnavailable || staleData" :isStaleData="staleData"  />
+      <div class="text-center loading" v-show="loading">
+        <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+      </div>
+
+      <div class="full-width pt-6 bg-img" v-if="!serviceUnavailable">
+        <v-container class="container-content" v-if="!serviceUnavailable">
           <v-row>
             <v-col cols="12" sm="12" class="align-center justify d-flex">
               <h2 class="mb-n1 text-responsive" style="color: #522a44 !important; font-size: 32px !important">
@@ -55,13 +60,16 @@ import * as urls from "../urls";
 import Aurora from './UI/Aurora.vue';
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
+import debounce from 'lodash/debounce';
 
 const axios = require("axios");
 export default {
   components: {
     IconLoader,
     SearchBarHeader,
-    Aurora
+    Aurora,
+    ServiceStatusBanner
   },
   mixins: [breadcrumbMixin],
   name: "Employees",
@@ -69,35 +77,44 @@ export default {
     noBgImg: true,
     breadcrumbsList: [],
     show: false,
-    loading: false,
+    loading: true,
     item: [],
     options: {},
     findEmployeeHeaderInfo: true,
+    serviceUnavailable: false,
+    staleData: false,
   }),
+  created() {
+    this.debouncedGetEmployees = debounce(() => {
+      this.getEmployeesData();
+    }, 300);
+  },
   watch: {
     options: {
       handler() {
-        this.getEmployeesData();
+        if (this.serviceUnavailable) {
+          return;
+        }
+        this.debouncedGetEmployees();
       },
-      "$route": {
+      deep: true,
+    },
+    "$route": {
         handler() {
-          this.getDataFromApi().then(this.updateBreadCrumbs);
+          this.getEmployeesData().then(this.updateBreadCrumbs);
         },
         immediate: true,
       },
       "$i18n.locale": {
         handler() {
           this.$nextTick(() => {
-            this.getDataFromApi().then(this.updateBreadCrumbs);
+            this.getEmployeesData().then(this.updateBreadCrumbs);
           });
         },
       },
-        deep: true,
-    },
   },
   async mounted() {
     await syncLocaleWithRoute(this);
-    this.getEmployeesData();
     this.updateBreadCrumbs();
   },
   methods: {
@@ -112,10 +129,13 @@ export default {
       this.loading = true;
       try {
         const resp = await axios.post(urls.EMPLOYEES_URL);
-        this.item = resp.data.data;
+        this.staleData = resp.data.meta?.stale === true;
+        this.serviceUnavailable = !resp.data?.data && !this.staleData;
+        this.item = resp.data?.data || [];
       } catch (error) {
         console.error("Error fetching employees data:", error);
-        this.loading = false;
+        this.serviceUnavailable = true;
+        this.staleData = false;
       } finally {
         this.loading = false;
       }

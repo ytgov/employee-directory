@@ -127,9 +127,12 @@ export default {
         },
         urlEmployee(department, name) {
             const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
-            var find = ' ';
-            var reg = new RegExp(find, 'g');
-            return '/'+ locale  + '/find-employee/employee-detail/' + department.replace(reg, '-') + '/' + name
+            const find = ' ';
+            const reg = new RegExp(find, 'g');
+            const departmentSlug = department ? department.replace(reg, '-') : '';
+            const encodedDepartment = encodeURIComponent(departmentSlug);
+            const encodedName = encodeURIComponent(name || '');
+            return '/' + locale + '/find-employee/employee-detail/' + encodedDepartment + '/' + encodedName;
         },
         capitalizeString(param) {
             const string = param

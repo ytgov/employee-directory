@@ -2913,6 +2913,9 @@ export const fr = {
         position: "Poste"
       }
     },
+    errors: {
+      server_error: "Nous éprouvons des difficultés à récupérer les données des employés."
+    },
     grid: {
       group_by: "Regrouper par",
       see_all: "Voir la totalité des fonctionnaires",
