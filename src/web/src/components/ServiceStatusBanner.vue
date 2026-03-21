@@ -9,12 +9,12 @@
 
     <div class="error-summary__content">
       <h2 id="error-summary-title" class="error-summary__title">
-        {{ $t("components.errors.server_error_title") }}
+      {{ isStaleData ?  $t("components.errors.server_cache_title") : $t("components.errors.server_error_title") }}
       </h2>
 
       <ul class="error-summary__list">
         <li>
-          {{ $t("components.errors.server_error_summary") }}
+          {{ isStaleData ?  $t("components.errors.server_cache_summary") : $t("components.errors.server_error_summary") }}
         </li>
       </ul>
     </div>
@@ -28,6 +28,12 @@ import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 
 export default {
   name: "ServiceStatusBanner",
+  props: {
+    isStaleData: {
+      type: Boolean,
+      default: false,
+    }
+  },
   async mounted() {
     await syncLocaleWithRoute(this);
   },

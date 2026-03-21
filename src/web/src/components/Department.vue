@@ -15,7 +15,7 @@
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
-      <ServiceStatusBanner v-if="serviceUnavailable" />
+      <ServiceStatusBanner   v-if="serviceUnavailable || staleData" :isStaleData="staleData"  />
       <v-row class="mt-16"></v-row>
       <v-row>
         <v-col col="6">
@@ -146,6 +146,7 @@ import EmployeesGrid from "./UI/EmployeesGrid.vue";
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 import ServiceStatusBanner from './ServiceStatusBanner.vue';
+import debounce from "lodash/debounce";
 
 const axios = require("axios");
 export default {
@@ -168,7 +169,6 @@ export default {
     breadcrumbsList: [],
     imgTitle: '',
     show: 90,
-    loading: false,
     items: [],
     search: "",
     title: '',
@@ -182,50 +182,55 @@ export default {
     checkAPIStatus: false,
     employeesNotFound: false,
     serviceUnavailable: false,
+    staleData: false,
   }),
   watch: {
     "$route": {
       handler() {
-        this.updateBreadCrumbs;
+        this.updateBreadCrumbs();
+        this.getDataFromApi();
       },
       immediate: true,
     },
     "$i18n.locale": {
       handler() {
         this.$nextTick(() => {
-          this.updateBreadCrumbs;
+          this.updateBreadCrumbs();
+          this.debouncedGetData();
         });
       },
     },
     options: {
       handler() {
-        this.getDataFromApi();
-      },
-      deep: true,
-    },
-    search: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: true,
-    },
-    selection: {
-      handler() {
-        if (this.serviceUnavailable) {
-            return;
+        if (!this.serviceUnavailable) {
+          this.debouncedGetData();
         }
-        this.loading = true
-        this.getEmployeeData();
       },
+      deep: true,
+    },
+    search() {
+      this.debouncedGetData();
+    },
+    selection() {
+      if (this.serviceUnavailable) return;
+      this.loading = true;
+      this.debouncedGetEmployees();
     },
     windowWidth: {
       handler() {
         if (this.windowWidth > 900) {
-
           this.mobileCheck = false
         } else this.mobileCheck = true
       }
     }
+  },created() {
+    this.debouncedGetData = debounce(() => {
+      this.getDataFromApi();
+    }, 300);
+
+    this.debouncedGetEmployees = debounce(() => {
+      this.getEmployeeData();
+    }, 300);
   },
   async mounted() {
     await syncLocaleWithRoute(this);
@@ -233,7 +238,6 @@ export default {
       window.addEventListener('resize', this.onResize);
     })
     this.mobileCheck = this.windowWidth <= 900;
-    this.getDataFromApi();
     this.$root.$on("localeChanged", this.updateBreadCrumbs);
     this.updateBreadCrumbs();
   },
@@ -242,8 +246,12 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    normalizeParam(param) {
+      if (!param) return '';
+      return this.capitalizeString(param.replace(/-/g, ' '));
+    },
     toggleApiSearch() {
-      if (this.checkAPIStatus !== false) {
+      if (this.checkAPIStatus) {
         this.checkGrid = !this.checkGrid
         return
       } else this.getEmployeeData()
@@ -273,16 +281,14 @@ export default {
       }
     },
     activateBranches(item) {
-      let find = ' ';
-      let reg = new RegExp(find, 'g');
-      let department = this.department.replace(reg, '-')
+      let department = this.department.replace(/\s/g, '-');
       const locale =  this.$i18n.locale ?  this.$i18n.locale  : 'en';
       let division = item
 
       if (this.check === item) {
         if (this.check === 'Employees who are not assigned a division') {
           window.location.href = '/'+ locale + '/find-employee/' + department + '/not-division/all-branches'
-        } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(reg, '-') + '/all-branches'
+        } else window.location.href = '/'+ locale + '/find-employee/' + department + '/' + item.replace(/\s/g, '-') + '/all-branches'
       }
       this.check = division
     },
@@ -300,12 +306,9 @@ export default {
       url = url[0]
       this.url = url[0]
       url = url + '/'+ locale ;
-      let find = ' ';
-
-      let reg = new RegExp(find, 'g');
-      let department = this.department.replace(reg, '-')
-      let indexFormatted = index.replace(reg, '-')
-      let paramFormatted = param.replace(reg, '-')
+      let department = this.department.replace(/\s/g, '-');
+      let indexFormatted = index.replace(/\s/g, '-');
+      let paramFormatted = param.replace(/\s/g, '-');
 
       if (indexFormatted === 'Employees-who-are-not-assigned-a-division') {
         indexFormatted = 'not-division'
@@ -339,14 +342,10 @@ export default {
         this.show = param;
     },
     getDataFromApi() {
-      var find = '-';
-      var reg = new RegExp(find, 'g');
       const { department, division } = this.$route.params;
       this.loading = true;
-      let formattedQueryParam = ''
-      formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-      this.department = department.replace(reg, ' ')
-      this.title = this.capitalizeString(department.replace(reg, ' '))
+      this.department = this.normalizeParam(department);
+      this.title = this.normalizeParam(department);
       this.serviceUnavailable = false;
 
       axios
@@ -355,30 +354,26 @@ export default {
           this.options
         )
         .then((resp) => {
+          this.staleData = resp.data.meta?.stale === true;
+          this.serviceUnavailable = !resp.data?.data && !this.staleData;
           this.employeesNotFound = resp.data.meta.notFound
           this.error = resp.data.meta.error;
           this.checkError();
           this.items = resp.data.data;
           this.totalLength = resp.data.meta.count;
-          this.loading = false;
         })
         .catch((err) => {
           console.error(err)
           this.serviceUnavailable = true;
+          this.staleData = false;
         })
         .finally(() => {
           this.loading = false;
         });
     },
     getEmployeeData() {
-      var find = '-';
-      var reg = new RegExp(find, 'g');
       const { department, division, branch } = this.$route.params;
       this.loading = true;
-      let formattedQueryParam = ''
-
-      formattedQueryParam = `${encodeURIComponent(`${department}`)}`
-
       axios
         .request({
           method: 'POST',
@@ -389,20 +384,20 @@ export default {
         })
         .then((resp) => {
           this.employees = resp.data.data;
-          if (this.employees.length === 0) {
-            this.results = true
-          }
+          this.results = this.employees.length === 0;
+          this.staleData = resp.data.meta?.stale === true;
+          this.serviceUnavailable = !resp.data?.data && !this.staleData;
           this.checkAPIStatus = true;
           this.checkGrid = true;
           this.totalLength = resp.data.meta.branchCount;
           this.divisionLength = resp.data.meta.divisionCount;
           this.itemsPerPage = resp.data.meta.divisionCount;
           this.itemsValue = this.selection
-          this.loading = false;
         })
         .catch((err) => {
           console.error(err)
           this.serviceUnavailable = true;
+          this.staleData = false;
         })
         .finally(() => {
           this.loading = false;

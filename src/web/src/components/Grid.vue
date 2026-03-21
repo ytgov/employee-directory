@@ -15,7 +15,7 @@
           </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
-      <ServiceStatusBanner v-if="serviceUnavailable" />
+      <ServiceStatusBanner   v-if="serviceUnavailable || staleData" :isStaleData="staleData"  />
       <v-row>
         <v-col cols="12" md="2" class="d-flex align-center justify-start" :disabled="serviceUnavailable">
           <h4 class="">{{ $t("components.grid.group_by") }}: </h4>
@@ -33,7 +33,7 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="department">
         <DivisionsCard :division="this.division" :checkClass="this.branch" :checkHover="this.division" :department="this.department"
           class="mt-6" />
       </v-row>
@@ -98,7 +98,7 @@ import EmployeesGrid from "./UI/EmployeesGrid.vue";
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 import ServiceStatusBanner from './ServiceStatusBanner.vue';
-
+import debounce from 'lodash/debounce';
 
 export default {
   name: "Grid",
@@ -139,30 +139,32 @@ export default {
     windowWidth: window.innerWidth,
     mobileCheck: false,
     serviceUnavailable: false,
+    staleData: false,
   }),
   watch: {
     "$route": {
       handler() {
-        this.getDataFromApi().then(this.updateBreadCrumbs);
+        this.getDataFromApi();
       },
       immediate: true,
     },
     "$i18n.locale": {
       handler() {
         this.$nextTick(() => {
-          this.getDataFromApi().then(this.updateBreadCrumbs);
+          //this.getDataFromApi().then(this.updateBreadCrumbs);
+          this.debouncedGetData();
         });
       },
     },
     options: {
       handler() {
-        this.getDataFromApi();
+       this.debouncedGetData();
       },
       deep: true,
     },
     search: {
       handler() {
-        this.getDataFromApi();
+       this.debouncedGetData();
       },
       deep: true,
     },
@@ -172,32 +174,38 @@ export default {
             return;
         }
         this.loading = true
-        this.getDataFromApi();
+        this.debouncedGetData();
       },
     },
-  },
-  windowWidth: {
-    handler() {
-      if (this.windowWidth > 900) {
+    windowWidth: {
+      handler() {
+        if (this.windowWidth > 900) {
 
-        this.mobileCheck = false
-      } else this.mobileCheck = true
-    }
+          this.mobileCheck = false
+        } else this.mobileCheck = true
+      }
+    },
   },
   async mounted() {
+    this.debouncedGetData = debounce(() => this.getDataFromApi(), 300);
     await syncLocaleWithRoute(this);
+    //this.getDataFromApi();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
     this.mobileCheck = this.windowWidth <= 900;
     this.$root.$on("localeChanged", this.updateBreadCrumbs);
-    this.getDataFromApi();
   },
   beforeDestroy() {
     this.$root.$off("localeChanged", this.updateBreadCrumbs);
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    normalizeParam(param) {
+      if (!param) return '';
+      const clean = param.replace(/-/g, ' ');
+      return clean.charAt(0).toUpperCase() + clean.slice(1);
+    },
     cleanParam(param) {
       return param === "-" ? "N/A" : param;
     },
@@ -216,16 +224,17 @@ export default {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
     async getDataFromApi() {
-      await syncLocaleWithRoute(this);
-      var find = '-';
-      var reg = new RegExp(find, 'g');
-      const { department, division, branch } = this.$route.params;
+      const {
+        department = '',
+        division = '',
+        branch = ''
+            } = this.$route.params;
       this.loading = true;
-      this.title = this.capitalizeString(department.replace(reg, ' '))
+      this.department = this.normalizeParam(department);
+      this.title = this.normalizeParam(department);
+      this.division = this.normalizeParam(division);
+      this.branch = this.normalizeParam(branch);
 
-      this.department = this.capitalizeString(department.replace(reg, ' '))
-      this.division = this.capitalizeString(division.replace(reg, ' '))
-      this.branch = this.capitalizeString(branch?.replace(reg, ' ') || '');      const search = `${encodeURIComponent(`${this.search}`)}`;
       axios
         .request({
           method: 'POST',
@@ -237,7 +246,7 @@ export default {
         .then((resp) => {
           this.items = resp.data.data;
 
-          if (this.items.length === 0) {
+         if (!this.items || Object.keys(this.items).length === 0) {
             this.results = true
           }
           const locale = this.$i18n.locale || "en";
@@ -246,16 +255,13 @@ export default {
           this.itemsPerPage = resp.data.meta.divisionCount;
           this.itemsValue = this.selection
           this.updateBreadCrumbs();
-          this.serviceUnavailable = false;
-          this.loading = false;
+          this.staleData = resp.data.meta?.stale === true;
+          this.serviceUnavailable = !resp.data?.data && !this.staleData;
         })
         .catch((err) => {
           console.error(err)
           this.serviceUnavailable = true;
-          if (!sessionStorage.getItem("UPSTREAM_UNAVAILABLE_SHOWN")) {
-              console.info("UPSTREAM_UNAVAILABLE_SHOWN");
-              sessionStorage.setItem("UPSTREAM_UNAVAILABLE_SHOWN", "1");
-          }
+          this.staleData = false;
         })
         .finally(() => {
           this.loading = false;

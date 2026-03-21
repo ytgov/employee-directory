@@ -20,7 +20,7 @@
       </template>
     </v-breadcrumbs>
     
-    <ServiceStatusBanner v-if="serviceUnavailable" />
+    <ServiceStatusBanner   v-if="serviceUnavailable || staleData" :isStaleData="staleData"  />
 
     <div class="text-center loading" v-show="loading">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
@@ -194,6 +194,7 @@ export default {
     url: '',
     mapUrl: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`,
     serviceUnavailable: false,
+    staleData: false,
   }),
   watch: {
     $route() {
@@ -349,7 +350,6 @@ export default {
         )
         .then((resp) => {
           this.error = resp.data.data;
-
           this.checkError();
           this.employee = resp.data.data;
           let employee = resp.data.data;
@@ -357,7 +357,8 @@ export default {
           this.branch = employee[0].branch;
           this.title = employee[0].formatted_name;
           this.department = employee[0].department || "";
-
+          this.staleData = resp.data.meta?.stale === true;
+          this.serviceUnavailable = !resp.data?.data && !this.staleData;
 
 
           if (resp.data.meta.manager.length === 0) {
@@ -366,8 +367,6 @@ export default {
             this.managerDepartment = resp.data.meta.manager && resp.data.meta.manager[0] ? resp.data.meta.manager[0].department.toLowerCase().replace(/\s+/g, '-') : '';
             this.managerAvailability = true
           }
-
-          this.loading = false;
 
           this.address = resp.data.data[0].address;
           this.community = resp.data.data[0].community;
@@ -380,6 +379,7 @@ export default {
         .catch((err) => {
           console.error(err)
           this.serviceUnavailable = true;
+          this.staleData = false;
         })
         .finally(() => {
           this.loading = false;

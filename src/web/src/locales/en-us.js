@@ -2905,7 +2905,10 @@ export const en = {
       }
     },
     errors: {
-      server_error: "Sorry, there is a problem with this service. Try again later."
+      server_error_title: "Service unavailable",
+      server_error_summary: "Sorry, there is a problem with this service. Please try again later.",
+      server_cache_title: "Limited service",
+      server_cache_summary: "Some information may be out of date because the service is temporarily unavailable. We are showing the most recent available data."
     },
     grid: {
       group_by: "Group by",

@@ -14,7 +14,7 @@
 
         </template>
       </v-breadcrumbs>
-      <ServiceStatusBanner v-if="serviceUnavailable" />
+      <ServiceStatusBanner   v-if="serviceUnavailable || staleData" :isStaleData="staleData"  />
       <div class="text-center loading" v-show="loading">
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
@@ -61,6 +61,7 @@ import Aurora from './UI/Aurora.vue';
 import { syncLocaleWithRoute } from "@/utils/localeUtils.js";
 import breadcrumbMixin from "@/mixins/breadcrumbMixin.js";
 import ServiceStatusBanner from './ServiceStatusBanner.vue';
+import debounce from 'lodash/debounce';
 
 const axios = require("axios");
 export default {
@@ -81,34 +82,39 @@ export default {
     options: {},
     findEmployeeHeaderInfo: true,
     serviceUnavailable: false,
+    staleData: false,
   }),
+  created() {
+    this.debouncedGetEmployees = debounce(() => {
+      this.getEmployeesData();
+    }, 300);
+  },
   watch: {
     options: {
       handler() {
         if (this.serviceUnavailable) {
           return;
         }
-        this.getEmployeesData();
+        this.debouncedGetEmployees();
       },
-      "$route": {
+      deep: true,
+    },
+    "$route": {
         handler() {
-          this.getDataFromApi().then(this.updateBreadCrumbs);
+          this.getEmployeesData().then(this.updateBreadCrumbs);
         },
         immediate: true,
       },
       "$i18n.locale": {
         handler() {
           this.$nextTick(() => {
-            this.getDataFromApi().then(this.updateBreadCrumbs);
+            this.getEmployeesData().then(this.updateBreadCrumbs);
           });
         },
       },
-        deep: true,
-    },
   },
   async mounted() {
     await syncLocaleWithRoute(this);
-    this.getEmployeesData();
     this.updateBreadCrumbs();
   },
   methods: {
@@ -123,19 +129,13 @@ export default {
       this.loading = true;
       try {
         const resp = await axios.post(urls.EMPLOYEES_URL);
-        if (resp.data.meta && resp.data.meta.error) {
-          this.serviceUnavailable = true;
-          return;
-        }
-        this.item = resp.data.data;
+        this.staleData = resp.data.meta?.stale === true;
+        this.serviceUnavailable = !resp.data?.data && !this.staleData;
+        this.item = resp.data?.data || [];
       } catch (error) {
         console.error("Error fetching employees data:", error);
-        this.loading = false;
         this.serviceUnavailable = true;
-        if (!sessionStorage.getItem("UPSTREAM_UNAVAILABLE_SHOWN")) {
-            console.info("UPSTREAM_UNAVAILABLE_SHOWN");
-            sessionStorage.setItem("UPSTREAM_UNAVAILABLE_SHOWN", "1");
-        }
+        this.staleData = false;
       } finally {
         this.loading = false;
       }

@@ -5,7 +5,6 @@ export function getSavedLocale(VueInstance) {
 export async function updateLocale(VueInstance, newLocale) {
     VueInstance.$cookies.set("locale", newLocale);
     VueInstance.$i18n.locale = newLocale;
-console.log(newLocale);
     if (typeof VueInstance.loadLocale === "function") {
         await VueInstance.loadLocale(newLocale);
     }

@@ -11,7 +11,7 @@
                     </v-breadcrumbs-item>
                 </template>
             </v-breadcrumbs>
-            <ServiceStatusBanner v-if="serviceUnavailable" />
+            <ServiceStatusBanner   v-if="serviceUnavailable || staleData" :isStaleData="staleData"  />
             <h2 v-if="results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.no_results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.no_results_by_department.body.part3") }}</h2>
             <h2 v-else-if="results" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.no_results.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }}  {{ $t("components.employee_search.no_results.body.part2") }}</h2>
             <h2 v-else-if="!results && department !== 'Any department'" class="px-0" style="font-size: 34px !important;">{{ $t("components.employee_search.results_by_department.body.part1") }} {{ this.searchTitle.replace(/-/g, " ") }} {{ $t("components.employee_search.results_by_department.body.part2") }} {{ $t('components.departments_api')[this.department.trim()] ? $t('components.departments_api')[this.department.trim()] : this.department }} {{ $t("components.employee_search.results_by_department.body.part3") }} {{ this.itemsLength }} {{ $t("components.employee_search.results_by_department.body.part4") }}</h2>
@@ -170,9 +170,18 @@ export default {
             windowWidth: window.innerWidth,
             mobileCheck: false,
             serviceUnavailable: false,
+            staleData: false,
         }
     },
     methods: {
+        capitalizeString(param) {
+        const string = param
+        return string.charAt(0).toUpperCase() + string.slice(1);
+        },
+        normalizeParam(param) {
+            if (!param) return '';
+            return this.capitalizeString(param.replace(/-/g, ' '));
+        },
         onResize() {
             this.windowWidth = window.innerWidth
         },
@@ -205,7 +214,7 @@ export default {
             let { full_name, department } = this.$route.params;
             this.searchTitle= full_name.includes('@') ? full_name.trim() : full_name.replace(/\./g, ' ').trim();
 
-            let departmentFormatted = department.replace(reg, ' ')
+            let departmentFormatted = this.normalizeParam(department);
 
             departmentFormatted = departmentFormatted.charAt(0).toUpperCase() + departmentFormatted.slice(1);
             this.department = departmentFormatted
@@ -225,10 +234,6 @@ export default {
                     url: `${urls.FIND_EMPLOYEE_URL}search/keyword=${encodedFullName}&department=${encodedDepartment}`
                 })
                 .then((resp) => {
-                    if (resp.data.meta && resp.data.meta.error) {
-                        this.serviceUnavailable = true;
-                        return;
-                    }
                     this.items = resp.data.data;
                     if(this.items.length === 0) {
                         this.results = true
@@ -236,25 +241,23 @@ export default {
                     this.itemsLength = resp.data.meta.count
                     this.itemsPerPage = resp.data.meta.count
                     this.itemsValue = this.selection
-                    this.loading = false;
+                    this.staleData = resp.data.meta?.stale === true;
+                    this.serviceUnavailable = !resp.data?.data && !this.staleData;
                     this.updateBreadCrumbs();
                 })
                 .catch((err) => {
                     const status = err?.response?.status;
                     const code = err?.response?.data?.code;
                     if (status === 503 || code === "SERVICE_UNAVAILABLE") {
-                        this.serviceUnavailable = true;
                         this.items = [];
                         this.itemsLength = 0;
                         this.results = false;
-                        if (!sessionStorage.getItem("UPSTREAM_UNAVAILABLE_SHOWN")) {
-                            console.info("UPSTREAM_UNAVAILABLE_SHOWN");
-                            sessionStorage.setItem("UPSTREAM_UNAVAILABLE_SHOWN", "1");
-                        }
                     } else {
                         console.error(err);
-                        this.serviceUnavailable = true;
                     }
+                    this.staleData = false;
+                    this.serviceUnavailable = true;
+
 
                 })
                 .finally(() => {

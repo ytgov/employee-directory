@@ -2,41 +2,69 @@ import axios from "axios";
 import _ from 'lodash';
 import { EmployeeTable } from '../routes/interface';
 import * as dotenv from "dotenv";
-let path;
-switch (process.env.NODE_ENV) {
-    case "test":
-      path = `.env.test`;
-      break;
-    case "production":
-      path = `.env`;
-      break;
-    default:
-      path = `.env.development`;
-  }
-dotenv.config({ path: path });
-export const EMPLOYEEDETAILJSON = process.env.EMPLOYEEDETAILJSON;
+import { getUpstream } from "./upstreamClient";
+import * as config from "../config";
+import { getCachedEmployees, findEmployeeBySamAccount, normalizeName } from "./upstreamClient";
+
+
+export const EMPLOYEEDETAILJSON = config.EMPLOYEEDETAILJSON;
+
+const mapEmployee = (element: any) => {
+  const division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
+
+  return {
+    full_name: element.full_name.replace(".", " "),
+    formatted_name: element.first_name + ' ' + element.last_name,
+    department: element.department,
+    division: element.division,
+    branch: element.branch,
+    unit: element.unit,
+    title: element.title,
+    email: element.email.toLowerCase(),
+    phone_office: element.phone_office,
+    fax_office: element.fax_office,
+    address: element.address,
+    community: element.community,
+    postal_code: element.postal_code,
+    mailcode: element.mailcode,
+      // manager: element.manager !== '' ? element.manager?.replace(".", " ") : '-',
+    manager: element.manager !== '' ? element.manager: '-',
+    division_url,
+    full_name_url: element.full_name,
+    latitude: element.latitude,
+    longitude: element.longitude,
+    value: 0,
+    center: { lat: 0, lng: 0 }
+  };
+};
 
 export class EmployeeService {
-    async getEmployee(paramDepartment: string, paramFullName: string)  {
-        var employeeArr: any[] = Array();
+    async getEmployeeSafe(paramDepartment: string, paramFullName: string) {
+        try {
+            return await this.getEmployee(paramDepartment, paramFullName);
+        } catch {
+            return { employees: [], stale: true };
+        }
+    }
+    
+    async getEmployee(paramDepartment: string, paramFullName: string): Promise<{ employees: any[]; stale: boolean }> {
         // Normalize names that do not contain a dot at all
         let samaccountname = (paramFullName || '').trim();
-        samaccountname = (paramFullName || "'").trim();
         if (!samaccountname.includes('.')) {
-            samaccountname = samaccountname
-                .replace(/\s+/g, '.')         
-                .replace(/['’]/g, '')         
-                .normalize('NFD')             
-                .replace(/[\u0300-\u036f]/g, '')
-                .toLowerCase();
+            samaccountname = normalizeName(samaccountname);
         }
-
+        let resultEmployees: any[] = [];
+        let fromCache = false;
         try {
-            const response = await axios.get(String(EMPLOYEEDETAILJSON), { params: { samaccountname } });
-            const resultEmployees = response.data.employees || [];
-        if (resultEmployees.length === 0) {
-            return [];
-        }
+            const response = await getUpstream<any>(String(EMPLOYEEDETAILJSON), {params: { samaccountname }});
+            fromCache = (response as any).__fromCache === true;
+            resultEmployees = response.data.employees || [];
+            if (resultEmployees.length === 0) {
+                return {
+                    employees: [],
+                    stale: fromCache
+                };
+            }
 
         let filteredEmployees = resultEmployees;
         if (resultEmployees.length > 1 && paramDepartment) {
@@ -46,51 +74,30 @@ export class EmployeeService {
         if (filteredEmployees.length === 0) {
             filteredEmployees = [resultEmployees[0]];
         }
-
-        filteredEmployees.forEach(function (element: any) {
-            const division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
-            interface EmployeeDetail extends EmployeeTable {
-                unit: String
-                fax_office: String
-                postal_code: String
-                mailcode: string
-                full_name_url: string
-                center: any
-                latitude: Number
-                longitude: Number
-            }
-
-            const employee: EmployeeDetail = {
-                'full_name': element.full_name.replace(".", " "),
-                'formatted_name': element.first_name + ' ' + element.last_name,
-                'department': element.department,
-                'division': element.division,
-                'branch': element.branch,
-                'unit': element.unit,
-                'title': element.title,
-                'email': element.email.toLowerCase(),
-                'phone_office': element.phone_office,
-                'fax_office': element.fax_office,
-                'address': element.address,
-                'community': element.community,
-                'postal_code': element.postal_code,
-                'mailcode': element.mailcode,
-                'manager': element.manager !== '' ? element.manager?.replace(".", " ") : '-',
-                'division_url': division_url,
-                'full_name_url': element.full_name,
-                'latitude': element.latitude,
-                'longitude': element.longitude,
-                'value': 0,
-                'center': { "lat": 0, "lng": 0 }
+        return {
+            employees: filteredEmployees.map(mapEmployee),
+            stale: fromCache
             };
-
-            employeeArr.push(employee);
-        });
-        return employeeArr;
-    } catch (error: any) {
+        } catch (error: any) {
         const errorMessage = error.message ?? 'Unknown error occurred';
         console.error("Error loading employee:", errorMessage);
+        console.warn("Detail API failed, trying ALL_EMPLOYEES cache");
+        const cached = getCachedEmployees();
+        if (cached?.data?.length) {
+            console.warn("Returning cached data because upstream request failed");
+            const matched = findEmployeeBySamAccount(
+                cached.data,
+                samaccountname,
+                paramDepartment
+            );
 
+            if (matched.length > 0) {
+                return {
+                    employees: matched.map(mapEmployee),
+                    stale: true
+                };
+            }
+        }
         throw new Error(errorMessage);
     }
   }

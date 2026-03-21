@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import path from 'path';
-import { doHealthCheck } from "./utils/healthCheck";
 import { employeesRouter, healthRouter} from "./routes";
 import * as config from './config';
 
@@ -47,10 +46,6 @@ app.use(cors({
   optionsSuccessStatus: 200,
   credentials: false
 }));
-
-app.get("/api/healthCheck", (req: Request, res: Response) => {
-  doHealthCheck(res);
-});
 
 app.use("/api/employees", employeesRouter);
 app.use("/health", healthRouter);
