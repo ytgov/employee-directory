@@ -170,13 +170,11 @@ export const getUpstream = async <T>(url: string, requestConfig: AxiosRequestCon
 };
 const filterEmployees = (data: any[], params: any = {}) => {
   let result = data;
-
   if (params.department) {
     result = result.filter((e: any) =>
       e.department?.toLowerCase() === params.department.toLowerCase()
     );
   }
-
   if (params.division) {
     result = result.filter((e: any) =>
       e.division?.toLowerCase() === params.division.toLowerCase()

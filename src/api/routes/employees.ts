@@ -22,7 +22,6 @@ export const EMPLOYEEJSON = config.EMPLOYEEJSON;
 employeesRouter.post("/", async (req: Request, res: Response) => {
     var employeesByDept = Object();
     try {
-
         const response = await getUpstream<any>(String(DIVISIONSJSON));
         if (!response.data || !response.data.divisions) {
             console.log("API Response:", response); 
@@ -49,15 +48,15 @@ employeesRouter.post("/", async (req: Request, res: Response) => {
         departmentsUq.forEach((elementDept: any) => {
             var keyDept = elementDept;
             var arrayElements = Array();
-            var arrayElementssUq = Array();
+            var arrayElementsUq = Array();
             var keyModified = keyDept.replace(/\s/g, "-");
             resultDivisions.forEach(function (elementEm: any) {
                 if (keyDept == elementEm.department && elementEm.division !== null) {
-                    if (!arrayElementssUq.includes(elementEm.division)) {
+                    if (!arrayElementsUq.includes(elementEm.division)) {
                         elementEm.departmentUrl = keyModified;
                         elementEm.divisionUrl = elementEm.division.replace(/\s/g, "-");
                         arrayElements.push(elementEm);
-                        arrayElementssUq.push(elementEm.division);
+                        arrayElementsUq.push(elementEm.division);
                     }
                 }
             });
@@ -159,7 +158,6 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
 
 employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [param("full_name", "department").notEmpty()], async (req: Request, res: Response) => {
     try {
-        var employeeArr: any[] = Array();
         var find = '-';
         var reg = new RegExp(find, 'g');
         
@@ -220,7 +218,6 @@ employeesRouter.post("/find-employee/employee-detail/:department/:full_name", [p
 employeesRouter.post("/find-employee/:department/:division/:branch?", [param("department", "division"), param('branch').notEmpty()], async (req: Request, res: Response) => {
     let groupBy = (req.body.groupBy) || 0;
 
-    var employeesByDept: any[] = Array();
     var managersMissing: any[] = Array();
    
     var find = '-';
@@ -413,7 +410,6 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
     var find = '-';
     var reg = new RegExp(find, 'g');
     let paramDepartment = (req.params.department.replace(/\--/g, '-/-').replace(reg, ' '))
-    let error = false
     try {
 
         const divisionsResponse = await getUpstream<any>(String(DIVISIONSJSON), { params: { department: paramDepartment } });
@@ -449,9 +445,6 @@ employeesRouter.post("/find-employee/:department/", [param("department").notEmpt
 });
 
 employeesRouter.post("/DivisionsCard", async (req: Request, res: Response) => {
-
-    var find = '-';
-    var reg = new RegExp(find, 'g');
     const rawDepartment = req.body?.department || '';
     const paramDepartment =  typeof rawDepartment === 'string' && rawDepartment.length > 0
     ? rawDepartment.replace(/\--/g, '-/-')
@@ -514,14 +507,13 @@ employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
 
         const sanitizedBody = sanitizeHtml(bodyContentFormatted)
         const emailHost = config.SMTP_SERVER;
-        const emailPort = config.SMTP_PORT!;
+        const emailPort = config.SMTP_PORT;
         const emailFrom = config.EMAIL_FROM;
         const nameFrom = config.NAME_FROM;
         const subject = config.EMAIL_SUBJECT;
-
         const selfSignedConfig = {
             host: emailHost,
-            port: emailPort,
+            port: emailPort
         };
         var transporter = nodemailer.createTransport(selfSignedConfig);
         const info = await transporter.sendMail({
@@ -531,7 +523,7 @@ employeesRouter.post("/feedbackForm", async (req: Request, res: Response) => {
             html: sanitizedBody,
         });
         res.send({ data: 'Sent' });
-    } catch (error : any) {
+    } catch (error) {
         return handleApiError(res, "Failed to feedback", error);
     }
 });
@@ -545,13 +537,3 @@ function handleApiError(res: Response, logMessage: string, error: any) {
         details: errorMessage
     });
 }
-
-const safeGetManager = async (managerName: string) => {
-    try {
-        const result = await employeeService.getEmployee('', managerName);
-        return result.employees;
-    } catch (err) {
-        console.warn("Manager lookup failed:", managerName);
-        return [];
-    }
-};

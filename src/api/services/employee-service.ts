@@ -27,7 +27,6 @@ const mapEmployee = (element: any) => {
     community: element.community,
     postal_code: element.postal_code,
     mailcode: element.mailcode,
-      // manager: element.manager !== '' ? element.manager?.replace(".", " ") : '-',
     manager: element.manager !== '' ? element.manager: '-',
     division_url,
     full_name_url: element.full_name,
