@@ -38,3 +38,5 @@ export const EMAIL_FROM = process.env.EMAIL_FROM || process.env.EMAIL_FROM || ""
 export const UPSTREAM_TIMEOUT_MS = parseInt(process.env.UPSTREAM_TIMEOUT_MS || "50000");
 export const BREAKER_TTL_SECONDS = parseInt(process.env.BREAKER_TTL_SECONDS || "180");
 export const CACHE_TTL_SECONDS = parseInt(process.env.CACHE_TTL_SECONDS || "300");
+
+export const ESCAPE_APOSTROPHES = process.env.ESCAPE_APOSTROPHES || false;

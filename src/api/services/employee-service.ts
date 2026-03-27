@@ -37,6 +37,13 @@ const mapEmployee = (element: any) => {
   };
 };
 
+const maybeEscapeApostrophes = (value: string): string => {
+  const shouldEscape = (process.env.ESCAPE_APOSTROPHES || '').toLowerCase() === 'true';
+  if (!shouldEscape || !value) return value;
+  return value.replace(/'/g, "''");
+};
+
+
 export class EmployeeService {
     async getEmployeeSafe(paramDepartment: string, paramFullName: string) {
         try {
@@ -52,6 +59,9 @@ export class EmployeeService {
         if (!samaccountname.includes('.')) {
             samaccountname = normalizeName(samaccountname);
         }
+
+        // Apply optional apostrophe escaping for upstream SQL bug
+        samaccountname = maybeEscapeApostrophes(samaccountname);
         let resultEmployees: any[] = [];
         let fromCache = false;
         try {
