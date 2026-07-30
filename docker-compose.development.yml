@@ -1,6 +1,11 @@
-version: '3.7'
-
 services:
+  mock:
+    build:
+      context: ./src/mock
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - '4000:4000'
   web:
     build:
       context: ./src/web
@@ -14,6 +19,7 @@ services:
       - '8080:8080'
     volumes:
       - ./src/web:/usr/src/web
+      - /usr/src/web/node_modules
     depends_on:
       - api
   api:
@@ -27,6 +33,8 @@ services:
       DB_HOST: db
       MAIL_HOST: 'host.docker.internal'
       TS_NODE_HISTORY: '/tmp/.ts_node_repl_history'
+      DIVISIONSJSON: 'http://mock:4000/divisions'
+      EMPLOYEEJSON: 'http://mock:4000/employees'
     tty: true
     ports:
       - '3000:3000'
@@ -35,3 +43,6 @@ services:
       - 'host.docker.internal:172.17.0.1'
     volumes:
       - ./src/api:/usr/src/api
+      - /usr/src/api/node_modules
+    depends_on:
+      - mock
