@@ -9,6 +9,13 @@ import { getCachedEmployees, findEmployeeBySamAccount, normalizeName } from "./u
 
 export const EMPLOYEEDETAILJSON = config.EMPLOYEEDETAILJSON;
 
+export function getDisplayPhone(title: string, department: string, phoneOffice: string): string {
+    if (title === 'Minister' && department !== 'Cabinet Office') {
+        return '-';
+    }
+    return phoneOffice !== '' ? phoneOffice : '-';
+}
+
 const mapEmployee = (element: any) => {
   const division_url = element.division !== null ? element.division.replace(/\s/g, "-") : '';
 
@@ -21,7 +28,7 @@ const mapEmployee = (element: any) => {
     unit: element.unit,
     title: element.title,
     email: element.email.toLowerCase(),
-    phone_office: element.phone_office,
+    phone_office: getDisplayPhone(element.title, element.department, element.phone_office),
     fax_office: element.fax_office,
     address: element.address,
     community: element.community,

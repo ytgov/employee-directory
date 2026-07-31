@@ -4,7 +4,7 @@ import { body, param } from "express-validator";
 import _ from 'lodash';
 import nodemailer from "nodemailer";
 import { EmployeeTable } from './interface';
-import { EmployeeService } from "../services/employee-service"
+import { EmployeeService, getDisplayPhone } from "../services/employee-service"
 import { getUpstream } from "../services/upstreamClient";
 import * as config from "../config";
 
@@ -111,7 +111,7 @@ employeesRouter.post("/find-employee/search/keyword=:full_name?&department=:depa
                     division,
                     branch,
                     email: (element.email ?? '').toLowerCase(),
-                    phone_office: element.phone_office || '-',
+                    phone_office: getDisplayPhone(element.title, element.department, element.phone_office),
                     department: element.department ?? '',
                     manager: element.manager ? element.manager.replace(".", " ") : '-',
                     division_url: division.replace(/\s/g, '-'),
@@ -263,7 +263,7 @@ employeesRouter.post("/find-employee/:department/:division/:branch?", [param("de
                     division,
                     branch,
                     email: (element.email ?? '').toLowerCase(),
-                    phone_office: element.phone_office || '-',
+                    phone_office: getDisplayPhone(element.title, element.department, element.phone_office),
                     department: element.department ?? '',
                     manager: element.manager ? element.manager.replace(".", " ") : '-',
                     division_url: division.replace(/\s/g, '-'),
