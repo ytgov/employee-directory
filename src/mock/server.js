@@ -36,6 +36,10 @@ function filterEmployees(query) {
   return results;
 }
 
+function findEmployeeDetail(query) {
+  return employeesData.employees.filter((e) => matches(e.full_name, query.samaccountname || ''));
+}
+
 const server = http.createServer((req, res) => {
   const { pathname, searchParams } = new URL(req.url, 'http://localhost');
   const query = Object.fromEntries(searchParams);
@@ -46,6 +50,9 @@ const server = http.createServer((req, res) => {
     body = { count: divisions.length, divisions };
   } else if (pathname === '/employees') {
     const employees = filterEmployees(query);
+    body = { count: employees.length, employees };
+  } else if (pathname === '/employeedetail') {
+    const employees = findEmployeeDetail(query);
     body = { count: employees.length, employees };
   } else {
     res.writeHead(404, { 'Content-Type': 'application/json' });

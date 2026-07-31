@@ -35,6 +35,7 @@ services:
       TS_NODE_HISTORY: '/tmp/.ts_node_repl_history'
       DIVISIONSJSON: 'http://mock:4000/divisions'
       EMPLOYEEJSON: 'http://mock:4000/employees'
+      EMPLOYEEDETAILJSON: 'http://mock:4000/employeedetail'
     tty: true
     ports:
       - '3000:3000'
